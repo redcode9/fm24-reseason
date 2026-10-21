@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.4 — 2026-10-21
+
+- Added readable English names for the 51 custom FMFs, labeled by purpose and numbered to preserve their previous alphabetical order. Sortitoutsi filenames retain their original names.
+- Added an optional Organize Editor Data command with exact-content checks, staged originals outside FM24, exclusive new destinations or atomic replacements, and rollback on ordinary failures. Original game files, saves, and Basic FMFs are preserved.
+- Updated the embedded archive-directory names that FM24 displays. Precomputed metadata patches preserve all database-member payload bytes; whole-archive hashes change. Private cache preparation restores the canonical trailer in memory for the existing payload pins.
+- Setup, preparation, and both launch modes accept original or readable names. Duplicate copies and partly renamed sets block launch. Canonical identities and existing ownership receipts remain valid.
+- Published the complete filename mapping and updated manual instructions. Database-member payloads, the native module, and the 104-file selection are unchanged.
+- Passed 96 automated tests and actual FM24 startup. The new-career editor-data list displayed the readable names and 104 enabled files out of 104. All 153 stored member payloads remained identical; a new career with the relabeled archives has not yet been qualified.
+
 ## 0.1.3 — 2026-10-21
 
 - Moved private FMF caches outside the entire FM24 user-data tree. FM24 was observed opening unintended FMF copies from the previous nested location during startup.

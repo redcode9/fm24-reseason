@@ -45,6 +45,8 @@ class ReSeasonTests(unittest.TestCase):
         self.binary.parent.mkdir(parents=True)
         self.binary.write_bytes(b"synthetic executable; never executed\n")
         self.data = copy.deepcopy(json.loads((PROJECT / "toolkit/reference.json").read_bytes()))
+        # Legacy tests exercise physical names with their own synthetic pins.
+        self.data.pop("filename_updates", None)
         self.data["game"]["executable_sha256"] = cli.sha(self.binary.read_bytes())
         self.declared = {r["path"]: r for r in self.data["files"]}
         for i, row in enumerate(self.data["own_fmfs"]):
@@ -180,6 +182,592 @@ class ReSeasonTests(unittest.TestCase):
 
     def owned(self, index=0):
         return self.user / "editor data" / self.data["own_fmfs"][index]["name"]
+
+    def alias(self, index=0):
+        name = self.data["own_fmfs"][index]["name"]
+        return self.user / "editor data" / self.data["filename_aliases"][name]
+
+    def use_aliases(self, rows=None):
+        for row in self.data["own_fmfs"] if rows is None else rows:
+            source = self.user / "editor data" / row["name"]
+            source.rename(self.user / "editor data" / self.data["filename_aliases"][row["name"]])
+
+    def synthetic_filename_updates(self):
+        """Opaque payloads and precomputed manifest suffixes; no FMF codec needed."""
+        before, after, updates = {}, {}, {}
+        for index, row in enumerate(self.data["own_fmfs"]):
+            name = row["name"]
+            # Include the old title in the payload too, to catch global rewrites.
+            prefix = bytes(range(256)) + name.encode() + b"\x00opaque database payload\xff"
+            old_tail = b"synthetic final manifest\x00" + Path(name).with_suffix(".dbc").name.encode()
+            new_tail = b"synthetic final manifest\x00" + Path(self.alias(index).name).with_suffix(".dbc").name.encode()
+            before[name], after[name] = prefix + old_tail, prefix + new_tail
+            updates[name] = {"offset": len(prefix),
+                             "before_sha256": cli.sha(before[name]), "before_bytes": len(before[name]),
+                             "after_sha256": cli.sha(after[name]), "after_bytes": len(after[name]),
+                             "before_tail_hex": old_tail.hex(), "after_tail_hex": new_tail.hex()}
+            row["sha256"] = cli.sha(before[name])
+            self.declared[row["payload"]].update(cli.pin(row["payload"], before[name]))
+            self.alias(index).unlink(missing_ok=True)
+            self.owned(index).write_bytes(before[name])
+        self.data["filename_updates"] = updates
+        self.seal()
+        return before, after
+
+    def test_archive_metadata_organize_preserves_payloads_backups_and_user_data(self):
+        for readable in (False, True):
+            with self.subTest(readable_source=readable):
+                baseline, desired = self.synthetic_filename_updates()
+                self.ownership_state()
+                if readable:
+                    self.use_aliases()
+                for row in self.data["own_fmfs"]:
+                    cli.installed_path(self.data, self.user, row["name"]).chmod(0o640)
+                user, project, game = snapshot(self.user), snapshot(self.root), snapshot(self.game)
+                parent = self.cache().parent
+                previous = set(parent.glob("renamed-files-*/receipt.json"))
+                checks = []
+
+                def closed(command, **kwargs):
+                    self.assertEqual(command, ["pgrep", "-x", "fm"])
+                    self.assertEqual(user, snapshot(self.user))
+                    checks.append(command)
+                    if len(checks) == 2:
+                        records = set(parent.glob("renamed-files-*/receipt.json")) - previous
+                        self.assertEqual(len(records), 1)
+                        folder = records.pop().parent
+                        for name in baseline:
+                            self.assertEqual((folder / "backup" / name).read_bytes(), baseline[name])
+                            self.assertEqual((folder / "stage" / name).read_bytes(), desired[name])
+                    return subprocess.CompletedProcess(command, 1)
+
+                self.process.side_effect = closed
+                result = self.invoke("organize")
+                self.assertEqual(result[0], 0, result)
+                self.assertEqual(len(checks), 2)
+                records = set(parent.glob("renamed-files-*/receipt.json")) - previous
+                self.assertEqual(len(records), 1)
+                record = records.pop()
+                self.assertFalse(record.is_relative_to(self.user))
+                self.assertFalse(record.is_relative_to(self.root))
+                self.assertEqual(stat.S_IMODE(record.stat().st_mode), 0o600)
+                receipt = json.loads(record.read_bytes())
+                self.assertEqual(receipt["status"], "COMPLETED")
+                self.assertEqual({r["canonical"]: (r["original"], r["readable"], r["before_sha256"], r["after_sha256"])
+                                  for r in receipt["files"]},
+                                 {name: (self.data["filename_aliases"][name] if readable else name,
+                                         self.data["filename_aliases"][name], cli.sha(baseline[name]), cli.sha(desired[name]))
+                                  for name in baseline})
+                self.assertEqual({p.name for p in (record.parent / "backup").iterdir()}, set(baseline))
+                custom = set()
+                for index, row in enumerate(self.data["own_fmfs"]):
+                    name, update = row["name"], self.data["filename_updates"][row["name"]]
+                    custom.update(("editor data/" + name, "editor data/" + self.alias(index).name))
+                    self.assertFalse(self.owned(index).exists())
+                    self.assertEqual(self.alias(index).read_bytes(), desired[name])
+                    self.assertEqual(self.alias(index).read_bytes()[:update["offset"]], baseline[name][:update["offset"]])
+                    self.assertEqual(stat.S_IMODE(self.alias(index).stat().st_mode), 0o640)
+                    self.assertEqual((record.parent / "backup" / name).read_bytes(), baseline[name])
+                actual = snapshot(self.user)
+                self.assertEqual({k: v for k, v in user.items() if k not in custom | {"editor data"}},
+                                 {k: v for k, v in actual.items() if k not in custom | {"editor data"}})
+                self.assertEqual(set(actual) & custom,
+                                 {"editor data/" + alias for alias in self.data["filename_aliases"].values()})
+                self.assertEqual(project, snapshot(self.root))
+                self.assertEqual(game, snapshot(self.game))
+                self.process.side_effect = None
+                self.process.return_value = subprocess.CompletedProcess([], 1)
+                unchanged = snapshot(self.base)
+                result = self.invoke("organize")
+                self.assertEqual(result[0], 0, result)
+                self.assertIn("already use readable filenames and internal titles", result[1])
+                self.assertEqual(unchanged, snapshot(self.base))
+
+    def test_archive_metadata_cache_normalizes_baseline_and_retitled_launches(self):
+        baseline, desired = self.synthetic_filename_updates()
+        state = self.ownership_state()
+        receipt = state.read_bytes()
+        for readable in (False, True):
+            for retitled in (False, True):
+                with self.subTest(readable=readable, retitled=retitled):
+                    installed = desired if retitled else baseline
+                    for index, row in enumerate(self.data["own_fmfs"]):
+                        source = cli.installed_path(self.data, self.user, row["name"])
+                        target = self.alias(index) if readable else self.owned(index)
+                        if source != target:
+                            source.rename(target)
+                        target.write_bytes(installed[row["name"]])
+                    user, project, game = snapshot(self.user), snapshot(self.root), snapshot(self.game)
+                    cache = self.prepared()
+                    backend, _, _, manifest, _ = cli.context(self.root)
+                    cli.verify_cache(backend, cache, manifest)
+                    package = json.loads((cache / "release.json").read_bytes())
+                    self.assertEqual(package["own_fmfs"], self.data["own_fmfs"])
+                    self.assertEqual(package["filename_updates"], self.data["filename_updates"])
+                    for row in self.data["own_fmfs"]:
+                        self.assertEqual((cache / row["payload"]).read_bytes(), baseline[row["name"]])
+                        self.assertEqual(cli.canonical_content(self.data, row["name"], installed[row["name"]]), baseline[row["name"]])
+                    plan = backend.installation_plan(cache, self.user, cli.sha(manifest), self.game)
+                    self.assertEqual(plan["after_owned"], {name: cli.sha(raw) for name, raw in baseline.items()})
+                    self.assertTrue(all(r["action"] == "keep" for r in plan["actions"] if r["name"] in baseline))
+                    unchanged = snapshot(self.base)
+                    for command, mode in (("new", "initialise"), ("continue", "cold")):
+                        result = self.invoke(command, "--dry-run")
+                        self.assertEqual(result[0], 0, result)
+                        self.assertEqual(backend.launch_plan(cache, self.game, self.user, mode, cli.sha(manifest))["library_injected"], command == "new")
+                    self.assertEqual(unchanged, snapshot(self.base))
+                    self.assertEqual(user, snapshot(self.user))
+                    self.assertEqual(project, snapshot(self.root))
+                    self.assertEqual(game, snapshot(self.game))
+                    self.assertEqual(receipt, state.read_bytes())
+                    shutil.rmtree(cache)  # Rebuild each case, including normalization from retitled sources.
+        self.process.assert_not_called()
+
+    def test_partial_internal_title_updates_block_launch_until_organizing_finishes(self):
+        _, desired = self.synthetic_filename_updates()
+        cache = self.prepared()
+        backend, _, _, manifest, _ = cli.context(self.root)
+        self.use_aliases()
+        name = self.data["own_fmfs"][0]["name"]
+        self.alias().write_bytes(desired[name])
+        before = snapshot(self.base)
+        for command in (("doctor",), ("new",), ("continue",)):
+            result = self.invoke(*command)
+            self.assertEqual(result[0], 1, result)
+            self.assertIn("Mixed internal archive titles", result[2])
+        for mode in ("initialise", "cold"):
+            with self.assertRaisesRegex(ValueError, "internal-title set"):
+                backend.launch_plan(cache, self.game, self.user, mode, cli.sha(manifest))
+        self.assertEqual(before, snapshot(self.base))
+        self.process.assert_not_called()
+        self.process.side_effect = None
+        self.process.return_value = subprocess.CompletedProcess([], 1)
+        self.assertEqual(self.invoke("organize")[0], 0)
+        self.assertEqual(self.invoke("doctor")[0], 0)
+
+    def test_archive_metadata_policy_refuses_malformed_or_incomplete_pins(self):
+        self.synthetic_filename_updates()
+        valid = copy.deepcopy(self.data["filename_updates"])
+        name = self.data["own_fmfs"][0]["name"]
+        invalid = [None, [], {k: v for k, v in valid.items() if k != name}, dict(valid, unknown=valid[name])]
+        for field, value in (("before_sha256", "0" * 64), ("before_bytes", valid[name]["before_bytes"] + 1),
+                             ("after_sha256", "invalid"), ("offset", 0), ("offset", True),
+                             ("offset", valid[name]["before_bytes"]), ("after_bytes", True),
+                             ("after_bytes", valid[name]["after_bytes"] + 1),
+                             ("before_tail_hex", "zz"), ("after_tail_hex", ""),
+                             ("after_tail_hex", "00" * 65537)):
+            changed = copy.deepcopy(valid)
+            changed[name][field] = value
+            invalid.append(changed)
+        backend = cli.context(self.root)[0]
+        for index, updates in enumerate(invalid):
+            with self.subTest(case=index):
+                self.data["filename_updates"] = updates
+                self.seal()
+                before = snapshot(self.base)
+                with self.assertRaises(ValueError):
+                    backend.validate_policy(self.data)
+                for command in ("doctor", "prepare", "organize"):
+                    result = self.invoke(command)
+                    self.assertEqual(result[0], 1, result)
+                self.assertEqual(before, snapshot(self.base))
+        self.process.assert_not_called()
+
+    def test_archive_metadata_tampered_bytes_and_well_formed_pins_are_refused(self):
+        baseline, desired = self.synthetic_filename_updates()
+        self.use_aliases()
+        name = self.data["own_fmfs"][0]["name"]
+        valid = copy.deepcopy(self.data["filename_updates"])
+        changed_prefix = bytes([desired[name][0] ^ 1]) + desired[name][1:]
+        cases = (("baseline payload", bytes([baseline[name][0] ^ 1]) + baseline[name][1:]),
+                 ("retitled payload", changed_prefix), ("retitled trailer", desired[name][:-1] + b"!"),
+                 ("after digest", desired[name]), ("before trailer", desired[name]),
+                 ("after trailer", desired[name]), ("forged payload digest", changed_prefix))
+        for issue, raw in cases:
+            with self.subTest(issue=issue):
+                self.data["filename_updates"] = copy.deepcopy(valid)
+                update = self.data["filename_updates"][name]
+                if issue == "after digest":
+                    update["after_sha256"] = "0" * 64
+                elif issue in {"before trailer", "after trailer"}:
+                    field = "before_tail_hex" if issue == "before trailer" else "after_tail_hex"
+                    update[field] = "00" + update[field][2:]
+                elif issue == "forged payload digest":
+                    update["after_sha256"] = cli.sha(raw)
+                self.alias().write_bytes(raw)
+                self.seal()
+                cli.context(self.root)[0].validate_policy(self.data)
+                before = snapshot(self.base)
+                with self.assertRaises(cli.Refusal):
+                    cli.payload_content(self.data, self.alias(), self.declared[self.data["own_fmfs"][0]["payload"]])
+                for command in ("doctor", "prepare", "organize", "new", "continue"):
+                    result = self.invoke(command)
+                    self.assertEqual(result[0], 1, result)
+                self.assertEqual(before, snapshot(self.base))
+        self.process.assert_not_called()
+
+    def test_archive_metadata_rolls_back_link_replace_and_staging_process_failures(self):
+        for operation in ("link", "replace", "busy after staging"):
+            with self.subTest(operation=operation):
+                baseline, desired = self.synthetic_filename_updates()
+                self.ownership_state()
+                if operation != "link":
+                    self.use_aliases()
+                user, project, game = snapshot(self.user), snapshot(self.root), snapshot(self.game)
+                previous = set(self.cache().parent.glob("renamed-files-*/receipt.json"))
+                self.process.side_effect = None
+                self.process.return_value = subprocess.CompletedProcess([], 1)
+                calls = 0
+                if operation == "busy after staging":
+                    self.process.side_effect = [subprocess.CompletedProcess([], 1), subprocess.CompletedProcess([], 0)]
+                    result = self.invoke("organize")
+                else:
+                    original = getattr(cli.os, operation)
+
+                    def fail_third(source, destination, *args, **kwargs):
+                        nonlocal calls
+                        if Path(destination).parent == self.user / "editor data" and Path(source).name in baseline:
+                            calls += 1
+                            if calls == 3:
+                                self.assertEqual(self.alias().read_bytes(), desired[self.data["own_fmfs"][0]["name"]])
+                                raise OSError("injected archive replacement failure")
+                        return original(source, destination, *args, **kwargs)
+
+                    with mock.patch.object(cli.os, operation, side_effect=fail_third):
+                        result = self.invoke("organize")
+                    self.assertEqual(calls, 3)
+                self.assertEqual(result[0], 1, result)
+                self.assertEqual(self.process.call_count, 2)
+                self.process.reset_mock()
+                actual = snapshot(self.user)
+                for index, row in enumerate(self.data["own_fmfs"]):
+                    path = self.owned(index) if operation == "link" else self.alias(index)
+                    self.assertEqual(path.read_bytes(), baseline[row["name"]])
+                    key = path.relative_to(self.user).as_posix()
+                    self.assertEqual(actual[key][0], user[key][0])
+                    # Replacement restores the original bytes and mode; mtimes may change.
+                    actual[key] = user[key]
+                user.pop("editor data")
+                actual.pop("editor data")
+                self.assertEqual(user, actual)
+                self.assertEqual(project, snapshot(self.root))
+                self.assertEqual(game, snapshot(self.game))
+                records = set(self.cache().parent.glob("renamed-files-*/receipt.json")) - previous
+                self.assertEqual(len(records), 1)
+                record = records.pop()
+                self.assertEqual(json.loads(record.read_bytes())["status"], "ROLLED_BACK")
+                for name in baseline:
+                    self.assertEqual((record.parent / "backup" / name).read_bytes(), baseline[name])
+
+    def assert_alias_policy_refused(self, aliases):
+        backend = cli.context(self.root)[0]
+        original = self.data["filename_aliases"]
+        self.data["filename_aliases"] = aliases
+        try:
+            self.seal()
+            before = snapshot(self.base)
+            with self.assertRaises(ValueError):
+                backend.validate_policy(self.data)
+            result = self.invoke("doctor")
+            self.assertEqual(result[0], 1, result)
+            self.assertEqual(before, snapshot(self.base))
+            self.process.assert_not_called()
+        finally:
+            self.data["filename_aliases"] = original
+            self.seal()
+
+    def test_filename_alias_reference_is_complete_and_numbered_by_canonical_name(self):
+        aliases = self.data["filename_aliases"]
+        names = {row["name"] for row in self.data["own_fmfs"]}
+        self.assertEqual(len(aliases), 51)
+        self.assertEqual(set(aliases), names)
+        self.assertEqual(len({alias.casefold() for alias in aliases.values()}), 51)
+        for number, name in enumerate(sorted(names), 1):
+            self.assertRegex(aliases[name], rf"^ReSeason 2026-27 - {number:02d} - [A-Za-z0-9].+\.fmf$")
+        for row in self.data["own_fmfs"]:
+            self.assertEqual(row["payload"], "payload/editor data/" + row["name"])
+            self.assertNotIn("payload/editor data/" + aliases[row["name"]], self.declared)
+        cli.context(self.root)[0].validate_policy(self.data)
+        self.process.assert_not_called()
+
+    def test_filename_aliases_are_optional_for_legacy_canonical_installs(self):
+        del self.data["filename_aliases"]
+        self.seal()
+        self.assertEqual(self.invoke("doctor")[0], 0)
+        self.prepared()
+        before = snapshot(self.base)
+        for command in ("new", "continue"):
+            result = self.invoke(command, "--dry-run")
+            self.assertEqual(result[0], 0, result)
+        self.assertEqual(before, snapshot(self.base))
+        self.process.assert_not_called()
+
+    def test_filename_alias_policy_rejects_invalid_or_incomplete_mappings(self):
+        aliases = self.data["filename_aliases"]
+        first, second = sorted(aliases)[:2]
+        incomplete = {name: alias for name, alias in aliases.items() if name != first}
+        unknown = dict(aliases, unknown=aliases[first])
+        swapped = dict(aliases)
+        swapped[first], swapped[second] = swapped[second], swapped[first]
+        for invalid in (None, [], "not a mapping", incomplete, unknown, swapped,
+                        dict(aliases, **{first: 42})):
+            with self.subTest(aliases=invalid):
+                self.assert_alias_policy_refused(invalid)
+
+    def test_filename_alias_policy_rejects_unsafe_or_colliding_basenames(self):
+        aliases = self.data["filename_aliases"]
+        first, second = sorted(aliases)[:2]
+        for value in ("../outside.fmf", "/outside.fmf", "nested/inside.fmf", "a\\b.fmf",
+                      "a:b.fmf", "bad\x00.fmf", "ReSeason 2026-27 - 01 - bad\nname.fmf",
+                      first, self.data["external_basic"][0]["name"],
+                      aliases[second], aliases[second].swapcase()):
+            with self.subTest(alias=value):
+                invalid = dict(aliases)
+                invalid[first] = value
+                self.assert_alias_policy_refused(invalid)
+
+    def test_mixed_names_resolve_individually_but_wrapper_and_backend_refuse_launch(self):
+        cache = self.prepared()
+        backend, _, _, manifest, _ = cli.context(self.root)
+        self.use_aliases(self.data["own_fmfs"][:1])
+        self.assertEqual(cli.installed_path(self.data, self.user, self.data["own_fmfs"][0]["name"]), self.alias())
+        self.assertEqual(cli.installed_path(self.data, self.user, self.data["own_fmfs"][1]["name"]), self.owned(1))
+        before = snapshot(self.base)
+        for command in (("doctor",), ("prepare",), ("new",), ("continue",),
+                        ("new", "--dry-run"), ("continue", "--dry-run")):
+            result = self.invoke(*command)
+            self.assertEqual(result[0], 1, result)
+            self.assertIn("Mixed filename conventions", result[2])
+        for mode in ("initialise", "cold"):
+            with self.assertRaisesRegex(ValueError, "complete filename set"):
+                backend.launch_plan(cache, self.game, self.user, mode, cli.sha(manifest))
+        self.assertEqual(before, snapshot(self.base))
+        self.process.assert_not_called()
+
+    def test_prepare_from_aliases_keeps_canonical_payloads_and_ownership(self):
+        self.ownership_state()
+        self.use_aliases()
+        before, game = snapshot(self.user), snapshot(self.game)
+        result = self.invoke("doctor")
+        self.assertEqual(result[0], 0, result)
+        self.assertIn("51/51 exact", result[1])
+        self.assertIn("53/53 exact", result[1])
+        self.assertIn("Extra editor FMFs: 0.", result[1])
+        cache = self.prepared()
+        package = json.loads((cache / "release.json").read_bytes())
+        self.assertEqual(package["own_fmfs"], self.data["own_fmfs"])
+        self.assertEqual(package["filename_aliases"], self.data["filename_aliases"])
+        for index, row in enumerate(self.data["own_fmfs"]):
+            self.assertEqual(cli.installed_path(self.data, self.user, row["name"]), self.alias(index))
+            self.assertEqual((cache / row["payload"]).read_bytes(), self.alias(index).read_bytes())
+            self.assertFalse((cache / "payload/editor data" / self.alias(index).name).exists())
+        self.assertEqual(before, snapshot(self.user))
+        self.assertEqual(game, snapshot(self.game))
+        self.process.assert_not_called()
+
+    def test_real_new_and_continue_launch_from_aliases_with_canonical_ownership(self):
+        state = self.ownership_state()
+        self.use_aliases()
+        installed, saves, game, receipt = (snapshot(self.user / "editor data"),
+                                          snapshot(self.user / "games"), snapshot(self.game), state.read_bytes())
+        self.process.side_effect = lambda command, **kwargs: subprocess.CompletedProcess(command, 1 if command[0] == "pgrep" else 0)
+        for command in ("new", "continue"):
+            result = self.invoke(command)
+            self.assertEqual(result[0], 0, result)
+            actual = self.process.call_args.args[0]
+            self.assertEqual(actual[:2], ["open", "-n"])
+            environment = dict(actual[i + 1].split("=", 1)
+                               for i, value in enumerate(actual[:-1]) if value == "--env")
+            self.assertEqual(bool(environment["DYLD_INSERT_LIBRARIES"]), command == "new")
+        backend, _, _, manifest, _ = cli.context(self.root)
+        plan = backend.installation_plan(self.cache(), self.user, cli.sha(manifest), self.game)
+        expected = {row["name"]: row["sha256"] for row in self.data["own_fmfs"]}
+        self.assertEqual(plan["after_owned"], expected)
+        self.assertTrue(all(row["action"] == "keep" for row in plan["actions"] if row["name"] in expected))
+        self.assertEqual(receipt, state.read_bytes())
+        self.assertEqual(installed, snapshot(self.user / "editor data"))
+        self.assertEqual(saves, snapshot(self.user / "games"))
+        self.assertEqual(game, snapshot(self.game))
+
+    def test_both_names_refuse_in_wrapper_and_backend_even_for_identical_content(self):
+        cache = self.prepared()
+        backend, _, _, manifest, _ = cli.context(self.root)
+        self.alias().write_bytes(self.owned().read_bytes())
+        before = snapshot(self.base)
+        for command in (("doctor",), ("prepare",), ("organize",), ("new",), ("continue",),
+                        ("new", "--dry-run"), ("continue", "--dry-run")):
+            result = self.invoke(*command)
+            self.assertEqual(result[0], 1, result)
+            self.assertIn("Both original and readable", result[2])
+        for mode in ("initialise", "cold"):
+            with self.assertRaisesRegex(ValueError, "Both canonical and readable"):
+                backend.launch_plan(cache, self.game, self.user, mode, cli.sha(manifest))
+        self.assertEqual(before, snapshot(self.base))
+        self.process.assert_not_called()
+
+    def test_alias_symlinks_and_mismatched_bytes_are_refused_without_writes(self):
+        self.use_aliases()
+        original = self.alias().read_bytes()
+        self.alias().write_bytes(b"wrong readable variant")
+        before = snapshot(self.base)
+        for command in ("prepare", "organize"):
+            result = self.invoke(command)
+            self.assertEqual(result[0], 1, result)
+            self.assertIn("1 mismatched", result[1])
+            self.assertEqual(before, snapshot(self.base))
+        self.alias().unlink()
+        external = self.base / "external synthetic alias"
+        external.write_bytes(original)
+        self.alias().symlink_to(external)
+        before = snapshot(self.base)
+        for command in ("doctor", "prepare", "organize"):
+            result = self.invoke(command)
+            self.assertEqual(result[0], 1, result)
+            self.assertIn("Symlink refused", result[2])
+            self.assertEqual(before, snapshot(self.base))
+        self.process.assert_not_called()
+
+    def test_organize_preserves_inodes_and_noncustom_files_and_is_idempotent(self):
+        self.ownership_state()
+        project, game, user = snapshot(self.root), snapshot(self.game), snapshot(self.user)
+        inodes = {row["name"]: self.owned(index).stat().st_ino
+                  for index, row in enumerate(self.data["own_fmfs"])}
+        self.process.side_effect = None
+        self.process.return_value = subprocess.CompletedProcess([], 1)
+        with mock.patch.object(cli.os, "link", wraps=os.link) as link:
+            result = self.invoke("organize")
+            self.assertEqual(result[0], 0, result)
+            self.assertEqual(link.call_count, 51)
+            expected = dict(user)
+            for index, row in enumerate(self.data["own_fmfs"]):
+                self.assertFalse(self.owned(index).exists())
+                self.assertEqual(self.alias(index).stat().st_ino, inodes[row["name"]])
+                expected["editor data/" + self.alias(index).name] = expected.pop("editor data/" + row["name"])
+            actual = snapshot(self.user)
+            # Adding/removing directory entries changes only the editor folder timestamp.
+            expected.pop("editor data")
+            actual.pop("editor data")
+            self.assertEqual(expected, actual)
+            self.assertEqual(project, snapshot(self.root))
+            self.assertEqual(game, snapshot(self.game))
+            records = list(self.cache().parent.glob("renamed-files-*/receipt.json"))
+            self.assertEqual(len(records), 1)
+            self.assertFalse(records[0].is_relative_to(self.user))
+            self.assertEqual(stat.S_IMODE(records[0].stat().st_mode), 0o600)
+            receipt = json.loads(records[0].read_bytes())
+            self.assertEqual(receipt["status"], "COMPLETED")
+            self.assertEqual({row["original"]: row["readable"] for row in receipt["files"]}, self.data["filename_aliases"])
+            self.assertEqual({row["original"]: row["sha256"] for row in receipt["files"]},
+                             {row["name"]: row["sha256"] for row in self.data["own_fmfs"]})
+            before = snapshot(self.base)
+            link.reset_mock()
+            result = self.invoke("organize")
+            self.assertEqual(result[0], 0, result)
+            self.assertIn("already use readable names", result[1])
+            self.assertEqual(before, snapshot(self.base))
+            link.assert_not_called()
+        self.assertTrue(all(call.args[0] == ["pgrep", "-x", "fm"] for call in self.process.call_args_list))
+
+    def test_organize_completes_a_partial_alias_migration_without_ownership_receipt(self):
+        self.use_aliases(self.data["own_fmfs"][:1])
+        first = self.alias().stat().st_ino
+        self.process.side_effect = None
+        self.process.return_value = subprocess.CompletedProcess([], 1)
+        result = self.invoke("organize")
+        self.assertEqual(result[0], 0, result)
+        self.assertIn("Organized 50", result[1])
+        self.assertEqual(self.alias().stat().st_ino, first)
+        self.assertTrue(all(self.alias(index).is_file() and not self.owned(index).exists() for index in range(51)))
+        self.assertFalse((self.user / "FM24-History-Community/owned_state.json").exists())
+        self.assertEqual(self.invoke("doctor")[0], 0)
+
+    def test_organize_refuses_missing_mismatched_or_occupied_files_without_writes(self):
+        original = self.owned().read_bytes()
+        for issue in ("missing", "mismatched", "occupied"):
+            with self.subTest(issue=issue):
+                if issue == "missing":
+                    self.owned().unlink()
+                elif issue == "mismatched":
+                    self.owned().write_bytes(b"unknown original variant")
+                else:
+                    self.alias().write_bytes(b"occupied destination; never overwrite")
+                before = snapshot(self.base)
+                with mock.patch.object(cli.os, "link", wraps=os.link) as link:
+                    result = self.invoke("organize")
+                    self.assertEqual(result[0], 1, result)
+                    link.assert_not_called()
+                self.assertEqual(before, snapshot(self.base))
+                if issue == "occupied":
+                    self.alias().unlink()
+                self.owned().write_bytes(original)
+        self.process.assert_not_called()
+
+    def test_organize_busy_or_failed_process_checks_preserve_snapshot(self):
+        before = snapshot(self.base)
+        for outcome in (0, 2, OSError("synthetic process failure"), subprocess.SubprocessError("synthetic failure")):
+            with self.subTest(outcome=outcome), mock.patch.object(cli.os, "link", wraps=os.link) as link:
+                self.process.reset_mock()
+                self.process.side_effect = outcome if isinstance(outcome, Exception) else None
+                self.process.return_value = subprocess.CompletedProcess([], outcome if isinstance(outcome, int) else 1)
+                result = self.invoke("organize")
+                self.assertEqual(result[0], 1, result)
+                self.assertEqual(before, snapshot(self.base))
+                self.process.assert_called_once_with(["pgrep", "-x", "fm"], capture_output=True)
+                link.assert_not_called()
+
+    def test_organize_rolls_back_injected_link_and_unlink_failures(self):
+        self.ownership_state()
+        self.process.side_effect = None
+        self.process.return_value = subprocess.CompletedProcess([], 1)
+        for operation in ("link", "unlink"):
+            with self.subTest(operation=operation):
+                original = getattr(cli.os, operation)
+                calls = 0
+                user, project, game = snapshot(self.user), snapshot(self.root), snapshot(self.game)
+                inodes = [self.owned(index).stat().st_ino for index in range(51)]
+
+                def fail_third(source, *args, **kwargs):
+                    nonlocal calls
+                    source = Path(source)
+                    if source.parent == self.user / "editor data" and source.name in self.data["filename_aliases"]:
+                        calls += 1
+                        if calls == 3:
+                            raise OSError("injected synthetic filename operation failure")
+                    return original(source, *args, **kwargs)
+
+                with mock.patch.object(cli.os, operation, side_effect=fail_third):
+                    result = self.invoke("organize")
+                self.assertEqual(result[0], 1, result)
+                self.assertGreaterEqual(calls, 3)
+                actual = snapshot(self.user)
+                user.pop("editor data")
+                actual.pop("editor data")
+                self.assertEqual(user, actual)
+                self.assertEqual(project, snapshot(self.root))
+                self.assertEqual(game, snapshot(self.game))
+                self.assertEqual(inodes, [self.owned(index).stat().st_ino for index in range(51)])
+                receipts = list(self.cache().parent.glob("renamed-files-*/receipt.json"))
+                self.assertTrue(receipts)
+                self.assertTrue(all(json.loads(record.read_bytes())["status"] == "ROLLED_BACK" for record in receipts))
+
+    def test_legacy_cache_without_alias_metadata_is_preserved_after_files_are_renamed(self):
+        legacy = self.legacy_cache()
+        old_cache = next(legacy.iterdir())
+        manifest = json.loads((old_cache / "release.json").read_bytes())
+        del manifest["filename_aliases"]
+        self.reseal_cache(old_cache, manifest)
+        previous = snapshot(legacy)
+        self.use_aliases()
+        installed = snapshot(self.user / "editor data")
+        self.process.side_effect = None
+        self.process.return_value = subprocess.CompletedProcess([], 1)
+        result = self.invoke("prepare")
+        self.assertEqual(result[0], 0, result)
+        archives = list(self.cache().parent.glob("preserved-legacy-*/ReSeason"))
+        self.assertEqual(len(archives), 1)
+        self.assertEqual(previous, snapshot(archives[0]))
+        self.assertFalse(legacy.exists())
+        self.assertEqual(installed, snapshot(self.user / "editor data"))
 
     def test_doctor_is_read_only_and_reports_all_counts(self):
         before = snapshot(self.base)
@@ -1151,18 +1739,18 @@ class ReSeasonTests(unittest.TestCase):
             self.assertEqual(before, snapshot(self.base))
 
     def test_source_change_during_prepare_cleans_only_new_staging_directory(self):
-        original = cli.read
+        original = cli.payload_content
         changed = False
 
-        def read_with_mutation(path, expected=None):
+        def read_with_mutation(data, path, expected):
             nonlocal changed
-            content = original(path, expected)
-            if Path(path) == self.owned() and expected is not None and not changed:
+            content = original(data, path, expected)
+            if Path(path) == self.owned() and not changed:
                 changed = True
                 self.owned().write_bytes(b"changed concurrently by synthetic fixture")
             return content
 
-        with mock.patch.object(cli, "read", side_effect=read_with_mutation):
+        with mock.patch.object(cli, "payload_content", side_effect=read_with_mutation):
             result = self.invoke("prepare")
         self.assertEqual(result[0], 1)
         self.assertFalse(self.cache().exists())

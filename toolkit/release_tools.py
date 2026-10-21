@@ -108,6 +108,33 @@ def validate_policy(data):
         require(row['payload'] == 'payload/editor data/' + row['name'], 'Owned payload path differs from basename')
         require(row['payload'] in declared and declared[row['payload']]['sha256'] == row['sha256'], 'Unpinned FMF payload')
         require(all(SHA.fullmatch(s) for s in row.get('previous_sha256', [])), 'Invalid prior owned SHA')
+    aliases = data.get('filename_aliases', {})
+    require(isinstance(aliases, dict) and all(isinstance(n, str) for n in aliases.values()),
+            'Invalid filename alias catalogue')
+    if aliases:
+        require(set(aliases) == set(current), 'Filename aliases must cover exactly the owned FMFs')
+        ordered = [aliases[name] for name in sorted(current)]
+        require(len({name.casefold() for name in ordered}) == len(ordered), 'Duplicate filename alias')
+        for number, name in enumerate(ordered, 1):
+            require(isinstance(name, str) and re.fullmatch(
+                rf"ReSeason 2026-27 - {number:02d} - [A-Za-z0-9][A-Za-z0-9 .()+'-]*\.fmf", name),
+                'Invalid filename alias or changed alphabetical order')
+        require(not {name.casefold() for name in ordered} & names, 'Filename alias overlaps canonical names')
+    updates = data.get('filename_updates', {})
+    require(isinstance(updates, dict), 'Invalid filename metadata catalogue')
+    if updates:
+        require(aliases and set(updates) == set(current), 'Filename metadata must cover the owned aliases')
+        for name, update in updates.items():
+            original = declared[current[name]['payload']]
+            require(update['before_sha256'] == original['sha256'] and update['before_bytes'] == original['bytes'],
+                    'Filename metadata differs from canonical payload pin')
+            require(SHA.fullmatch(update['after_sha256']) and type(update['offset']) is int and
+                    0 < update['offset'] < update['before_bytes'] and type(update['after_bytes']) is int,
+                    'Invalid filename metadata bounds or digest')
+            for side in ('before', 'after'):
+                tail = bytes.fromhex(update[side + '_tail_hex'])
+                require(0 < len(tail) <= 65536 and update[side + '_bytes'] == update['offset'] + len(tail),
+                        'Filename metadata trailer size differs')
     for row in data.get('retire_owned', []):
         own_name(row['name'])
         require(row['name'].casefold() not in names and row['allowed_sha256'], 'Retire/current ownership overlap')
@@ -192,6 +219,17 @@ def target_path(user_data, steam_game, row):
     return confined(user_data, 'editor data/' + row['name'])
 
 
+def installed_fmf(data, user_data, name):
+    """Receipts use canonical identities; the installed basename may be readable."""
+    canonical = confined(user_data, 'editor data/' + name)
+    alias = data.get('filename_aliases', {}).get(name)
+    if alias is None:
+        return canonical
+    readable = confined(user_data, 'editor data/' + alias)
+    require(not (canonical.exists() and readable.exists()), 'Both canonical and readable copies of one FMF are installed')
+    return readable if readable.exists() else canonical
+
+
 def installation_plan(root, user_data, expected_sha=None, steam_game=None):
     data, seal = package(root, expected_sha)
     user_data = Path(user_data).absolute()
@@ -205,12 +243,15 @@ def installation_plan(root, user_data, expected_sha=None, steam_game=None):
     require(not unaccounted, 'Update omits prior owned files without explicit retire entries: ' + ','.join(sorted(unaccounted)))
     actions = []
     for name, row in new.items():
-        target = confined(user_data, 'editor data/' + name)
+        target = installed_fmf(data, user_data, name)
         require(not target.exists() or target.is_file(), 'Owned destination is not a regular file')
         actual = digest(target) if target.is_file() else None
         allowed = set(row.get('previous_sha256', [])) | {before_owned.get(name)}
-        require(actual in {None, row['sha256']} or actual in allowed, 'Unknown local version at owned filename; pinned previous SHA required: ' + name)
-        kind = 'keep' if actual == row['sha256'] else 'create' if actual is None else 'replace'
+        exact = {row['sha256']}
+        if name in data.get('filename_updates', {}):
+            exact.add(data['filename_updates'][name]['after_sha256'])
+        require(actual in {None} | exact or actual in allowed, 'Unknown local version at owned filename; pinned previous SHA required: ' + name)
+        kind = 'keep' if actual in exact else 'create' if actual is None else 'replace'
         actions.append({'name':name, 'action':kind, 'before_sha256':actual, 'after_sha256':row['sha256'], 'payload':row['payload']})
     for name, row in retired.items():
         target = confined(user_data, 'editor data/' + name)
@@ -325,6 +366,8 @@ def apply_install(root, user_data, expected_sha=None, fault_after=None, steam_ga
     plan = installation_plan(root, user_data, expected_sha,steam_game)
     require(plan['ready'], 'Basic54 source dependencies mismatch/missing or unfinished transaction; no FMFs changed')
     data,_ = package(root,expected_sha)
+    require(not data.get('filename_aliases'),
+            'The legacy write installer does not support filename aliases; use the public manual placement and organize command')
     binary = game_binary(steam_game)
     require(binary.is_file() and digest(binary)==data['game']['executable_sha256'],'Exact supported FM24 executable SHA required before install')
     mutations = [r for r in plan['actions'] if r['action'] in {'create','replace','retire'}]
@@ -388,6 +431,14 @@ def launch_plan(root, steam_game, user_data, mode, expected_sha=None):
     installed = installation_plan(root, user_data, expected_sha,steam_game)
     require(installed['Basic54']['complete'] and not installed['unfinished_transactions'], 'Installation dependencies incomplete')
     require(all(a['action'] in {'keep','absent'} for a in installed['actions']), 'Listed own FMFs not installed at exact release hashes')
+    if data.get('filename_aliases'):
+        readable = sum(installed_fmf(data, user_data, row['name']).name != row['name'] for row in data['own_fmfs'])
+        require(readable in {0, len(data['own_fmfs'])}, 'Finish organizing the complete filename set before launch')
+    if data.get('filename_updates'):
+        updates = data['filename_updates']
+        retitled = sum(action['name'] in updates and action['before_sha256'] == updates[action['name']]['after_sha256']
+                       for action in installed['actions'])
+        require(retitled in {0, len(updates)}, 'Finish organizing the complete internal-title set before launch')
     require(data['module'].get('international6_mode') == 'skip-completed', 'This104 V2 canary requires the exact bounded skip-completed module')
     env = {name:'' for name in ENV_NAMES}
     stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S')

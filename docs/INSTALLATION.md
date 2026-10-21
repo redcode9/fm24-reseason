@@ -15,7 +15,7 @@ Use the [official download pages](DOWNLOADS.md). Compatibility is checked by fil
 ## If you already have the compatible data
 
 1. Quit FM24 completely.
-2. Extract `ReSeason-v0.1.3-Mac-toolkit.zip` and keep the complete folder together. Check the required retention helper below before launching.
+2. Extract `ReSeason-v0.1.4-Mac-toolkit.zip` and keep the complete folder together. Check the required retention helper below before launching.
 3. Open **New Career.command**. It checks the exact data and game build, prepares or verifies its private cache, and launches FM24 with the initialization module. Installed FMFs and saves are preserved.
 4. In FM24 choose **Career → Update 24.3.0 → all 104 compatible editor-data files → Original → Advanced Setup**.
 5. For the tested configuration, load Italy down to Serie D and the top divisions of France, Germany, England, Portugal, and Spain. Choose **10 August 2026**. No game-setup preset is distributed.
@@ -23,6 +23,8 @@ Use the [official download pages](DOWNLOADS.md). Compatibility is checked by fil
 7. Quit FM24 normally. Reopen with **Continue Career.command** and load that save. This checks and prepares the same installation automatically, then starts without the initialization module.
 
 **Check Setup.command** is an optional read-only diagnostic. **Prepare ReSeason.command** is optional separate cache preparation. You do not need to run either before a real New Career or Continue Career launch.
+
+For clearer editor-data names, close FM24 and run **Organize Editor Data.command** once. It verifies and updates the 51 custom FMF filenames and internal archive titles. Database-member bytes and the 53 Basic files remain unchanged; whole-archive hashes change. Original archives are backed up outside FM24. The old and new complete naming conventions both work. Keep every required part selected. A mixture of conventions blocks launch until the organizer finishes the set, preserving the previous alphabetical order. See [Editor-data filenames](FILE-NAMES.md) for the full mapping and recovery details.
 
 ### Upgrading from 0.1.0–0.1.2
 

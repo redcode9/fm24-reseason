@@ -110,30 +110,82 @@ def context(root):
     return backend, data, assets, manifest, key
 
 
-def installed_status(data, user_data, steam_game):
+def installed_status(data, user_data, steam_game, *, allow_mixed=False):
     declared = {r["path"]: r for r in data["files"]}
     complete = True
+    updated_titles = 0
     for label, rows in (("Custom FMFs", data["own_fmfs"]), ("Basic FMFs", data["external_basic"])):
         missing = mismatch = 0
         for row in rows:
-            path = guarded(user_data / "editor data" / relative(row["name"]))
+            path = installed_path(data, user_data, row["name"])
             expected = declared[row["payload"]] if "payload" in row else row
             if not path.exists():
                 missing += 1
-            elif not path.is_file() or pin("", read(path))["sha256"] != expected["sha256"] or path.stat().st_size != expected["bytes"]:
+            elif not path.is_file():
                 mismatch += 1
+            else:
+                raw = read(path)
+                update = data.get("filename_updates", {}).get(row["name"])
+                updated_titles += bool(update and sha(raw) == update["after_sha256"])
+                content = canonical_content(data, row["name"], raw)
+                if sha(content) != expected["sha256"] or len(content) != expected["bytes"]:
+                    mismatch += 1
         print(f"{label}: {len(rows) - missing - mismatch}/{len(rows)} exact; {missing} missing; {mismatch} mismatched.")
         complete &= not (missing or mismatch)
+    if data.get("filename_aliases"):
+        readable = sum(installed_path(data, user_data, row["name"]).name != row["name"]
+                       for row in data["own_fmfs"])
+        print(f"Readable custom filenames: {readable}/{len(data['own_fmfs'])}.")
+        require(allow_mixed or readable in {0, len(data["own_fmfs"])},
+                "Mixed filename conventions; close FM24 and run organize to finish the complete set.")
+    if data.get("filename_updates"):
+        print(f"Readable internal archive titles: {updated_titles}/{len(data['own_fmfs'])}.")
+        require(allow_mixed or not complete or updated_titles in {0, len(data["own_fmfs"])},
+                "Mixed internal archive titles; close FM24 and run organize to finish the complete set.")
     binary = guarded(steam_game / "fm.app/Contents/MacOS/fm")
     game_ok = binary.is_file() and sha(read(binary)) == data["game"]["executable_sha256"]
     print("Supported executable SHA: " + ("match." if game_ok else "missing or mismatched."))
     expected_names = {row["name"] for row in data["own_fmfs"] + data["external_basic"]}
+    expected_names.update(data.get("filename_aliases", {}).values())
     editor = guarded(user_data / "editor data")
     extra = sum(p.suffix.casefold() == ".fmf" and p.name not in expected_names
                 for p in editor.iterdir()) if editor.is_dir() else 0
     print(f"Extra editor FMFs: {extra}.")
     require(not extra, "Extra editor FMFs conflict with the exact 104-file selection; existing files preserved.")
     return complete and game_ok
+
+
+def installed_path(data, user_data, name):
+    canonical = guarded(user_data / "editor data" / relative(name))
+    alias = data.get("filename_aliases", {}).get(name)
+    if alias is None:
+        return canonical
+    readable = guarded(user_data / "editor data" / relative(alias))
+    require(not (canonical.exists() and readable.exists()),
+            "Both original and readable names exist for one FMF; duplicate copies preserved, launch refused.")
+    return readable if readable.exists() else canonical
+
+
+def canonical_content(data, name, content):
+    """Normalize the pinned archive-directory change; database members stay verbatim."""
+    update = data.get("filename_updates", {}).get(name)
+    if update and sha(content) == update["after_sha256"]:
+        offset = update["offset"]
+        require(len(content) == update["after_bytes"] and
+                content[offset:] == bytes.fromhex(update["after_tail_hex"]), "Filename metadata differs.")
+        content = content[:offset] + bytes.fromhex(update["before_tail_hex"])
+        require(len(content) == update["before_bytes"] and sha(content) == update["before_sha256"],
+                "Filename metadata changed database payload bytes.")
+    return content
+
+
+def payload_content(data, source, expected):
+    content = read(source)
+    if expected["path"].startswith("payload/editor data/"):
+        content = canonical_content(data, Path(expected["path"]).name, content)
+    require(len(content) == expected["bytes"] and sha(content) == expected["sha256"],
+            "File SHA or size mismatch; nothing was installed.")
+    return content
 
 
 def cache_path(root, user_data, key):
@@ -181,7 +233,7 @@ def migrate_legacy(ctx, root, user_data):
     entries = list(legacy.iterdir())
     require(bool(entries), "Unknown empty legacy ReSeason folder; existing files preserved.")
     allowed = set(assets) | {r["payload"] for r in data["own_fmfs"]}
-    reference = {k: v for k, v in data.items() if k != "files"}
+    reference = {k: v for k, v in data.items() if k not in {"files", "filename_aliases", "filename_updates"}}
     identities = {}
     for entry in entries:
         guarded(entry)
@@ -189,7 +241,7 @@ def migrate_legacy(ctx, root, user_data):
                 "Unrecognized legacy cache entry; existing files preserved.")
         raw = read(entry / "release.json")
         previous = json.loads(raw)
-        require({k: v for k, v in previous.items() if k != "files"} == reference and
+        require({k: v for k, v in previous.items() if k not in {"files", "filename_aliases", "filename_updates"}} == reference and
                 all(r["path"] in allowed for r in previous["files"]),
                 "Unrecognized legacy cache manifest; existing files preserved.")
         verify_cache(backend, entry, raw)
@@ -286,19 +338,19 @@ def prepare(ctx, root, user_data, steam_game):
     stage = Path(tempfile.mkdtemp(prefix=".prepare-", dir=cache.parent))
     try:
         sources = dict(assets)
-        sources.update((r["payload"], (user_data / "editor data" / r["name"], None)) for r in data["own_fmfs"])
+        sources.update((r["payload"], (installed_path(data, user_data, r["name"]), None)) for r in data["own_fmfs"])
         for row in json.loads(manifest)["files"]:
             source, _ = sources[row["path"]]
             destination = guarded(stage / row["path"])
             destination.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
             with destination.open("xb") as handle:
-                handle.write(read(source, row))
+                handle.write(payload_content(data, source, row))
         (stage / "release.json").write_bytes(manifest)
         (stage / "RELEASE_MANIFEST.sha256").write_text(sha(manifest) + "\n")
         verify_cache(backend, stage, manifest)
         require(installed_status(data, user_data, steam_game), "Installed data changed during prepare.")
         for row in json.loads(manifest)["files"]:
-            read(sources[row["path"]][0], row)
+            payload_content(data, sources[row["path"]][0], row)
         require(context(root)[4] == key, "Public inputs changed during prepare; retry with stable inputs.")
         require(not guarded(cache).exists(), "Cache appeared during prepare; existing files preserved.")
         cache.mkdir(mode=0o700)  # Exclusively reserve a NEW destination; never replace a pre-existing directory.
@@ -307,6 +359,163 @@ def prepare(ctx, root, user_data, steam_game):
         if stage.exists():
             shutil.rmtree(guarded(stage))
     print("Private cache verified and prepared outside FM24 user data. Never publish this cache.")
+
+
+def organize_filenames(ctx, root, user_data, steam_game):
+    """Rename exact custom FMFs only; retain canonical receipt identities."""
+    if ctx[1].get("filename_updates"):
+        return organize_archive_names(ctx, root, user_data, steam_game)
+    backend, data, _, _, key = ctx
+    require(bool(data.get("filename_aliases")), "This package has no readable filename catalogue.")
+    require(subprocess.run(["pgrep", "-x", "fm"], capture_output=True).returncode == 1,
+            "FM must be closed before organizing filenames.")
+    migrate_legacy(ctx, root, user_data)
+    migrate_transactions(ctx, root, user_data)
+    require(installed_status(data, user_data, steam_game, allow_mixed=True), "Installed data changed before organizing filenames.")
+    declared = {r["path"]: r for r in data["files"]}
+    actions = []
+    for row in sorted(data["own_fmfs"], key=lambda r: r["name"]):
+        source = installed_path(data, user_data, row["name"])
+        destination = guarded(user_data / "editor data" / data["filename_aliases"][row["name"]])
+        read(source, declared[row["payload"]])
+        if source != destination:
+            require(not destination.exists(), "Readable filename is occupied; existing files preserved.")
+            actions.append((source, destination, declared[row["payload"]]))
+    if not actions:
+        print("All 51 custom FMFs already use readable names; no files changed.")
+        return
+    parent = cache_path(root, user_data, key).parent
+    directory(parent, private=True)
+    folder = guarded(parent / ("renamed-files-" + str(uuid.uuid4())))
+    folder.mkdir(mode=0o700)
+    receipt = {"schema": 1, "status": "PREPARED", "files": [
+        {"original": a.name, "readable": b.name, "sha256": expected["sha256"]}
+        for a, b, expected in actions]}
+    record = folder / "receipt.json"
+    record.write_bytes(backend.encoded(receipt))
+    record.chmod(0o600)
+    linked = []
+    try:
+        for source, destination, expected in actions:
+            read(source, expected)
+            # Exclusive creation preserves an occupied destination. Both paths
+            # refer to the same inode until the old directory entry is removed.
+            os.link(guarded(source), guarded(destination), follow_symlinks=False)
+            linked.append((source, destination, expected))
+            require(source.samefile(destination), "Filename changed concurrently; organizing stopped.")
+            read(destination, expected)
+            source.unlink()
+        require(installed_status(data, user_data, steam_game), "Installed data changed after organizing filenames.")
+        receipt["status"] = "COMPLETED"
+        record.write_bytes(backend.encoded(receipt))
+    except BaseException:
+        receipt["status"] = "ROLLBACK_REQUIRED"
+        record.write_bytes(backend.encoded(receipt))
+        for source, destination, expected in reversed(linked):
+            read(destination, expected)
+            if not source.exists():
+                os.link(guarded(destination), guarded(source), follow_symlinks=False)
+            require(source.samefile(destination), "Concurrent edit preserved; manual filename recovery required.")
+            destination.unlink()
+        receipt["status"] = "ROLLED_BACK"
+        record.write_bytes(backend.encoded(receipt))
+        raise
+    print(f"Organized {len(actions)} custom FMF filenames; contents, Basic files and canonical receipts unchanged.")
+
+
+def organize_archive_names(ctx, root, user_data, steam_game):
+    """Update only archive-directory names, with complete originals outside FM24."""
+    backend, data, _, _, key = ctx
+    require(subprocess.run(["pgrep", "-x", "fm"], capture_output=True).returncode == 1,
+            "FM must be closed before organizing filenames.")
+    migrate_legacy(ctx, root, user_data)
+    migrate_transactions(ctx, root, user_data)
+    require(installed_status(data, user_data, steam_game, allow_mixed=True), "Installed data changed before organizing filenames.")
+    actions = []
+    for name, update in data["filename_updates"].items():
+        source = installed_path(data, user_data, name)
+        destination = guarded(user_data / "editor data" / data["filename_aliases"][name])
+        before = read(source)
+        original = canonical_content(data, name, before)
+        require(sha(original) == update["before_sha256"], "Unknown source archive; existing files preserved.")
+        after = original[:update["offset"]] + bytes.fromhex(update["after_tail_hex"])
+        require(len(after) == update["after_bytes"] and sha(after) == update["after_sha256"],
+                "Filename metadata patch differs from its pin.")
+        if source != destination or before != after:
+            require(source == destination or not destination.exists(), "Readable filename is occupied.")
+            actions.append((name, source, destination, before, after))
+    if not actions:
+        print("All 51 custom archives already use readable filenames and internal titles; no files changed.")
+        return
+    parent = cache_path(root, user_data, key).parent
+    directory(parent, private=True)
+    folder = guarded(parent / ("renamed-files-" + str(uuid.uuid4())))
+    folder.mkdir(mode=0o700)
+    (folder / "backup").mkdir(mode=0o700)
+    (folder / "stage").mkdir(mode=0o700)
+    receipt = {"schema": 2, "status": "PREPARING", "files": [
+        {"canonical": name, "original": source.name, "readable": destination.name,
+         "before_sha256": sha(before), "after_sha256": sha(after)}
+        for name, source, destination, before, after in actions]}
+    record = folder / "receipt.json"
+    record.write_bytes(backend.encoded(receipt))
+    record.chmod(0o600)
+    applied = []
+    try:
+        for name, source, destination, before, after in actions:
+            require(read(source) == before, "Source changed before organizing archive names.")
+            backup = guarded(folder / "backup" / name)
+            with backup.open("xb") as handle:
+                handle.write(before)
+            backup.chmod(0o600)
+            stage = guarded(folder / "stage" / name)
+            with stage.open("xb") as handle:
+                handle.write(after)
+            stage.chmod(stat.S_IMODE(source.stat().st_mode))
+        receipt["status"] = "PREPARED"
+        record.write_bytes(backend.encoded(receipt))
+        require(subprocess.run(["pgrep", "-x", "fm"], capture_output=True).returncode == 1,
+                "FM opened before organizing archive names; original files preserved.")
+        for action in actions:
+            name, source, destination, before, after = action
+            require(read(source) == before, "Source changed during archive-name update.")
+            stage = guarded(folder / "stage" / name)
+            require(read(stage) == after, "Staged archive changed.")
+            if source == destination:
+                os.replace(stage, guarded(destination))
+                applied.append(action)
+            else:
+                os.link(stage, guarded(destination), follow_symlinks=False)
+                applied.append(action)
+                source.unlink()
+            require(read(destination) == after, "Updated archive differs from the expected bytes.")
+        require(installed_status(data, user_data, steam_game), "Installed data changed after organizing archive names.")
+        receipt["status"] = "COMPLETED"
+        record.write_bytes(backend.encoded(receipt))
+    except BaseException:
+        receipt["status"] = "ROLLBACK_REQUIRED"
+        record.write_bytes(backend.encoded(receipt))
+        for name, source, destination, before, after in reversed(applied):
+            require(read(destination) == after, "Concurrent archive edit preserved; manual recovery required.")
+            if source == destination:
+                restore = guarded(folder / "stage" / (name + ".restore"))
+                require(read(folder / "backup" / name) == before, "Original backup changed; manual recovery required.")
+                with restore.open("xb") as handle:
+                    handle.write(before)
+                restore.chmod(stat.S_IMODE(destination.stat().st_mode))
+                os.replace(restore, destination)
+            else:
+                if source.exists():
+                    require(read(source) == before, "Concurrent source edit preserved; manual recovery required.")
+                else:
+                    with source.open("xb") as handle:
+                        handle.write(before)
+                    source.chmod(stat.S_IMODE(destination.stat().st_mode))
+                destination.unlink()
+        receipt["status"] = "ROLLED_BACK"
+        record.write_bytes(backend.encoded(receipt))
+        raise
+    print(f"Organized {len(actions)} custom archive names and internal titles; database payload bytes unchanged. Originals preserved outside FM24.")
 
 
 def session_plan(plan, user_data, create=False):
@@ -341,7 +550,7 @@ def session_plan(plan, user_data, create=False):
 
 def main(argv=None, *, root=None):
     parser = argparse.ArgumentParser(description=__doc__, epilog=FIRST_USE)
-    parser.add_argument("command", choices=("doctor", "prepare", "new", "continue", "cold"))
+    parser.add_argument("command", choices=("doctor", "prepare", "organize", "new", "continue", "cold"))
     parser.add_argument("--user-data", type=Path, default=Path.home() / "Library/Application Support/Sports Interactive/Football Manager 2024")
     parser.add_argument("--steam-game", type=Path, default=Path.home() / "Library/Application Support/Steam/steamapps/common/Football Manager 2024")
     parser.add_argument("--dry-run", action="store_true", help="Preview new/continue without launching or writing logs.")
@@ -355,7 +564,7 @@ def main(argv=None, *, root=None):
         ctx = context(root)
         backend, data, _, manifest, key = ctx
         print("Reference SHA and public toolkit: verified.")
-        ready = installed_status(data, user_data, steam_game)
+        ready = installed_status(data, user_data, steam_game, allow_mixed=args.command == "organize")
         require(ready, "Required installed data is missing or mismatched. " + FIRST_USE)
         legacy_present = guarded(user_data / "ReSeason").exists()
         print("Legacy private cache inside FM24 user data: " + ("present." if legacy_present else "absent."))
@@ -366,7 +575,9 @@ def main(argv=None, *, root=None):
         print("Legacy installation transactions inside FM24 user data: " + ("present." if backups_present else "absent."))
         require(not backups_present or (args.command != "doctor" and not args.dry_run),
                 "Installer backups inside FM24 user data must be relocated. Close FM24 and run prepare or a real launch; checks remain read-only.")
-        if args.command == "prepare":
+        if args.command == "organize":
+            organize_filenames(ctx, root, user_data, steam_game)
+        elif args.command == "prepare":
             prepare(ctx, root, user_data, steam_game)
         elif args.command != "doctor":
             if not args.dry_run:

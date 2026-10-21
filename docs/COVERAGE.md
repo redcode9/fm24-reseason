@@ -1,8 +1,8 @@
 # Coverage and work in progress
 
-Two separate things are tracked here: the tools actually published in v0.1.3, and the data selection tested during development. This distinction matters when deciding whether you can reproduce the setup.
+Two separate things are tracked here: the tools actually published in v0.1.4, and the data selection tested during development. This distinction matters when deciding whether you can reproduce the setup.
 
-## Published in v0.1.3
+## Published in v0.1.4
 
 - Original setup checker and private-local-cache preparation tools.
 - Manual initial-career and normal-continuation launchers.
@@ -12,6 +12,8 @@ Two separate things are tracked here: the tools actually published in v0.1.3, an
 - English instructions, licensing notices, tests, and the original project logo.
 
 The public archive includes **zero FMFs**. The original game, database dumps, research extracts, third-party mods, saves, and private development material are excluded.
+
+The 0.1.4 filename organizer passed actual startup and the new-career editor-data selection screen, showing readable titles and 104 enabled files out of 104. Its archive-directory patches preserve all 153 stored member payloads. A new career using the relabeled archives has not yet been qualified; the gameplay evidence below predates this naming change.
 
 ## Reference data tested locally
 

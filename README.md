@@ -7,9 +7,9 @@
 
 ReSeason is a work-in-progress season overhaul for **Football Manager 2024**: a 2026/27 start, player histories, award winners, competition honours, updated profiles, and league rules.
 
-**v0.1.3 publishes the tools and compatibility information. It does not bundle the database files.** Download third-party databases from their authors. The 51 custom FMFs used in the reference installation are not publicly distributed while their redistribution rights are unresolved. This ZIP alone cannot reproduce the complete reference setup.
+**v0.1.4 publishes the tools and compatibility information. It does not bundle the database files.** Download third-party databases from their authors. The 51 custom FMFs used in the reference installation are not publicly distributed while their redistribution rights are unresolved. This ZIP alone cannot reproduce the complete reference setup.
 
-[Download v0.1.3](https://github.com/redcode9/fm24-reseason/releases/tag/v0.1.3) · [Installation](docs/INSTALLATION.md) · [Manual file placement](docs/MANUAL-INSTALLATION.md) · [Official database downloads](docs/DOWNLOADS.md) · [Coverage and limitations](docs/COVERAGE.md)
+[Download v0.1.4](https://github.com/redcode9/fm24-reseason/releases/tag/v0.1.4) · [Installation](docs/INSTALLATION.md) · [Manual file placement](docs/MANUAL-INSTALLATION.md) · [Official database downloads](docs/DOWNLOADS.md) · [Coverage and limitations](docs/COVERAGE.md)
 
 ## What is covered?
 
@@ -48,6 +48,8 @@ Windows, Intel Macs, other game builds, and Real World mode are not supported by
 5. Advance one day, save, and quit normally. Use **Continue Career.command** to reopen without the initialization module. This is a one-time handover for each new career.
 
 **Check Setup.command** and **Prepare ReSeason.command** remain optional diagnostic and preparation tools. They are no longer separate prerequisites for a real launch. Launcher `--dry-run` checks remain read-only and require an already prepared cache.
+
+For clearer names in the editor-data list, close FM24 and open **Organize Editor Data.command** once. It renames only the 51 custom files to `ReSeason 2026-27 - NN - description.fmf`, updating the internal archive names FM24 displays while preserving database-member bytes and the previous alphabetical order. Original archives are backed up outside FM24; whole-archive hashes change. The 53 Sortitoutsi filenames retain their original attribution. Both complete naming conventions are supported. See the [filename catalogue](docs/FILE-NAMES.md).
 
 Preparing creates a private local cache from files already on your computer, **outside the entire FM24 user-data folder**. Versions before 0.1.3 put it inside that folder, where FM24 could read unintended duplicate FMFs. Preparation now preserves verified old caches in a sibling `ReSeason FM24 cache` folder; it stops on unrecognized contents. Active editor data and saves are preserved. Initialization uses an exact-build native module in the game process; it does not patch the installed game executable or edit a save from outside FM24.
 
