@@ -1,5 +1,7 @@
 # Installation
 
+For exact file types and destinations, see [Manual database installation](MANUAL-INSTALLATION.md). Manual placement does not replace the initialization module.
+
 ## Before downloading
 
 This release is a **database tooling preview**, not a self-contained mod pack.
@@ -13,7 +15,7 @@ Use the [official download pages](DOWNLOADS.md). Compatibility is checked by fil
 ## If you already have the compatible data
 
 1. Quit FM24 completely.
-2. Extract `ReSeason-v0.1.1-Mac-toolkit.zip` and keep the complete folder together. Check the required retention helper below before launching.
+2. Extract `ReSeason-v0.1.2-Mac-toolkit.zip` and keep the complete folder together. Check the required retention helper below before launching.
 3. Open **New Career.command**. It checks the exact data and game build, prepares or verifies its private cache, and launches FM24 with the initialization module. Installed FMFs and saves are preserved.
 4. In FM24 choose **Career → Update 24.3.0 → all 104 compatible editor-data files → Original → Advanced Setup**.
 5. For the tested configuration, load Italy down to Serie D and the top divisions of France, Germany, England, Portugal, and Spain. Choose **10 August 2026**. No game-setup preset is distributed.
@@ -64,3 +66,15 @@ If macOS blocks an unsigned downloaded command, inspect the source and follow ma
 ## What to test
 
 Start a fresh career and check the start date, club names, several player histories, past award podiums, and Serie D club lists. Save after one day and confirm that these remain after continuing normally. Report gaps with specific player/competition names and seasons. Do not upload your full save to an issue.
+
+## If FM24 reports missing language data or an XML parsing error
+
+The setup checker verifies the selected editor data and executable; a successful check is not proof that the game has reached its menu. These errors occurred in the reference installation even with the initialization module disabled.
+
+1. Close the failed FM24 instance.
+2. Launch FM24 normally from Steam and wait for the main menu, then quit normally.
+3. Retry **New Career.command** for a new career, or **Continue Career.command** for an already initialized save.
+
+This sequence recovered the observed failure on the reference Mac, and New Career then reached the menu with the module enabled. The underlying cause has not been established; a file-descriptor-limit hypothesis was not confirmed. No original game resources were replaced, no caches were deleted, and no new career was created during that startup check.
+
+If normal Steam launch also fails, stop treating the issue as an editor-data installation problem. Preserve the error text and use the game's support process. Private startup logs are under `<FM user-data>/FM24-History-Community/logs/`; crash dumps can contain private information and should not be uploaded to a public issue.

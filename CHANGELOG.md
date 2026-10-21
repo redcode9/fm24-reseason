@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.2 — 2026-10-21
+
+- Added a manual installation guide listing file types, exact destinations, and the boundary between editor data and original game resource archives.
+- Documented recovery from the observed language/XML startup errors by launching normally from Steam before retrying the launcher. The underlying cause remains unconfirmed.
+- Checked actual main-menu startup after recovery with the initialization module enabled and without it. This was a startup check, not a new-career data qualification.
+- No gameplay module, launcher behavior, compatible database selection, or original game file was changed by this documentation update.
+
 ## 0.1.1 — 2026-10-21
 
 - New Career and Continue Career now check and prepare the private cache automatically before launching; separate setup commands are optional.

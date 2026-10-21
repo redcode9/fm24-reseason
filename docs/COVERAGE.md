@@ -1,8 +1,8 @@
 # Coverage and work in progress
 
-Two separate things are tracked here: the tools actually published in v0.1.1, and the data selection tested during development. This distinction matters when deciding whether you can reproduce the setup.
+Two separate things are tracked here: the tools actually published in v0.1.2, and the data selection tested during development. This distinction matters when deciding whether you can reproduce the setup.
 
-## Published in v0.1.1
+## Published in v0.1.2
 
 - Original setup checker and private-local-cache preparation tools.
 - Manual initial-career and normal-continuation launchers.

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "project": "ReSeason",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "release_kind": "public-toolkit-preview",
   "FMF_files_distributed": 0,
   "public_files": [
@@ -26,6 +26,7 @@
     "docs/DOWNLOADS.md",
     "docs/INSTALLATION.md",
     "docs/LICENSING.md",
+    "docs/MANUAL-INSTALLATION.md",
     "publication.json",
     "scripts/build_module.sh",
     "scripts/build_release.py",

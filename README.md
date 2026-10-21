@@ -7,9 +7,9 @@
 
 ReSeason is a work-in-progress season overhaul for **Football Manager 2024**: a 2026/27 start, player histories, award winners, competition honours, updated profiles, and league rules.
 
-**v0.1.1 publishes the tools and compatibility information. It does not bundle the database files.** Download third-party databases from their authors. The 51 custom FMFs used in the reference installation are not publicly distributed while their redistribution rights are unresolved. This ZIP alone cannot reproduce the complete reference setup.
+**v0.1.2 publishes the tools and compatibility information. It does not bundle the database files.** Download third-party databases from their authors. The 51 custom FMFs used in the reference installation are not publicly distributed while their redistribution rights are unresolved. This ZIP alone cannot reproduce the complete reference setup.
 
-[Download v0.1.1](https://github.com/redcode9/fm24-reseason/releases/tag/v0.1.1) · [Installation](docs/INSTALLATION.md) · [Official database downloads](docs/DOWNLOADS.md) · [Coverage and limitations](docs/COVERAGE.md)
+[Download v0.1.2](https://github.com/redcode9/fm24-reseason/releases/tag/v0.1.2) · [Installation](docs/INSTALLATION.md) · [Manual file placement](docs/MANUAL-INSTALLATION.md) · [Official database downloads](docs/DOWNLOADS.md) · [Coverage and limitations](docs/COVERAGE.md)
 
 ## What is covered?
 
