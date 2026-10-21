@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.3 — 2026-10-21
+
+- Moved private FMF caches outside the entire FM24 user-data tree. FM24 was observed opening unintended FMF copies from the previous nested location during startup.
+- Added migration that validates complete legacy caches and preserves them outside FM24 with the game closed. Unknown or changed contents are refused; active editor data and saves are preserved.
+- Preserved completed, verified installer transactions outside FM24 as well, including their backup FMFs. Ownership receipts and logs stay in place; unfinished transactions are refused.
+- Read-only checks now report legacy caches before startup. Added regression coverage for relocation, preservation, unsafe paths, and refusal conditions.
+- Replaced the temporary Steam-start workaround with the cache correction. The native gameplay module and compatible database selection are unchanged.
+- Verified three actual New Career command launches to the main menu on the reference Mac, including a confirmed normal quit and restart, with the module loaded and no cache or transaction FMFs open. All 104 active FMF hashes were unchanged; 75 automated tests passed.
+
 ## 0.1.2 — 2026-10-21
 
 - Added a manual installation guide listing file types, exact destinations, and the boundary between editor data and original game resource archives.

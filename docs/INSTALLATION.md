@@ -15,7 +15,7 @@ Use the [official download pages](DOWNLOADS.md). Compatibility is checked by fil
 ## If you already have the compatible data
 
 1. Quit FM24 completely.
-2. Extract `ReSeason-v0.1.2-Mac-toolkit.zip` and keep the complete folder together. Check the required retention helper below before launching.
+2. Extract `ReSeason-v0.1.3-Mac-toolkit.zip` and keep the complete folder together. Check the required retention helper below before launching.
 3. Open **New Career.command**. It checks the exact data and game build, prepares or verifies its private cache, and launches FM24 with the initialization module. Installed FMFs and saves are preserved.
 4. In FM24 choose **Career → Update 24.3.0 → all 104 compatible editor-data files → Original → Advanced Setup**.
 5. For the tested configuration, load Italy down to Serie D and the top divisions of France, Germany, England, Portugal, and Spain. Choose **10 August 2026**. No game-setup preset is distributed.
@@ -23,6 +23,16 @@ Use the [official download pages](DOWNLOADS.md). Compatibility is checked by fil
 7. Quit FM24 normally. Reopen with **Continue Career.command** and load that save. This checks and prepares the same installation automatically, then starts without the initialization module.
 
 **Check Setup.command** is an optional read-only diagnostic. **Prepare ReSeason.command** is optional separate cache preparation. You do not need to run either before a real New Career or Continue Career launch.
+
+### Upgrading from 0.1.0–0.1.2
+
+Those versions kept private FMF copies under `<FM user-data>/ReSeason`. FM24 was observed opening those duplicate archives during startup. This was an incorrect cache location.
+
+The cache now lives in `<parent of FM user-data>/ReSeason FM24 cache/<content hash>`, outside both the FM24 folder and the public project. With FM24 closed, Prepare or a real launch validates the complete old cache tree and preserves it under `ReSeason FM24 cache/preserved-legacy-<id>/ReSeason`. It never deletes the old copies or replaces active editor data. Unknown, changed, or symlinked contents cause refusal and remain untouched.
+
+Completed project installation transactions can also contain backup FMFs. Preparation checks their ownership metadata, completed status, filenames, and recorded file hashes before preserving the complete transaction tree under `ReSeason FM24 cache/preserved-transactions-<id>/transactions`. The active ownership receipt and logs stay in place. Unfinished or unknown transactions stop preparation. Archived receipts and backups remain available for maintainer-assisted rollback; the legacy backend's recovery command does not automatically search the new archive location.
+
+Check Setup and launch previews remain read-only: they report old caches and ask you to run preparation before proceeding. Keep all FMF backups outside the entire FM24 user-data tree, rather than in a differently named subfolder inside it.
 
 Do not combine the custom Italy rules with the original Basic Italy rules. They are an explicit replacement, not two layers.
 
@@ -71,10 +81,12 @@ Start a fresh career and check the start date, club names, several player histor
 
 The setup checker verifies the selected editor data and executable; a successful check is not proof that the game has reached its menu. These errors occurred in the reference installation even with the initialization module disabled.
 
-1. Close the failed FM24 instance.
-2. Launch FM24 normally from Steam and wait for the main menu, then quit normally.
+1. Close the failed FM24 instance and upgrade to 0.1.3 or later.
+2. Run **Prepare ReSeason.command** to relocate verified private caches outside FM24, or let a real launch do it automatically.
 3. Retry **New Career.command** for a new career, or **Continue Career.command** for an already initialized save.
 
-This sequence recovered the observed failure on the reference Mac, and New Career then reached the menu with the module enabled. The underlying cause has not been established; a file-descriptor-limit hypothesis was not confirmed. No original game resources were replaced, no caches were deleted, and no new career was created during that startup check.
+The earlier workaround of launching normally from Steam was temporary: the errors later recurred. It is not a verified permanent fix. The corrected cache location prevents the specific unintended FMF loading observed in the reference installation. Other XML or language errors can have different causes; [SEGA's troubleshooting guidance](https://support.sega.com/hc/en-gb/articles/31641692048913-What-should-I-do-if-I-receive-an-XML-error-message-when-launching-or-running-Football-Manager) also covers custom files and interface caches.
+
+For 0.1.3, three actual opens of **New Career.command** reached the main menu on the reference Mac, including a confirmed normal quit and restart. Each check confirmed the initialization module was loaded and no private cache or transaction FMFs were open. All 104 active FMF hashes were preserved. These are startup checks; they do not certify a newly created career or every possible cause of a similar error.
 
 If normal Steam launch also fails, stop treating the issue as an editor-data installation problem. Preserve the error text and use the game's support process. Private startup logs are under `<FM user-data>/FM24-History-Community/logs/`; crash dumps can contain private information and should not be uploaded to a public issue.

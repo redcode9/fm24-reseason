@@ -24,3 +24,5 @@ sh scripts/build_module.sh
 The rebuild is written to ignored `build/` and is not automatically used. Toolchain differences can change hashes. A rebuild requires its own review and game qualification before becoming a release binary. Never replace the pinned binary without updating provenance, compatibility metadata, and tests.
 
 The released tools are a public preview. Game-data verification from the reference installation and synthetic tooling tests are distinct from a user's first complete installation test.
+
+Cache FMFs must remain outside the entire FM24 user-data tree. FM24 opened duplicate archives placed in the old nested cache during actual startup. The cache-location and legacy-migration tests enforce this boundary; relocating complete verified legacy trees preserves their bytes and the active editor-data selection.

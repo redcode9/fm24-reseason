@@ -137,9 +137,11 @@ def installed_status(data, user_data, steam_game):
 
 
 def cache_path(root, user_data, key):
-    path = guarded(user_data / "ReSeason" / key)
+    path = guarded(user_data.parent / "ReSeason FM24 cache" / key)
     require(not path.resolve().is_relative_to(guarded(root).resolve()),
             "Private cache must be outside the project/publication folder.")
+    require(not path.resolve().is_relative_to(guarded(user_data).resolve()),
+            "Private cache must be outside the FM24 user-data folder.")
     return path
 
 
@@ -168,7 +170,112 @@ def directory(path, private=False):
     require(not path.stat().st_mode & (0o077 if private else 0o022), "Unsafe cache/log directory permissions.")
 
 
+def migrate_legacy(ctx, root, user_data):
+    """Preserve verified old caches outside every FM24 resource search path."""
+    legacy = guarded(user_data / "ReSeason")
+    if not legacy.exists():
+        return
+    backend, data, assets, _, key = ctx
+    require(legacy.is_dir() and legacy.stat().st_uid == os.getuid() and
+            not legacy.stat().st_mode & 0o077, "Unknown legacy ReSeason folder; existing files preserved.")
+    entries = list(legacy.iterdir())
+    require(bool(entries), "Unknown empty legacy ReSeason folder; existing files preserved.")
+    allowed = set(assets) | {r["payload"] for r in data["own_fmfs"]}
+    reference = {k: v for k, v in data.items() if k != "files"}
+    identities = {}
+    for entry in entries:
+        guarded(entry)
+        require(re.fullmatch("[0-9a-f]{64}", entry.name) and entry.is_dir(),
+                "Unrecognized legacy cache entry; existing files preserved.")
+        raw = read(entry / "release.json")
+        previous = json.loads(raw)
+        require({k: v for k, v in previous.items() if k != "files"} == reference and
+                all(r["path"] in allowed for r in previous["files"]),
+                "Unrecognized legacy cache manifest; existing files preserved.")
+        verify_cache(backend, entry, raw)
+        identities[entry.name] = sha(raw)
+    require(subprocess.run(["pgrep", "-x", "fm"], capture_output=True).returncode == 1,
+            "FM must be closed before relocating legacy caches; existing files preserved.")
+    require(set(p.name for p in guarded(legacy).iterdir()) == set(identities),
+            "Legacy cache changed during validation; existing files preserved.")
+    for entry in entries:
+        require(sha(read(entry / "release.json")) == identities[entry.name],
+                "Legacy cache changed during validation; existing files preserved.")
+        verify_cache(backend, entry, read(entry / "release.json"))
+    parent = cache_path(root, user_data, key).parent
+    directory(parent, private=True)
+    destination = guarded(parent / ("preserved-legacy-" + str(uuid.uuid4())))
+    destination.mkdir(mode=0o700)  # Exclusive new container; never replace an existing archive.
+    try:
+        legacy.rename(destination / "ReSeason")
+    except BaseException:
+        destination.rmdir()  # Only our own empty reservation; preserve all source files.
+        raise
+    print("Previous verified caches preserved outside FM24 user data; active editor data unchanged.")
+
+
+def migrate_transactions(ctx, root, user_data):
+    """Archive completed, hash-bound installer backups outside FM24's scanner."""
+    source = guarded(user_data / "FM24-History-Community/transactions")
+    if not source.exists():
+        return
+    require(source.is_dir() and source.stat().st_uid == os.getuid() and
+            not source.stat().st_mode & 0o022, "Unrecognized transaction folder; existing files preserved.")
+    entries = list(source.iterdir())
+    if not entries:
+        return
+    backend, data, _, _, key = ctx
+    names = {r["name"] for r in data["own_fmfs"] + data.get("retire_owned", [])}
+    names.update(r["dependency_name"] for r in data.get("basic_replacements", []))
+    names.update(r["name"] for r in data.get("retention_ddt", []))
+    fingerprints = {}
+    for entry in entries:
+        guarded(entry)
+        require(entry.is_dir() and re.fullmatch("[0-9a-f]{32}", entry.name),
+                "Unrecognized installation transaction; existing files preserved.")
+        raw = read(entry / "journal.json")
+        journal = json.loads(raw)
+        require(journal.get("schema") == 1 and journal.get("pack_id") == backend.PACK_ID and
+                journal.get("transaction_id") == entry.name and
+                journal.get("status") in {"COMMITTED", "ROLLED_BACK"},
+                "Unknown or unfinished installation transaction; existing files preserved.")
+        actions = {r["name"]: r for r in journal["actions"]}
+        require(set(actions) <= names, "Unrecognized transaction action; existing files preserved.")
+        for path in entry.rglob("*"):
+            guarded(path)
+            if path.is_dir():
+                continue
+            name = path.relative_to(entry).as_posix()
+            content = read(path)
+            if name not in {"journal.json", "installation_receipt.json", "prior_owned_state.json"}:
+                parts = name.split("/")
+                require(len(parts) == 2 and parts[0] in {"backup", "stage"} and parts[1] in actions,
+                        "Unrecognized transaction file; existing files preserved.")
+                expected = actions[parts[1]].get("before_sha256" if parts[0] == "backup" else "after_sha256")
+                require(expected and sha(content) == expected,
+                        "Transaction backup hash mismatch; existing files preserved.")
+            fingerprints[path] = sha(content)
+    require(subprocess.run(["pgrep", "-x", "fm"], capture_output=True).returncode == 1,
+            "FM must be closed before relocating transaction backups; existing files preserved.")
+    require(set(p for p in source.rglob("*") if not p.is_dir()) == set(fingerprints),
+            "Transaction contents changed; existing files preserved.")
+    for path, expected in fingerprints.items():
+        require(sha(read(path)) == expected, "Transaction contents changed; existing files preserved.")
+    parent = cache_path(root, user_data, key).parent
+    directory(parent, private=True)
+    destination = guarded(parent / ("preserved-transactions-" + str(uuid.uuid4())))
+    destination.mkdir(mode=0o700)
+    try:
+        source.rename(destination / "transactions")
+    except BaseException:
+        destination.rmdir()
+        raise
+    print("Completed installer transactions and backups preserved outside FM24 user data.")
+
+
 def prepare(ctx, root, user_data, steam_game):
+    migrate_legacy(ctx, root, user_data)
+    migrate_transactions(ctx, root, user_data)
     backend, data, assets, manifest, key = ctx
     cache = cache_path(root, user_data, key)
     if cache.exists():
@@ -199,7 +306,7 @@ def prepare(ctx, root, user_data, steam_game):
     finally:
         if stage.exists():
             shutil.rmtree(guarded(stage))
-    print("Private cache verified and prepared under user-data/ReSeason. Never publish this cache.")
+    print("Private cache verified and prepared outside FM24 user data. Never publish this cache.")
 
 
 def session_plan(plan, user_data, create=False):
@@ -250,6 +357,15 @@ def main(argv=None, *, root=None):
         print("Reference SHA and public toolkit: verified.")
         ready = installed_status(data, user_data, steam_game)
         require(ready, "Required installed data is missing or mismatched. " + FIRST_USE)
+        legacy_present = guarded(user_data / "ReSeason").exists()
+        print("Legacy private cache inside FM24 user data: " + ("present." if legacy_present else "absent."))
+        require(not legacy_present or (args.command != "doctor" and not args.dry_run),
+                "Legacy cache inside FM24 user data must be relocated. Close FM24 and run prepare or a real launch; checks remain read-only.")
+        transactions = guarded(user_data / "FM24-History-Community/transactions")
+        backups_present = transactions.exists() and any(transactions.iterdir())
+        print("Legacy installation transactions inside FM24 user data: " + ("present." if backups_present else "absent."))
+        require(not backups_present or (args.command != "doctor" and not args.dry_run),
+                "Installer backups inside FM24 user data must be relocated. Close FM24 and run prepare or a real launch; checks remain read-only.")
         if args.command == "prepare":
             prepare(ctx, root, user_data, steam_game)
         elif args.command != "doctor":

@@ -27,6 +27,8 @@ The **Steam game folder** contains the installed game. On macOS its default is `
 
 The exact FMF names and SHA-256 hashes are in [`toolkit/reference.json`](../toolkit/reference.json): `own_fmfs` lists the 51 custom files and `external_basic` lists the 53 active Basic files. `files` records the custom payload sizes. Matching names alone are insufficient.
 
+Keep backup FMFs and toolkit caches outside the entire FM24 user-data folder. FM24 was observed reading private copies in a nested `ReSeason` folder and old installer transaction backups during startup. Since 0.1.3, the launcher uses the sibling `<parent of FM user-data>/ReSeason FM24 cache/` and relocates only verified legacy caches and completed, hash-bound project transactions there with the game closed. Unknown or unfinished contents are preserved in place and cause refusal.
+
 The reference catalogue also records the original 54-file Basic set. Its original Italy file, `sortitoutsi.net FM24 Data Update - Italy (2026 Start).fmf`, is replaced by `FM24_2026_27_Italy_SerieD.fmf`. **Do not keep both in the active editor-data selection.** The supported selection is exactly 104 FMFs; extra FMFs, including original Basic Italy, cause the public checker to refuse it.
 
 ## Place the data with FM24 closed

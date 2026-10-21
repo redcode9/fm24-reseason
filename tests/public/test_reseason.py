@@ -6,11 +6,13 @@ import io
 import json
 import os
 from pathlib import Path
+import shutil
 import stat
 import subprocess
 import tempfile
 import unittest
 from unittest import mock
+import uuid
 
 PROJECT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location("public_reseason", PROJECT / "scripts/reseason.py")
@@ -113,6 +115,69 @@ class ReSeasonTests(unittest.TestCase):
         self.assertEqual(result[0], 0, result)
         return self.cache()
 
+    def legacy_cache(self):
+        cache = self.prepared()
+        legacy = self.user / "ReSeason"
+        legacy.mkdir(mode=0o700)
+        cache.rename(legacy / cache.name)
+        cache.parent.rmdir()
+        return legacy
+
+    def reseal_cache(self, cache, manifest):
+        raw = (json.dumps(manifest, sort_keys=True, indent=2) + "\n").encode()
+        (cache / "release.json").write_bytes(raw)
+        (cache / "RELEASE_MANIFEST.sha256").write_text(cli.sha(raw) + "\n")
+        # These fixtures pass ordinary cache verification; migration must also
+        # recognize their metadata and limit the permitted payload paths.
+        cli.verify_cache(cli.context(self.root)[0], cache, raw)
+
+    def assert_legacy_refused_without_writes(self):
+        before = snapshot(self.base)
+        result = self.invoke("prepare")
+        self.assertEqual(result[0], 1, result)
+        self.assertTrue(result[2], result)
+        self.assertEqual(before, snapshot(self.base))
+        self.process.assert_not_called()
+
+    def transaction(self, transaction_id="1" * 32, status="COMMITTED", names=None):
+        """A completed synthetic installer transaction; never run the installer."""
+        backend = cli.context(self.root)[0]
+        entry = self.user / "FM24-History-Community/transactions" / transaction_id
+        (entry / "backup").mkdir(mode=0o700, parents=True)
+        (entry / "stage").mkdir(mode=0o700)
+        owned_names = {row["name"] for row in self.data["own_fmfs"]}
+        actions = []
+        for name in names or [self.data["own_fmfs"][0]["name"]]:
+            before = ("Synthetic previous FMF: " + name + "\n").encode()
+            (entry / "backup" / name).write_bytes(before)
+            after = ("Synthetic staged FMF: " + name + "\n").encode() if name in owned_names else None
+            if after is not None:
+                (entry / "stage" / name).write_bytes(after)
+            actions.append({"name": name, "action": "replace" if after is not None else "retire",
+                            "before_sha256": cli.sha(before),
+                            "after_sha256": cli.sha(after) if after is not None else None})
+        journal = {"schema": 1, "pack_id": backend.PACK_ID, "transaction_id": transaction_id,
+                   "status": status, "actions": actions}
+        (entry / "journal.json").write_text(json.dumps(journal) + "\n")
+        (entry / "installation_receipt.json").write_text(json.dumps({"transaction_id": transaction_id}) + "\n")
+        (entry / "prior_owned_state.json").write_text(json.dumps({"pack_id": backend.PACK_ID, "owned": {}}) + "\n")
+        return entry
+
+    def assert_transaction_refused_without_writes(self):
+        before = snapshot(self.base)
+        result = self.invoke("prepare")
+        self.assertEqual(result[0], 1, result)
+        self.assertTrue(result[2], result)
+        self.assertEqual(before, snapshot(self.base))
+        self.process.assert_not_called()
+
+    def ownership_state(self):
+        state = self.user / "FM24-History-Community/owned_state.json"
+        state.parent.mkdir(parents=True, exist_ok=True)
+        state.write_text(json.dumps({"schema": 1, "pack_id": self.data["pack_id"],
+                                     "owned": {row["name"]: row["sha256"] for row in self.data["own_fmfs"]}}) + "\n")
+        return state
+
     def owned(self, index=0):
         return self.user / "editor data" / self.data["own_fmfs"][index]["name"]
 
@@ -165,7 +230,7 @@ class ReSeasonTests(unittest.TestCase):
         self.assertIn("0/51 exact; 51 missing", result[1])
         self.assertIn("53/53 exact", result[1])
         self.assertIn("public ZIP does not provide the 51 custom FMF files", result[2])
-        self.assertFalse((self.user / "ReSeason").exists())
+        self.assertFalse(self.cache().parent.exists())
 
     def test_reference_tamper_is_refused_without_writes(self):
         path = self.root / "toolkit/reference.json"
@@ -183,14 +248,14 @@ class ReSeasonTests(unittest.TestCase):
         self.assertEqual(result[0], 1)
         self.assertIn("SHA or size mismatch", result[2])
         self.assertFalse(marker.exists())
-        self.assertFalse((self.user / "ReSeason").exists())
+        self.assertFalse((self.user.parent / "ReSeason FM24 cache").exists())
 
     def test_executable_mismatch_prevents_prepare(self):
         self.binary.write_bytes(b"another executable")
         result = self.invoke("prepare")
         self.assertEqual(result[0], 1)
         self.assertIn("Supported executable SHA: missing or mismatched", result[1])
-        self.assertFalse((self.user / "ReSeason").exists())
+        self.assertFalse(self.cache().parent.exists())
 
     def test_unsupported_platforms_refuse_before_writes(self):
         for system, machine in (("Linux", "aarch64"), ("Windows", "ARM64"), ("Darwin", "x86_64")):
@@ -223,13 +288,23 @@ class ReSeasonTests(unittest.TestCase):
                 self.data["files"][0]["path"] = name
                 self.seal()
                 self.assertEqual(self.invoke("prepare")[0], 1)
-                self.assertFalse((self.user / "ReSeason").exists())
+                self.assertFalse((self.user.parent / "ReSeason FM24 cache").exists())
                 self.data["files"][0]["path"] = original
 
     def test_prepare_copies_only_declared_assets_and_is_idempotent(self):
         project_before, game_before = snapshot(self.root), snapshot(self.game)
-        installed_before = snapshot(self.user / "editor data")
+        user_before = snapshot(self.user)
+        fmfs_before = {p.relative_to(self.user) for p in self.user.rglob("*")
+                       if p.suffix.lower() == ".fmf"}
         cache = self.prepared()
+        self.assertEqual(cache, self.user.parent / "ReSeason FM24 cache" / cli.context(self.root)[4])
+        self.assertFalse(cache.is_relative_to(self.root))
+        self.assertFalse(cache.is_relative_to(self.user))
+        self.assertFalse((self.user / "ReSeason").exists())
+        self.assertFalse(any(p.name in {"release.json", "RELEASE_MANIFEST.sha256", "ReSeason FM24 cache"}
+                             for p in self.user.rglob("*")))
+        self.assertEqual(fmfs_before, {p.relative_to(self.user) for p in self.user.rglob("*")
+                                     if p.suffix.lower() == ".fmf"})
         backend, _, _, manifest, _ = cli.context(self.root)
         cli.verify_cache(backend, cache, manifest)
         self.assertEqual(stat.S_IMODE(cache.stat().st_mode), 0o700)
@@ -253,7 +328,8 @@ class ReSeasonTests(unittest.TestCase):
         self.assertEqual(before, snapshot(self.base))
         self.assertEqual(project_before, snapshot(self.root))
         self.assertEqual(game_before, snapshot(self.game))
-        self.assertEqual(installed_before, snapshot(self.user / "editor data"))
+        self.assertEqual(user_before, snapshot(self.user))
+        self.process.assert_not_called()
 
     def test_cache_tampering_and_resealing_never_overwrites_existing_cache(self):
         cache = self.prepared()
@@ -287,13 +363,541 @@ class ReSeasonTests(unittest.TestCase):
         self.assertIn("permissions are unsafe", self.invoke("prepare")[2])
         self.assertEqual(before, snapshot(self.base))
 
-    def test_cache_parent_symlink_and_repository_cache_are_refused(self):
+    def test_legacy_cache_root_symlink_is_refused_without_writes(self):
         (self.user / "ReSeason").symlink_to(self.base / "not created")
         before = snapshot(self.base)
         self.assertIn("Symlink refused", self.invoke("prepare")[2])
         self.assertEqual(before, snapshot(self.base))
+        self.process.assert_not_called()
+
+    def test_cache_parent_symlink_is_refused_without_writes(self):
+        external = self.base / "external cache"
+        external.mkdir()
+        self.cache().parent.symlink_to(external, target_is_directory=True)
+        before = snapshot(self.base)
+        self.assertIn("Symlink refused", self.invoke("prepare")[2])
+        self.assertEqual(before, snapshot(self.base))
+        self.process.assert_not_called()
+
+    def test_cache_path_rejects_repository_overlap_without_writes(self):
+        before = snapshot(self.base)
         with self.assertRaisesRegex(cli.Refusal, "outside the project"):
             cli.cache_path(self.root, self.root / "private data", "key")
+        self.assertEqual(before, snapshot(self.base))
+
+    def test_cache_path_rejects_user_data_overlap_without_writes(self):
+        overlapping = self.base / "ReSeason FM24 cache"
+        overlapping.mkdir(mode=0o700)
+        before = snapshot(self.base)
+        with self.assertRaisesRegex(cli.Refusal, "outside the FM24 user-data"):
+            cli.cache_path(self.root, overlapping, cli.context(self.root)[4])
+        self.assertEqual(before, snapshot(self.base))
+
+    def test_valid_legacy_caches_are_atomically_preserved_and_migration_is_idempotent(self):
+        legacy = self.legacy_cache()
+        entry = next(legacy.iterdir())
+        historical = legacy / ("a" * 64)
+        shutil.copytree(entry, historical)
+        previous = json.loads((historical / "release.json").read_bytes())
+        old_readme = historical / "README.md"
+        old_readme.write_bytes(b"Synthetic public documentation from an earlier cache.\n")
+        for row in previous["files"]:
+            if row["path"] == "README.md":
+                row.update(cli.pin("README.md", old_readme.read_bytes()))
+        self.reseal_cache(historical, previous)
+        legacy_before = snapshot(legacy)
+        identity = legacy.stat().st_dev, legacy.stat().st_ino
+        user_before = {name: value for name, value in snapshot(self.user).items()
+                       if name != "ReSeason" and not name.startswith("ReSeason/")}
+        project_before, game_before = snapshot(self.root), snapshot(self.game)
+
+        def closed_game(command, **kwargs):
+            self.assertEqual(command, ["pgrep", "-x", "fm"])
+            self.assertEqual(legacy_before, snapshot(legacy))
+            self.assertFalse(self.cache().parent.exists())
+            return subprocess.CompletedProcess(command, 1)
+
+        self.process.side_effect = closed_game
+        cache = self.prepared()
+        self.process.assert_called_once_with(["pgrep", "-x", "fm"], capture_output=True)
+        self.assertFalse(legacy.exists())
+        archives = list(cache.parent.glob("preserved-legacy-*"))
+        self.assertEqual(len(archives), 1)
+        archive = archives[0]
+        self.assertEqual(str(uuid.UUID(archive.name.removeprefix("preserved-legacy-"))),
+                         archive.name.removeprefix("preserved-legacy-"))
+        self.assertEqual(stat.S_IMODE(archive.stat().st_mode), 0o700)
+        preserved = archive / "ReSeason"
+        self.assertEqual(list(archive.iterdir()), [preserved])
+        self.assertEqual(identity, (preserved.stat().st_dev, preserved.stat().st_ino))
+        self.assertEqual(stat.S_IMODE(preserved.stat().st_mode), 0o700)
+        self.assertEqual(legacy_before, snapshot(preserved))
+        backend, _, _, manifest, _ = cli.context(self.root)
+        cli.verify_cache(backend, cache, manifest)
+        self.assertEqual(user_before, snapshot(self.user))
+        self.assertEqual(project_before, snapshot(self.root))
+        self.assertEqual(game_before, snapshot(self.game))
+
+        before = snapshot(self.base)
+        self.process.reset_mock()
+        self.process.side_effect = AssertionError("Migration must not run again")
+        self.assertIn("already complete", self.invoke("prepare")[1])
+        self.assertEqual(before, snapshot(self.base))
+        self.process.assert_not_called()
+
+    def test_legacy_is_migrated_even_when_current_cache_already_exists(self):
+        legacy = self.legacy_cache()
+        cache = self.cache()
+        cache.parent.mkdir(mode=0o700)
+        shutil.copytree(next(legacy.iterdir()), cache)
+        cache_before, legacy_before = snapshot(cache), snapshot(legacy)
+        self.process.side_effect = None
+        self.process.return_value = subprocess.CompletedProcess([], 1)
+        result = self.invoke("prepare")
+        self.assertEqual(result[0], 0, result)
+        self.assertIn("already complete", result[1])
+        self.assertFalse(legacy.exists())
+        self.assertEqual(cache_before, snapshot(cache))
+        archives = list(cache.parent.glob("preserved-legacy-*/ReSeason"))
+        self.assertEqual(len(archives), 1)
+        self.assertEqual(legacy_before, snapshot(archives[0]))
+        self.process.assert_called_once_with(["pgrep", "-x", "fm"], capture_output=True)
+
+    def test_doctor_and_launch_dry_runs_refuse_legacy_without_writes_or_processes(self):
+        self.legacy_cache()
+        before = snapshot(self.base)
+        for command in (("doctor",), ("new", "--dry-run"), ("continue", "--dry-run"), ("cold", "--dry-run")):
+            with self.subTest(command=command):
+                result = self.invoke(*command)
+                self.assertEqual(result[0], 1, result)
+                self.assertIn("legacy", result[2].lower())
+                self.assertIn("relocat", result[2].lower())
+                self.assertEqual(before, snapshot(self.base))
+        self.process.assert_not_called()
+
+    def test_unknown_legacy_root_file_or_empty_directory_is_refused_untouched(self):
+        legacy = self.user / "ReSeason"
+        for kind in ("file", "empty directory"):
+            with self.subTest(kind=kind):
+                if kind == "file":
+                    legacy.write_bytes(b"Unrecognized synthetic user file; preserve exactly.")
+                else:
+                    legacy.mkdir(mode=0o700)
+                self.assert_legacy_refused_without_writes()
+                legacy.unlink() if legacy.is_file() else legacy.rmdir()
+
+    def test_legacy_root_permissions_and_ownership_are_checked_without_changes(self):
+        legacy = self.legacy_cache()
+        legacy.chmod(0o755)
+        self.assert_legacy_refused_without_writes()
+        legacy.chmod(0o700)
+        with mock.patch.object(cli.os, "getuid", return_value=os.getuid() + 1):
+            self.assert_legacy_refused_without_writes()
+
+    def test_unknown_legacy_entries_are_refused_without_partial_relocation(self):
+        legacy = self.legacy_cache()
+        for name, is_dir in (("unknown.txt", False), ("not-a-key", True),
+                             ("A" * 64, True), ("a" * 63, True), ("b" * 64, False), ("c" * 64, True)):
+            with self.subTest(name=name, is_dir=is_dir):
+                unknown = legacy / name
+                if is_dir:
+                    unknown.mkdir(mode=0o700)
+                else:
+                    unknown.write_bytes(b"Synthetic unknown legacy entry; preserve exactly.")
+                self.assert_legacy_refused_without_writes()
+                unknown.rmdir() if is_dir else unknown.unlink()
+
+    def test_legacy_cache_tampering_and_missing_files_are_refused_untouched(self):
+        legacy = self.legacy_cache()
+        entry = next(legacy.iterdir())
+        names = ("release.json", "RELEASE_MANIFEST.sha256", self.data["own_fmfs"][0]["payload"])
+        for name in names:
+            path = entry / name
+            original = path.read_bytes()
+            for corruption in ("tampered", "missing"):
+                with self.subTest(name=name, corruption=corruption):
+                    if corruption == "tampered":
+                        path.write_bytes(b"tampered synthetic cache content\n")
+                    else:
+                        path.unlink()
+                    self.assert_legacy_refused_without_writes()
+                    path.write_bytes(original)
+
+    def test_resealed_legacy_metadata_must_match_reference_except_files(self):
+        legacy = self.legacy_cache()
+        entry = next(legacy.iterdir())
+        original = json.loads((entry / "release.json").read_bytes())
+        for field in ("release_id", "game", "unexpected_metadata"):
+            with self.subTest(field=field):
+                changed = copy.deepcopy(original)
+                if field == "release_id":
+                    changed[field] += "_unrecognized"
+                elif field == "game":
+                    changed[field]["executable_sha256"] = "0" * 64
+                else:
+                    changed[field] = "unrecognized metadata"
+                self.reseal_cache(entry, changed)
+                self.assert_legacy_refused_without_writes()
+
+    def test_resealed_legacy_cache_cannot_declare_unrecognized_payload_paths(self):
+        legacy = self.legacy_cache()
+        entry = next(legacy.iterdir())
+        original = json.loads((entry / "release.json").read_bytes())
+        for name in ("docs/private.md", "payload/lnc/unlisted.lnc", "payload/editor data/unowned.fmf"):
+            with self.subTest(name=name):
+                path = entry / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                content = b"Synthetic unrecognized payload; preserve exactly.\n"
+                path.write_bytes(content)
+                changed = copy.deepcopy(original)
+                changed["files"].append(cli.pin(name, content))
+                self.reseal_cache(entry, changed)
+                self.assert_legacy_refused_without_writes()
+                path.unlink()
+
+    def test_unlisted_legacy_cache_files_are_refused_untouched(self):
+        entry = next(self.legacy_cache().iterdir())
+        (entry / "unlisted.fmf").write_bytes(b"Synthetic undeclared FMF; preserve exactly.")
+        self.assert_legacy_refused_without_writes()
+
+    def test_legacy_cache_child_symlink_is_refused_untouched(self):
+        legacy = self.legacy_cache()
+        (legacy / ("f" * 64)).symlink_to(next(legacy.iterdir()), target_is_directory=True)
+        self.assert_legacy_refused_without_writes()
+
+    def test_legacy_cache_nested_symlinks_are_refused_untouched(self):
+        entry = next(self.legacy_cache().iterdir())
+        for name in ("README.md", "payload"):
+            with self.subTest(name=name):
+                path = entry / name
+                external = self.base / ("external legacy " + name)
+                path.rename(external)
+                path.symlink_to(external, target_is_directory=external.is_dir())
+                self.assert_legacy_refused_without_writes()
+                path.unlink()
+                external.rename(path)
+
+    def test_legacy_relocation_requires_pgrep_to_confirm_fm_is_closed(self):
+        self.legacy_cache()
+        before = snapshot(self.base)
+        self.process.side_effect = None
+        for code in (0, 2, -15):
+            with self.subTest(code=code):
+                self.process.reset_mock()
+                self.process.return_value = subprocess.CompletedProcess([], code)
+                result = self.invoke("prepare")
+                self.assertEqual(result[0], 1, result)
+                self.assertIn("FM must be closed", result[2])
+                self.assertEqual(before, snapshot(self.base))
+                self.process.assert_called_once_with(["pgrep", "-x", "fm"], capture_output=True)
+
+    def test_legacy_relocation_refuses_process_check_exceptions_without_writes(self):
+        self.legacy_cache()
+        before = snapshot(self.base)
+        for error in (FileNotFoundError("synthetic pgrep unavailable"),
+                      subprocess.SubprocessError("synthetic process-check failure")):
+            with self.subTest(error=type(error).__name__):
+                self.process.reset_mock()
+                self.process.side_effect = error
+                self.assertEqual(self.invoke("prepare")[0], 1)
+                self.assertEqual(before, snapshot(self.base))
+                self.process.assert_called_once_with(["pgrep", "-x", "fm"], capture_output=True)
+
+    def test_legacy_archive_collision_never_overwrites_or_removes_existing_files(self):
+        self.legacy_cache()
+        reservation = self.cache().parent / "preserved-legacy-00000000-0000-0000-0000-000000000000"
+        reservation.mkdir(mode=0o700, parents=True)
+        (reservation / "ReSeason").mkdir(mode=0o700)
+        (reservation / "ReSeason/keep.fmf").write_bytes(b"Synthetic previous archive; preserve exactly.")
+        before = snapshot(self.base)
+        self.process.side_effect = None
+        self.process.return_value = subprocess.CompletedProcess([], 1)
+        with mock.patch.object(cli.uuid, "uuid4", return_value="00000000-0000-0000-0000-000000000000"):
+            self.assertEqual(self.invoke("prepare")[0], 1)
+        self.assertEqual(before, snapshot(self.base))
+        self.process.assert_called_once_with(["pgrep", "-x", "fm"], capture_output=True)
+
+    def test_completed_transactions_are_atomically_preserved_with_state_and_logs_unchanged(self):
+        names = ([self.data["own_fmfs"][0]["name"]] +
+                 [row["name"] for row in self.data.get("retire_owned", [])] +
+                 [row["dependency_name"] for row in self.data.get("basic_replacements", [])])
+        source = self.transaction(names=names).parent
+        self.transaction(transaction_id="2" * 32, status="ROLLED_BACK")
+        state = source.parent
+        self.ownership_state()
+        (state / "logs/existing-session").mkdir(parents=True)
+        (state / "logs/existing-session/stdout.log").write_bytes(b"Synthetic previous log; preserve exactly.\n")
+        state_before = {name: value for name, value in snapshot(state).items()
+                        if name != "transactions" and not name.startswith("transactions/")}
+        transactions_before = snapshot(source)
+        identity = source.stat().st_dev, source.stat().st_ino
+        project_before, game_before = snapshot(self.root), snapshot(self.game)
+        installed_before, saves_before = snapshot(self.user / "editor data"), snapshot(self.user / "games")
+        personal_mod = (self.user / "personal mod.fmf").read_bytes()
+        fmfs_before = {p.relative_to(self.user) for p in self.user.rglob("*")
+                       if p.suffix.lower() == ".fmf" and not p.is_relative_to(source)}
+
+        def closed_game(command, **kwargs):
+            self.assertEqual(command, ["pgrep", "-x", "fm"])
+            self.assertEqual(transactions_before, snapshot(source))
+            self.assertFalse(self.cache().parent.exists())
+            return subprocess.CompletedProcess(command, 1)
+
+        self.process.side_effect = closed_game
+        cache = self.prepared()
+        self.process.assert_called_once_with(["pgrep", "-x", "fm"], capture_output=True)
+        self.assertFalse(source.exists())
+        archives = list(cache.parent.glob("preserved-transactions-*"))
+        self.assertEqual(len(archives), 1)
+        archive = archives[0]
+        suffix = archive.name.removeprefix("preserved-transactions-")
+        self.assertEqual(str(uuid.UUID(suffix)), suffix)
+        self.assertEqual(stat.S_IMODE(archive.stat().st_mode), 0o700)
+        preserved = archive / "transactions"
+        self.assertEqual(list(archive.iterdir()), [preserved])
+        self.assertEqual(identity, (preserved.stat().st_dev, preserved.stat().st_ino))
+        self.assertEqual(transactions_before, snapshot(preserved))
+        self.assertFalse(preserved.is_relative_to(self.user))
+        self.assertFalse(preserved.is_relative_to(self.root))
+        self.assertEqual(state_before, snapshot(state))
+        self.assertEqual(installed_before, snapshot(self.user / "editor data"))
+        self.assertEqual(saves_before, snapshot(self.user / "games"))
+        self.assertEqual(personal_mod, (self.user / "personal mod.fmf").read_bytes())
+        self.assertEqual(project_before, snapshot(self.root))
+        self.assertEqual(game_before, snapshot(self.game))
+        self.assertEqual(fmfs_before, {p.relative_to(self.user) for p in self.user.rglob("*")
+                                     if p.suffix.lower() == ".fmf"})
+        backend, _, _, manifest, _ = cli.context(self.root)
+        cli.verify_cache(backend, cache, manifest)
+
+        before = snapshot(self.base)
+        self.process.reset_mock()
+        self.process.side_effect = AssertionError("Completed transactions must not be migrated again")
+        result = self.invoke("prepare")
+        self.assertEqual(result[0], 0, result)
+        self.assertIn("already complete", result[1])
+        self.assertEqual(before, snapshot(self.base))
+        self.process.assert_not_called()
+
+    def test_transactions_are_relocated_even_when_current_cache_already_exists(self):
+        cache = self.prepared()
+        source = self.transaction().parent
+        cache_before, transactions_before = snapshot(cache), snapshot(source)
+        self.process.side_effect = None
+        self.process.return_value = subprocess.CompletedProcess([], 1)
+        result = self.invoke("prepare")
+        self.assertEqual(result[0], 0, result)
+        self.assertIn("already complete", result[1])
+        self.assertFalse(source.exists())
+        self.assertEqual(cache_before, snapshot(cache))
+        archives = list(cache.parent.glob("preserved-transactions-*/transactions"))
+        self.assertEqual(len(archives), 1)
+        self.assertEqual(transactions_before, snapshot(archives[0]))
+        self.process.assert_called_once_with(["pgrep", "-x", "fm"], capture_output=True)
+
+    def test_prepare_relocates_legacy_cache_then_completed_transactions(self):
+        legacy = self.legacy_cache()
+        source = self.transaction().parent
+        legacy_before, transactions_before = snapshot(legacy), snapshot(source)
+        checks = []
+
+        def closed_game(command, **kwargs):
+            self.assertEqual(command, ["pgrep", "-x", "fm"])
+            self.assertTrue(source.is_dir())
+            self.assertEqual(transactions_before, snapshot(source))
+            if not checks:
+                self.assertEqual(legacy_before, snapshot(legacy))
+            else:
+                self.assertFalse(legacy.exists())
+                self.assertEqual(len(list(self.cache().parent.glob("preserved-legacy-*"))), 1)
+            checks.append(command)
+            return subprocess.CompletedProcess(command, 1)
+
+        self.process.side_effect = closed_game
+        cache = self.prepared()
+        self.assertEqual(len(checks), 2)
+        self.assertFalse(legacy.exists())
+        self.assertFalse(source.exists())
+        legacy_archives = list(cache.parent.glob("preserved-legacy-*/ReSeason"))
+        transaction_archives = list(cache.parent.glob("preserved-transactions-*/transactions"))
+        self.assertEqual(len(legacy_archives), 1)
+        self.assertEqual(len(transaction_archives), 1)
+        self.assertEqual(legacy_before, snapshot(legacy_archives[0]))
+        self.assertEqual(transactions_before, snapshot(transaction_archives[0]))
+
+    def test_doctor_and_dry_runs_refuse_nonempty_transactions_without_writes_or_processes(self):
+        self.prepared()
+        self.transaction()
+        before = snapshot(self.base)
+        for command in (("doctor",), ("new", "--dry-run"), ("continue", "--dry-run"), ("cold", "--dry-run")):
+            with self.subTest(command=command):
+                result = self.invoke(*command)
+                self.assertEqual(result[0], 1, result)
+                self.assertIn("relocat", result[2].lower())
+                self.assertEqual(before, snapshot(self.base))
+        self.process.assert_not_called()
+
+    def test_empty_transactions_are_left_in_place_without_archiving_or_process_checks(self):
+        cache = self.prepared()
+        source = self.user / "FM24-History-Community/transactions"
+        source.mkdir(parents=True)
+        before = snapshot(self.base)
+        for command in (("doctor",), ("new", "--dry-run"), ("continue", "--dry-run"),
+                        ("cold", "--dry-run"), ("prepare",)):
+            with self.subTest(command=command):
+                result = self.invoke(*command)
+                self.assertEqual(result[0], 0, result)
+                self.assertEqual(before, snapshot(self.base))
+        self.assertEqual(list(source.iterdir()), [])
+        self.assertEqual(list(cache.parent.glob("preserved-transactions-*")), [])
+        self.process.assert_not_called()
+
+    def test_unfinished_transactions_are_refused_without_writes(self):
+        entry = self.transaction()
+        path = entry / "journal.json"
+        journal = json.loads(path.read_bytes())
+        for status in ("PREPARING", "PREPARED", "APPLYING", "ROLLING_BACK", "FAILED", "UNKNOWN", "committed", None):
+            with self.subTest(status=status):
+                journal["status"] = status
+                path.write_text(json.dumps(journal))
+                self.assert_transaction_refused_without_writes()
+
+    def test_transaction_journal_identity_and_schema_must_match(self):
+        entry = self.transaction()
+        path = entry / "journal.json"
+        original = json.loads(path.read_bytes())
+        for field, value in (("schema", 2), ("pack_id", "unrecognized-pack"),
+                             ("transaction_id", "3" * 32), ("actions", None)):
+            with self.subTest(field=field):
+                changed = copy.deepcopy(original)
+                changed[field] = value
+                path.write_text(json.dumps(changed))
+                self.assert_transaction_refused_without_writes()
+
+    def test_missing_or_malformed_transaction_journal_is_refused_untouched(self):
+        entry = self.transaction()
+        path = entry / "journal.json"
+        for content in (None, b"not JSON\n", b"{}\n"):
+            with self.subTest(content=content):
+                if content is None:
+                    path.unlink()
+                else:
+                    path.write_bytes(content)
+                self.assert_transaction_refused_without_writes()
+
+    def test_unknown_transaction_entries_are_refused_without_partial_relocation(self):
+        source = self.transaction().parent
+        for name, is_dir in (("unknown.txt", False), ("not-a-transaction", True),
+                             ("A" * 32, True), ("a" * 31, True), ("b" * 32, False), ("c" * 32, True)):
+            with self.subTest(name=name, is_dir=is_dir):
+                unknown = source / name
+                if is_dir:
+                    unknown.mkdir()
+                else:
+                    unknown.write_bytes(b"Unknown synthetic transaction entry; preserve exactly.\n")
+                self.assert_transaction_refused_without_writes()
+                unknown.rmdir() if is_dir else unknown.unlink()
+
+    def test_transaction_actions_cannot_name_unowned_or_unrelated_basic_files(self):
+        entry = self.transaction()
+        path = entry / "journal.json"
+        original = json.loads(path.read_bytes())
+        for name in ("unowned.fmf", self.data["external_basic"][0]["name"], "../outside.fmf"):
+            with self.subTest(name=name):
+                changed = copy.deepcopy(original)
+                changed["actions"].append({"name": name, "before_sha256": None, "after_sha256": None})
+                path.write_text(json.dumps(changed))
+                self.assert_transaction_refused_without_writes()
+
+    def test_unknown_transaction_metadata_and_payload_files_are_refused_untouched(self):
+        entry = self.transaction()
+        owned_name = self.data["own_fmfs"][0]["name"]
+        for name in ("owned_state.json", "journal.json.new", "unlisted.fmf", "backup/unlisted.fmf",
+                     "stage/unlisted.fmf", "backup/nested/" + owned_name):
+            with self.subTest(name=name):
+                path = entry / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(b"Unknown synthetic transaction file; preserve exactly.\n")
+                self.assert_transaction_refused_without_writes()
+                path.unlink()
+
+    def test_transaction_backup_and_stage_require_their_own_journal_hash(self):
+        entry = self.transaction()
+        name = self.data["own_fmfs"][0]["name"]
+        originals = {kind: (entry / kind / name).read_bytes() for kind in ("backup", "stage")}
+        for kind, other in (("backup", "stage"), ("stage", "backup")):
+            path = entry / kind / name
+            for content in (b"Tampered synthetic transaction FMF.\n", originals[other]):
+                with self.subTest(kind=kind, content=content):
+                    path.write_bytes(content)
+                    self.assert_transaction_refused_without_writes()
+                    path.write_bytes(originals[kind])
+
+    def test_transaction_fmfs_with_missing_journal_hashes_are_refused_untouched(self):
+        entry = self.transaction()
+        path = entry / "journal.json"
+        original = json.loads(path.read_bytes())
+        for field in ("before_sha256", "after_sha256"):
+            with self.subTest(field=field):
+                changed = copy.deepcopy(original)
+                changed["actions"][0][field] = None
+                path.write_text(json.dumps(changed))
+                self.assert_transaction_refused_without_writes()
+
+    def test_transaction_symlinks_at_every_level_are_refused_untouched(self):
+        entry = self.transaction()
+        name = self.data["own_fmfs"][0]["name"]
+        paths = (entry / "journal.json", entry / "backup" / name, entry / "stage" / name,
+                 entry / "backup", entry, entry.parent, entry.parent.parent)
+        for index, path in enumerate(paths):
+            with self.subTest(path=path.relative_to(self.user)):
+                external = self.base / f"external transaction {index}"
+                path.rename(external)
+                path.symlink_to(external, target_is_directory=external.is_dir())
+                self.assert_transaction_refused_without_writes()
+                path.unlink()
+                external.rename(path)
+
+    def test_running_fm_and_process_check_errors_prevent_transaction_relocation(self):
+        self.transaction()
+        before = snapshot(self.base)
+        self.process.side_effect = None
+        for code in (0, 2, -15):
+            for command in ("prepare", "new", "continue"):
+                with self.subTest(code=code, command=command):
+                    self.process.reset_mock()
+                    self.process.return_value = subprocess.CompletedProcess([], code)
+                    result = self.invoke(command)
+                    self.assertEqual(result[0], 1, result)
+                    self.assertIn("FM must be closed", result[2])
+                    self.assertEqual(before, snapshot(self.base))
+                    self.process.assert_called_once_with(["pgrep", "-x", "fm"], capture_output=True)
+
+    def test_transaction_relocation_refuses_process_check_exceptions_without_writes(self):
+        self.transaction()
+        before = snapshot(self.base)
+        for error in (FileNotFoundError("synthetic pgrep unavailable"),
+                      subprocess.SubprocessError("synthetic process-check failure")):
+            with self.subTest(error=type(error).__name__):
+                self.process.reset_mock()
+                self.process.side_effect = error
+                self.assertEqual(self.invoke("prepare")[0], 1)
+                self.assertEqual(before, snapshot(self.base))
+                self.process.assert_called_once_with(["pgrep", "-x", "fm"], capture_output=True)
+
+    def test_transaction_archive_collision_preserves_source_and_existing_archive(self):
+        self.transaction()
+        reservation = self.cache().parent / "preserved-transactions-00000000-0000-0000-0000-000000000000"
+        reservation.mkdir(mode=0o700, parents=True)
+        (reservation / "transactions").mkdir()
+        (reservation / "transactions/keep.fmf").write_bytes(b"Synthetic earlier archive; preserve exactly.\n")
+        before = snapshot(self.base)
+        self.process.side_effect = None
+        self.process.return_value = subprocess.CompletedProcess([], 1)
+        with mock.patch.object(cli.uuid, "uuid4", return_value="00000000-0000-0000-0000-000000000000"):
+            self.assertEqual(self.invoke("prepare")[0], 1)
+        self.assertEqual(before, snapshot(self.base))
+        self.process.assert_called_once_with(["pgrep", "-x", "fm"], capture_output=True)
 
     def test_code_license_docs_and_reference_changes_invalidate_cache_key(self):
         original = cli.context(self.root)[4]
@@ -376,6 +980,96 @@ class ReSeasonTests(unittest.TestCase):
         self.assertEqual(environment["DYLD_INSERT_LIBRARIES"], "")
         self.assertTrue(self.cache().is_dir())
 
+    def test_real_new_and_continue_relocate_legacy_before_mocked_launch(self):
+        self.process.side_effect = None
+        self.process.return_value = subprocess.CompletedProcess([], 1)
+        for command in ("new", "continue"):
+            with self.subTest(command=command):
+                cache = self.prepared()
+                legacy = self.user / "ReSeason"
+                legacy.mkdir(mode=0o700)
+                cache.rename(legacy / cache.name)
+                legacy_before = snapshot(legacy)
+                installed, saves, game = (snapshot(self.user / "editor data"),
+                                          snapshot(self.user / "games"), snapshot(self.game))
+                archives_before = set(cache.parent.glob("preserved-legacy-*"))
+                launches = []
+
+                def run(actual, **kwargs):
+                    if actual == ["pgrep", "-x", "fm"]:
+                        return subprocess.CompletedProcess(actual, 1)
+                    self.assertEqual(actual[:2], ["open", "-n"])
+                    self.assertFalse(legacy.exists())
+                    self.assertTrue(cache.is_dir())
+                    new_archives = set(cache.parent.glob("preserved-legacy-*")) - archives_before
+                    self.assertEqual(len(new_archives), 1)
+                    self.assertEqual(legacy_before, snapshot(new_archives.pop() / "ReSeason"))
+                    launches.append(actual)
+                    return subprocess.CompletedProcess(actual, 0)
+
+                self.process.side_effect = run
+                result = self.invoke(command)
+                self.assertEqual(result[0], 0, result)
+                self.assertEqual(len(launches), 1)
+                environment = dict(launches[0][i + 1].split("=", 1)
+                                   for i, value in enumerate(launches[0][:-1]) if value == "--env")
+                self.assertEqual(bool(environment["DYLD_INSERT_LIBRARIES"]), command == "new")
+                self.assertEqual(installed, snapshot(self.user / "editor data"))
+                self.assertEqual(saves, snapshot(self.user / "games"))
+                self.assertEqual(game, snapshot(self.game))
+
+    def test_busy_game_and_process_errors_block_legacy_migration_on_real_launch(self):
+        self.legacy_cache()
+        before = snapshot(self.base)
+        self.process.side_effect = None
+        for code in (0, 2):
+            for command in ("new", "continue"):
+                with self.subTest(code=code, command=command):
+                    self.process.reset_mock()
+                    self.process.return_value = subprocess.CompletedProcess([], code)
+                    result = self.invoke(command)
+                    self.assertEqual(result[0], 1, result)
+                    self.assertIn("game-process check refused", result[2])
+                    self.assertEqual(before, snapshot(self.base))
+                    self.process.assert_called_once_with(["pgrep", "-x", "fm"], capture_output=True)
+
+    def test_real_new_and_continue_relocate_transactions_before_mocked_launch(self):
+        for command in ("new", "continue"):
+            with self.subTest(command=command):
+                cache = self.prepared()
+                source = self.transaction().parent
+                transactions_before = snapshot(source)
+                state = self.ownership_state()
+                state_before = state.read_bytes()
+                installed, saves, game = (snapshot(self.user / "editor data"),
+                                          snapshot(self.user / "games"), snapshot(self.game))
+                archives_before = set(cache.parent.glob("preserved-transactions-*"))
+                launches = []
+
+                def run(actual, **kwargs):
+                    if actual == ["pgrep", "-x", "fm"]:
+                        return subprocess.CompletedProcess(actual, 1)
+                    self.assertEqual(actual[:2], ["open", "-n"])
+                    self.assertFalse(source.exists())
+                    self.assertTrue(cache.is_dir())
+                    new_archives = set(cache.parent.glob("preserved-transactions-*")) - archives_before
+                    self.assertEqual(len(new_archives), 1)
+                    self.assertEqual(transactions_before, snapshot(new_archives.pop() / "transactions"))
+                    launches.append(actual)
+                    return subprocess.CompletedProcess(actual, 0)
+
+                self.process.side_effect = run
+                result = self.invoke(command)
+                self.assertEqual(result[0], 0, result)
+                self.assertEqual(len(launches), 1)
+                environment = dict(launches[0][i + 1].split("=", 1)
+                                   for i, value in enumerate(launches[0][:-1]) if value == "--env")
+                self.assertEqual(bool(environment["DYLD_INSERT_LIBRARIES"]), command == "new")
+                self.assertEqual(state_before, state.read_bytes())
+                self.assertEqual(installed, snapshot(self.user / "editor data"))
+                self.assertEqual(saves, snapshot(self.user / "games"))
+                self.assertEqual(game, snapshot(self.game))
+
     def test_busy_game_or_process_check_error_cannot_trigger_automatic_preparation(self):
         before = snapshot(self.base)
         self.process.side_effect = None
@@ -387,7 +1081,7 @@ class ReSeasonTests(unittest.TestCase):
                     self.assertEqual(result[0], 1)
                     self.assertIn("game-process check refused", result[2])
                     self.assertEqual(before, snapshot(self.base))
-        self.assertFalse((self.user / "ReSeason").exists())
+        self.assertFalse(self.cache().parent.exists())
 
     def test_actual_launch_uses_unique_private_logs_and_preserves_module_policy(self):
         self.prepared()
@@ -472,7 +1166,7 @@ class ReSeasonTests(unittest.TestCase):
             result = self.invoke("prepare")
         self.assertEqual(result[0], 1)
         self.assertFalse(self.cache().exists())
-        self.assertEqual(list((self.user / "ReSeason").iterdir()), [])
+        self.assertEqual(list(self.cache().parent.iterdir()), [])
         self.assertEqual(self.owned().read_bytes(), b"changed concurrently by synthetic fixture")
 
     def test_file_replacement_during_a_read_is_refused(self):
