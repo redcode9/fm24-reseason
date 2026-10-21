@@ -1,0 +1,99 @@
+{
+  "FM_game_execution_performed": false,
+  "changed_metadata": [
+    "LC_ID_DYLIB",
+    "local_ad_hoc_code_signature"
+  ],
+  "code_and_data_sections_all_identical": true,
+  "codesign_strict_verify": "PASS",
+  "original_LC_ID_sha256": "7143ac24e29a2372c24fabe49b0822f70b6ede3b3667904f90adb80f1f55a5ca",
+  "original_exact_sha256": "66c023b58b84ba451019b657002f2a8ca873060f59495daae8fe0d15512494c4",
+  "original_private_LC_ID_present": true,
+  "portable_LC_ID_DYLIB": "@rpath/libfm24_awards_init_international6_bounded_v2.dylib",
+  "portable_binary_byte_identical_to_upstream": false,
+  "portable_sha256": "a18bbc579afdf76cfb647fe1c9dafb62286edd5711b82f78ecc6a281966b89c2",
+  "sections": [
+    {
+      "address": 1632,
+      "bytes": 25260,
+      "flags": 2147484672,
+      "section": "__text",
+      "segment": "__TEXT",
+      "sha256": "61c4643576e9cb8e0247ac8f202a2b097eb3e048735745e23e8699e653eb1e6b"
+    },
+    {
+      "address": 26892,
+      "bytes": 288,
+      "flags": 2147484680,
+      "section": "__stubs",
+      "segment": "__TEXT",
+      "sha256": "dacf3034d79062ceb818fb655996e29cc2f0ff4c9e71c2f6736009b55c63d918"
+    },
+    {
+      "address": 27180,
+      "bytes": 8,
+      "flags": 22,
+      "section": "__init_offsets",
+      "segment": "__TEXT",
+      "sha256": "0a39a2b017147f0a455c080aa45514803a9d52d3056258812139efeb0ea38342"
+    },
+    {
+      "address": 27200,
+      "bytes": 664,
+      "flags": 0,
+      "section": "__const",
+      "segment": "__TEXT",
+      "sha256": "a72a41780bce0d239acc0f8f6ba55aa6952fe2e8df877eafcb25db1a81745ffb"
+    },
+    {
+      "address": 27864,
+      "bytes": 5183,
+      "flags": 2,
+      "section": "__cstring",
+      "segment": "__TEXT",
+      "sha256": "b5085306cc2234955d738a65cbbd97dee0208e4db5db80e8173e410596e82e8a"
+    },
+    {
+      "address": 33048,
+      "bytes": 216,
+      "flags": 0,
+      "section": "__unwind_info",
+      "segment": "__TEXT",
+      "sha256": "cb2cacab88b7bfb1e0a0506d9f40d5d5d7d51ed3b534fa5511693c06d2c7f866"
+    },
+    {
+      "address": 49152,
+      "bytes": 48,
+      "flags": 0,
+      "section": "__const",
+      "segment": "__DATA_CONST",
+      "sha256": "4bfd5d1750809c35cdb0e67ffb9c206875cbb9dad3b3fcdb8bcc878e21f97885"
+    },
+    {
+      "address": 49200,
+      "bytes": 224,
+      "flags": 6,
+      "section": "__got",
+      "segment": "__DATA_CONST",
+      "sha256": "a0582520d87dd9476a4ebe0027656831f8e08bb2bbfc4485b9d9684f1b955dc4"
+    },
+    {
+      "address": 65536,
+      "bytes": 860,
+      "flags": 1,
+      "section": "__bss",
+      "segment": "__DATA",
+      "sha256": null
+    },
+    {
+      "address": 66400,
+      "bytes": 24,
+      "flags": 1,
+      "section": "__common",
+      "segment": "__DATA",
+      "sha256": null
+    }
+  ],
+  "status": "PASS_METADATA_ONLY_PORTABLE_DERIVATION",
+  "upstream_binary_preserved": true
+}

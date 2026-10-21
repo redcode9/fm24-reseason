@@ -1,0 +1,7 @@
+# ReSeason logo
+
+Original project branding generated with OpenAI's built-in image-generation tool on 21 October 2026. The PNG is an AI-generated asset, not an official Football Manager or SEGA logo. Original project licensing applies to the extent rights subsist; no exclusive trademark clearance is claimed.
+
+Prompt:
+
+> Use case: logo-brand. Create from scratch one polished original logo lockup for a GitHub football-management modification named ReSeason. The project brings Football Manager 2024 into the 2026/27 season. Deliver a landscape 3:2 image suitable for the top of a GitHub README, with a generous clean off-white background. Original geometric emblem: a recognizable association-football ball subtly integrated with a forward circular season arrow, bold and simple enough for a repository avatar. Place the emblem above a premium confident sans-serif wordmark. Exact readable text: 'ReSeason' and beneath it 'FM24 · 2026/27'. Add no other text. Dark ink navy and grass green, one restrained bright lime accent, precise flat vector-like shapes, elegant generous spacing, crisp edge treatment. Make the football/season progression instantly legible. No official Football Manager logo, SEGA logo, club crest, badges from real brands, watermark, gradients, mockup, photos, decorative trophy clutter, or fake UI. High-quality independent software-project identity; welcoming community mod, not an official game sequel.

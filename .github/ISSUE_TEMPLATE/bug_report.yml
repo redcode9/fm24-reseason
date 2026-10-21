@@ -1,0 +1,38 @@
+name: Data or installation issue
+description: Report a specific database gap or setup failure.
+body:
+  - type: markdown
+    attributes:
+      value: "Do not attach saves, database archives, tokens, or personal paths."
+  - type: input
+    id: build
+    attributes:
+      label: Game build and system
+      placeholder: Steam FM24 24.4.2 (2081827), macOS, Apple Silicon
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Setup / launcher
+        - Player history
+        - Player profile
+        - Award / competition history
+        - League rules / calendar
+        - Documentation
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Include the player or competition, season, steps, expected result, and observed result.
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Official sources or redacted setup-check output
+      description: Link an official competition or club source for factual corrections.

@@ -1,0 +1,1324 @@
+{
+  "Mac_Intel_supported": false,
+  "Windows_supported": false,
+  "basic_catalogue": [
+    {
+      "bytes": 434571,
+      "name": "sortitoutsi.net FM24 Data Update - Remove Media Predictions.fmf",
+      "sha256": "ca17ff5a42436b4dd714166c78449e6c632229ff2983d3ee1f90dd967b8e8cdb"
+    },
+    {
+      "bytes": 16755,
+      "name": "sortitoutsi.net FM24 Data Update - Deceased Persons.fmf",
+      "sha256": "58e4c7595e64ffa0392fda31d843605dd9003c3f8edc5fac7b8dfdc92f1f52a7"
+    },
+    {
+      "bytes": 57150,
+      "name": "sortitoutsi.net FM24 Data Update - Argentina (2026 Start).fmf",
+      "sha256": "2a0d31610add00332e9f9a39e4524cfac21afb2a33837aad777795834b19a0ca"
+    },
+    {
+      "bytes": 48188,
+      "name": "sortitoutsi.net FM24 Data Update - Austria (2026 Start).fmf",
+      "sha256": "295fa32a2994f0322a5d839ec8571dc071cd04675e0c10226ac73749c53fd33e"
+    },
+    {
+      "bytes": 35781,
+      "name": "sortitoutsi.net FM24 Data Update - Belarus (2026 Start).fmf",
+      "sha256": "21f45239be46f934c832b597070a0b1e60411d39d4bb66416895fc5f9896b497"
+    },
+    {
+      "bytes": 106342,
+      "name": "sortitoutsi.net FM24 Data Update - Belgium (2026 Start).fmf",
+      "sha256": "c39518d6c18f6d431a4d8a63c1a98b6f4cd38705589dd46d3f830ad4ddcfa37d"
+    },
+    {
+      "bytes": 44304,
+      "name": "sortitoutsi.net FM24 Data Update - Bolivia (2026 Start).fmf",
+      "sha256": "4373f46a379c7d59f0a16806775b447197bd5e58928808343bdd75a111c7cd00"
+    },
+    {
+      "bytes": 86087,
+      "name": "sortitoutsi.net FM24 Data Update - Brazil (2026 Start).fmf",
+      "sha256": "5048ab8149b209dd223e7e3913ec01cf0def848c9d68bf0e5da7189bea03202a"
+    },
+    {
+      "bytes": 79328,
+      "name": "sortitoutsi.net FM24 Data Update - Bulgaria (2026 Start).fmf",
+      "sha256": "8d1c96d0100dacf68229b6e9fb81b37385c5fd7e5f1eeb57d88adf646795aa9b"
+    },
+    {
+      "bytes": 22481,
+      "name": "sortitoutsi.net FM24 Data Update - Canada (2026 Start).fmf",
+      "sha256": "5b02a7a694a6cb0b9244255cd649d1fe17f892412ce1a8740d780eea95a2199c"
+    },
+    {
+      "bytes": 44421,
+      "name": "sortitoutsi.net FM24 Data Update - Chile (2026 Start).fmf",
+      "sha256": "42ed6b424f97e1b837690caf21e688a74d00a7058eeabc9eba703f3d45ffec11"
+    },
+    {
+      "bytes": 57638,
+      "name": "sortitoutsi.net FM24 Data Update - Colombia (2026 Start).fmf",
+      "sha256": "230f082eabde1b9f06e6b77472b63e6c7016ffd96e2286aaca236ed42a46d3df"
+    },
+    {
+      "bytes": 34309,
+      "name": "sortitoutsi.net FM24 Data Update - Croatia (2026 Start).fmf",
+      "sha256": "220e984051afcce91ca8776398e24fa36994b60e3d7f71a58897a1f25ce20eab"
+    },
+    {
+      "bytes": 72354,
+      "name": "sortitoutsi.net FM24 Data Update - Czechia (2026 Start).fmf",
+      "sha256": "8eb329dc029bb1479197866ca27d90359ba70ea329edf026ce0a3d6eba1f2344"
+    },
+    {
+      "bytes": 55188,
+      "name": "sortitoutsi.net FM24 Data Update - Denmark (2026 Start).fmf",
+      "sha256": "60528fb488d34eb3efe8d044a9bf5a2a1ec9258bff16d3b8d37c9bc6cf83d2d3"
+    },
+    {
+      "bytes": 37280,
+      "name": "sortitoutsi.net FM24 Data Update - Ecuador (2026 Start).fmf",
+      "sha256": "11bacd05b3a51a168e185eb1d7f08637f62d6d0545d6efbcd68bbb2e777e8fb2"
+    },
+    {
+      "bytes": 4836534,
+      "name": "sortitoutsi.net FM24 Data Update - England (2026 Start).fmf",
+      "sha256": "43468110c3a1f8ff24873e70e599997f6b2b696e942f5bb7bae5e7282a81c456"
+    },
+    {
+      "bytes": 36878,
+      "name": "sortitoutsi.net FM24 Data Update - Finland (2026 Start).fmf",
+      "sha256": "451b273c89dcd7243fdd110b710d6b08ac29e2c62d2b063f6b2afa211c541c7f"
+    },
+    {
+      "bytes": 89657,
+      "name": "sortitoutsi.net FM24 Data Update - France (2026 Start).fmf",
+      "sha256": "f8f2494dd46d9d0c9fa2fe8a3ddfe8b66e63a1a085ac40315d4788099d6a7a08"
+    },
+    {
+      "bytes": 66865,
+      "name": "sortitoutsi.net FM24 Data Update - Germany (2026 Start).fmf",
+      "sha256": "329ee1788940b335477d2ff06c1c817d3cf5e81d57da1b63c60ba39de17d9146"
+    },
+    {
+      "bytes": 25074,
+      "name": "sortitoutsi.net FM24 Data Update - Gibraltar (2026 Start).fmf",
+      "sha256": "448411a54c560423d59c1feef9c5f1ef72f9cd7605e45e43fe11235e267c9e88"
+    },
+    {
+      "bytes": 44326,
+      "name": "sortitoutsi.net FM24 Data Update - Greece (2026 Start).fmf",
+      "sha256": "0c7f66ef0e6e35df70b1a6278b5abce065e12d4735e2be4ae918980ab62bb725"
+    },
+    {
+      "bytes": 68827,
+      "name": "sortitoutsi.net FM24 Data Update - Hungary (2026 Start).fmf",
+      "sha256": "0a10eb372ecb99a7e079b747966dcfa1f7f2bfa369a8a9d36f5957a5deddc23d"
+    },
+    {
+      "bytes": 35991,
+      "name": "sortitoutsi.net FM24 Data Update - Iceland (2026 Start).fmf",
+      "sha256": "e49f5da6b79d6f67741f71b85345f47cda448bec74b654941b94a1527a953df8"
+    },
+    {
+      "bytes": 33023,
+      "name": "sortitoutsi.net FM24 Data Update - Ireland (2026 Start).fmf",
+      "sha256": "761f1b415eeedaec66ed0fa947365e9ccfe2cb9d00bebf44ebc7a0b62d5150aa"
+    },
+    {
+      "bytes": 44595,
+      "name": "sortitoutsi.net FM24 Data Update - Israel (2026 Start).fmf",
+      "sha256": "4e059673aa113aa4ba0064993c32d633d8edc8b8d400bc09bcbab1b762e13371"
+    },
+    {
+      "bytes": 114754,
+      "name": "sortitoutsi.net FM24 Data Update - Italy (2026 Start).fmf",
+      "sha256": "66414cfe8a23bf235df4a1aa1bd70060203320ab15918873837ffbfcf496e2b9"
+    },
+    {
+      "bytes": 27060,
+      "name": "sortitoutsi.net FM24 Data Update - Latvia (2026 Start).fmf",
+      "sha256": "3ae20858fe92e5c25fccfc366dc1a330cd01aa1eda94f87d5dded238b67b0dd1"
+    },
+    {
+      "bytes": 61724,
+      "name": "sortitoutsi.net FM24 Data Update - Mexico (2026 Start).fmf",
+      "sha256": "599568440160b8b87030b502925665edf89f6ac33f802391a401b386436c1bd4"
+    },
+    {
+      "bytes": 66992,
+      "name": "sortitoutsi.net FM24 Data Update - Netherlands (2026 Start).fmf",
+      "sha256": "244e022c966a9a65e2e17ce30493ea0cf44d8962ee3962ab920b9514af633634"
+    },
+    {
+      "bytes": 46117,
+      "name": "sortitoutsi.net FM24 Data Update - Northern Ireland (2026 Start).fmf",
+      "sha256": "f7aeacdc6a0ef1258928a699552dbf5f690059dc73be5bf1d737713316d0e820"
+    },
+    {
+      "bytes": 68376,
+      "name": "sortitoutsi.net FM24 Data Update - Norway (2026 Start).fmf",
+      "sha256": "a00731b5a5f8eff70a859c2a010568aa51decc9a5b47202e219aa3efd949e4a2"
+    },
+    {
+      "bytes": 44961,
+      "name": "sortitoutsi.net FM24 Data Update - Paraguay (2026 Start).fmf",
+      "sha256": "4a39bf71e055dcf2657c034cd599efe180af80cfb9c130c7febb2827f1862dff"
+    },
+    {
+      "bytes": 65117,
+      "name": "sortitoutsi.net FM24 Data Update - Peru (2026 Start).fmf",
+      "sha256": "e91a6da008ae142eecae92c77bf0478de1a37e71d1c38f11791e607a1d7d03d7"
+    },
+    {
+      "bytes": 79559,
+      "name": "sortitoutsi.net FM24 Data Update - Poland (2026 Start).fmf",
+      "sha256": "72fc859a18597dacf27de68f3fb22219a6ddc65c9d457c73d34a650e7ea26765"
+    },
+    {
+      "bytes": 97248,
+      "name": "sortitoutsi.net FM24 Data Update - Portugal (2026 Start).fmf",
+      "sha256": "cee2e23d14cdf436abd0c349eb0b826303b5b7463336fc83bbf4e49095192763"
+    },
+    {
+      "bytes": 59907,
+      "name": "sortitoutsi.net FM24 Data Update - Romania (2026 Start).fmf",
+      "sha256": "581da1ed8aa209e3c395eaab113b4008b475870a2a942ce69ee656e0cca84886"
+    },
+    {
+      "bytes": 43520,
+      "name": "sortitoutsi.net FM24 Data Update - Russia (2026 Start).fmf",
+      "sha256": "9df652857b3a6284e732944c326d9641c4dbbeef650bb1da6398ef167342e62f"
+    },
+    {
+      "bytes": 104647,
+      "name": "sortitoutsi.net FM24 Data Update - Scotland (2026 Start).fmf",
+      "sha256": "19a333b50c5a21acd36f2eb0b8e99c2464f03fed12e9c3d7655f889c61603c68"
+    },
+    {
+      "bytes": 42270,
+      "name": "sortitoutsi.net FM24 Data Update - Serbia (2026 Start).fmf",
+      "sha256": "4b3053c9dc3d1345694b99e5cc2fec9fba0b7a3ccf9e9fb2ee6bc2db0b082f1d"
+    },
+    {
+      "bytes": 36430,
+      "name": "sortitoutsi.net FM24 Data Update - Slovakia (2026 Start).fmf",
+      "sha256": "6fd6fee3f34252a694474034771f15c0eced7ab81ded4290dd0fda436c13f90c"
+    },
+    {
+      "bytes": 36316,
+      "name": "sortitoutsi.net FM24 Data Update - Slovenia (2026 Start).fmf",
+      "sha256": "f82aed54e5a386042c7af2ca4c061363f8d8ab013e0d022e19f48f3c76b40912"
+    },
+    {
+      "bytes": 41326,
+      "name": "sortitoutsi.net FM24 Data Update - South Africa (2026 Start).fmf",
+      "sha256": "cb2b21e358a649dfa07e0c37530a9e6d1123e4fdaeddd748b9eaa130bec4dd11"
+    },
+    {
+      "bytes": 65654,
+      "name": "sortitoutsi.net FM24 Data Update - Spain (2026 Start).fmf",
+      "sha256": "9e1100363a8a388342bee4126b7a0afc40643645fe32ea528631b4eaa74dab08"
+    },
+    {
+      "bytes": 81635,
+      "name": "sortitoutsi.net FM24 Data Update - Sweden (2026 Start).fmf",
+      "sha256": "3a6ece4a7cd15166c100988432f3a17bd50494eb50a5cd23da99de9681bdd882"
+    },
+    {
+      "bytes": 40880,
+      "name": "sortitoutsi.net FM24 Data Update - Switzerland (2026 Start).fmf",
+      "sha256": "2ed21b603af90818fbcc7df5ae779541f9f5edf629120b77f5cb7440b33436c8"
+    },
+    {
+      "bytes": 78058,
+      "name": "sortitoutsi.net FM24 Data Update - Türkiye (2026 Start).fmf",
+      "sha256": "5b4ceea1b34743b98d8f3be264d1b90b8a2b626eaba40b61b6940fb5241bd687"
+    },
+    {
+      "bytes": 46978,
+      "name": "sortitoutsi.net FM24 Data Update - Uruguay (2026 Start).fmf",
+      "sha256": "554a4aef68f4dd0dbdbec797b1cd349c4a0374c7d0fd4ffd5822dbf0e667b2b7"
+    },
+    {
+      "bytes": 50179,
+      "name": "sortitoutsi.net FM24 Data Update - USA (2026 Start).fmf",
+      "sha256": "e4e01038a4136c4b059fddf04bdc70f2990a3327f62741984a337e1ed4de53ba"
+    },
+    {
+      "bytes": 39395,
+      "name": "sortitoutsi.net FM24 Data Update - Venezuela (2026 Start).fmf",
+      "sha256": "3df7040f57bc89f12c7af96fa1b4385a87c191ba301c61c8bdccc338bce4fd4d"
+    },
+    {
+      "bytes": 45504,
+      "name": "sortitoutsi.net FM24 Data Update - European Competitions (2026 Start).fmf",
+      "sha256": "83a7e5cd2f3b131d684584c03a48ebd8d5b2b6b2438966b3e42831495e5d5f6a"
+    },
+    {
+      "bytes": 86242,
+      "name": "sortitoutsi.net FM24 Data Update - Nationalities.fmf",
+      "sha256": "14c05d109fe4d90fe65e0c0bfc1cb8e20cd907fcfb6b3e4b411f14791389cfad"
+    },
+    {
+      "bytes": 12130131,
+      "name": "sortitoutsi.net FM24 Data Update - Contracts (2026 Start).fmf",
+      "sha256": "3247fa157118821f3be13b8481ae1d2811ea22da0e467cbbce0273f40e96a9d8"
+    },
+    {
+      "bytes": 2945378,
+      "name": "sortitoutsi.net FM24 Data Update - New People (2026 Start).fmf",
+      "sha256": "3161c57cddb05e36674ed66435024769ce5a3360cdaa0ed4897f1411b5e3f7f8"
+    }
+  ],
+  "basic_catalogue_origin_sha256": "af4f09dcfece8d1c39f67688a4858ee99b84ee15fbd730bde4efa6880fce4062",
+  "basic_replacements": [
+    {
+      "dependency_bytes": 114754,
+      "dependency_name": "sortitoutsi.net FM24 Data Update - Italy (2026 Start).fmf",
+      "dependency_sha256": "66414cfe8a23bf235df4a1aa1bd70060203320ab15918873837ffbfcf496e2b9",
+      "replacement_name": "FM24_2026_27_Italy_SerieD.fmf"
+    }
+  ],
+  "exclusive_replacements": [
+    {
+      "selected_name": "FM24_2026_27_Schede_prioritarie_13.fmf",
+      "slot": "profile13",
+      "superseded_names": [
+        "FM24_2026_27_Schede_prioritarie_13_C332.fmf"
+      ]
+    }
+  ],
+  "external_basic": [
+    {
+      "bytes": 434571,
+      "name": "sortitoutsi.net FM24 Data Update - Remove Media Predictions.fmf",
+      "sha256": "ca17ff5a42436b4dd714166c78449e6c632229ff2983d3ee1f90dd967b8e8cdb"
+    },
+    {
+      "bytes": 16755,
+      "name": "sortitoutsi.net FM24 Data Update - Deceased Persons.fmf",
+      "sha256": "58e4c7595e64ffa0392fda31d843605dd9003c3f8edc5fac7b8dfdc92f1f52a7"
+    },
+    {
+      "bytes": 57150,
+      "name": "sortitoutsi.net FM24 Data Update - Argentina (2026 Start).fmf",
+      "sha256": "2a0d31610add00332e9f9a39e4524cfac21afb2a33837aad777795834b19a0ca"
+    },
+    {
+      "bytes": 48188,
+      "name": "sortitoutsi.net FM24 Data Update - Austria (2026 Start).fmf",
+      "sha256": "295fa32a2994f0322a5d839ec8571dc071cd04675e0c10226ac73749c53fd33e"
+    },
+    {
+      "bytes": 35781,
+      "name": "sortitoutsi.net FM24 Data Update - Belarus (2026 Start).fmf",
+      "sha256": "21f45239be46f934c832b597070a0b1e60411d39d4bb66416895fc5f9896b497"
+    },
+    {
+      "bytes": 106342,
+      "name": "sortitoutsi.net FM24 Data Update - Belgium (2026 Start).fmf",
+      "sha256": "c39518d6c18f6d431a4d8a63c1a98b6f4cd38705589dd46d3f830ad4ddcfa37d"
+    },
+    {
+      "bytes": 44304,
+      "name": "sortitoutsi.net FM24 Data Update - Bolivia (2026 Start).fmf",
+      "sha256": "4373f46a379c7d59f0a16806775b447197bd5e58928808343bdd75a111c7cd00"
+    },
+    {
+      "bytes": 86087,
+      "name": "sortitoutsi.net FM24 Data Update - Brazil (2026 Start).fmf",
+      "sha256": "5048ab8149b209dd223e7e3913ec01cf0def848c9d68bf0e5da7189bea03202a"
+    },
+    {
+      "bytes": 79328,
+      "name": "sortitoutsi.net FM24 Data Update - Bulgaria (2026 Start).fmf",
+      "sha256": "8d1c96d0100dacf68229b6e9fb81b37385c5fd7e5f1eeb57d88adf646795aa9b"
+    },
+    {
+      "bytes": 22481,
+      "name": "sortitoutsi.net FM24 Data Update - Canada (2026 Start).fmf",
+      "sha256": "5b02a7a694a6cb0b9244255cd649d1fe17f892412ce1a8740d780eea95a2199c"
+    },
+    {
+      "bytes": 44421,
+      "name": "sortitoutsi.net FM24 Data Update - Chile (2026 Start).fmf",
+      "sha256": "42ed6b424f97e1b837690caf21e688a74d00a7058eeabc9eba703f3d45ffec11"
+    },
+    {
+      "bytes": 57638,
+      "name": "sortitoutsi.net FM24 Data Update - Colombia (2026 Start).fmf",
+      "sha256": "230f082eabde1b9f06e6b77472b63e6c7016ffd96e2286aaca236ed42a46d3df"
+    },
+    {
+      "bytes": 34309,
+      "name": "sortitoutsi.net FM24 Data Update - Croatia (2026 Start).fmf",
+      "sha256": "220e984051afcce91ca8776398e24fa36994b60e3d7f71a58897a1f25ce20eab"
+    },
+    {
+      "bytes": 72354,
+      "name": "sortitoutsi.net FM24 Data Update - Czechia (2026 Start).fmf",
+      "sha256": "8eb329dc029bb1479197866ca27d90359ba70ea329edf026ce0a3d6eba1f2344"
+    },
+    {
+      "bytes": 55188,
+      "name": "sortitoutsi.net FM24 Data Update - Denmark (2026 Start).fmf",
+      "sha256": "60528fb488d34eb3efe8d044a9bf5a2a1ec9258bff16d3b8d37c9bc6cf83d2d3"
+    },
+    {
+      "bytes": 37280,
+      "name": "sortitoutsi.net FM24 Data Update - Ecuador (2026 Start).fmf",
+      "sha256": "11bacd05b3a51a168e185eb1d7f08637f62d6d0545d6efbcd68bbb2e777e8fb2"
+    },
+    {
+      "bytes": 4836534,
+      "name": "sortitoutsi.net FM24 Data Update - England (2026 Start).fmf",
+      "sha256": "43468110c3a1f8ff24873e70e599997f6b2b696e942f5bb7bae5e7282a81c456"
+    },
+    {
+      "bytes": 36878,
+      "name": "sortitoutsi.net FM24 Data Update - Finland (2026 Start).fmf",
+      "sha256": "451b273c89dcd7243fdd110b710d6b08ac29e2c62d2b063f6b2afa211c541c7f"
+    },
+    {
+      "bytes": 89657,
+      "name": "sortitoutsi.net FM24 Data Update - France (2026 Start).fmf",
+      "sha256": "f8f2494dd46d9d0c9fa2fe8a3ddfe8b66e63a1a085ac40315d4788099d6a7a08"
+    },
+    {
+      "bytes": 66865,
+      "name": "sortitoutsi.net FM24 Data Update - Germany (2026 Start).fmf",
+      "sha256": "329ee1788940b335477d2ff06c1c817d3cf5e81d57da1b63c60ba39de17d9146"
+    },
+    {
+      "bytes": 25074,
+      "name": "sortitoutsi.net FM24 Data Update - Gibraltar (2026 Start).fmf",
+      "sha256": "448411a54c560423d59c1feef9c5f1ef72f9cd7605e45e43fe11235e267c9e88"
+    },
+    {
+      "bytes": 44326,
+      "name": "sortitoutsi.net FM24 Data Update - Greece (2026 Start).fmf",
+      "sha256": "0c7f66ef0e6e35df70b1a6278b5abce065e12d4735e2be4ae918980ab62bb725"
+    },
+    {
+      "bytes": 68827,
+      "name": "sortitoutsi.net FM24 Data Update - Hungary (2026 Start).fmf",
+      "sha256": "0a10eb372ecb99a7e079b747966dcfa1f7f2bfa369a8a9d36f5957a5deddc23d"
+    },
+    {
+      "bytes": 35991,
+      "name": "sortitoutsi.net FM24 Data Update - Iceland (2026 Start).fmf",
+      "sha256": "e49f5da6b79d6f67741f71b85345f47cda448bec74b654941b94a1527a953df8"
+    },
+    {
+      "bytes": 33023,
+      "name": "sortitoutsi.net FM24 Data Update - Ireland (2026 Start).fmf",
+      "sha256": "761f1b415eeedaec66ed0fa947365e9ccfe2cb9d00bebf44ebc7a0b62d5150aa"
+    },
+    {
+      "bytes": 44595,
+      "name": "sortitoutsi.net FM24 Data Update - Israel (2026 Start).fmf",
+      "sha256": "4e059673aa113aa4ba0064993c32d633d8edc8b8d400bc09bcbab1b762e13371"
+    },
+    {
+      "bytes": 27060,
+      "name": "sortitoutsi.net FM24 Data Update - Latvia (2026 Start).fmf",
+      "sha256": "3ae20858fe92e5c25fccfc366dc1a330cd01aa1eda94f87d5dded238b67b0dd1"
+    },
+    {
+      "bytes": 61724,
+      "name": "sortitoutsi.net FM24 Data Update - Mexico (2026 Start).fmf",
+      "sha256": "599568440160b8b87030b502925665edf89f6ac33f802391a401b386436c1bd4"
+    },
+    {
+      "bytes": 66992,
+      "name": "sortitoutsi.net FM24 Data Update - Netherlands (2026 Start).fmf",
+      "sha256": "244e022c966a9a65e2e17ce30493ea0cf44d8962ee3962ab920b9514af633634"
+    },
+    {
+      "bytes": 46117,
+      "name": "sortitoutsi.net FM24 Data Update - Northern Ireland (2026 Start).fmf",
+      "sha256": "f7aeacdc6a0ef1258928a699552dbf5f690059dc73be5bf1d737713316d0e820"
+    },
+    {
+      "bytes": 68376,
+      "name": "sortitoutsi.net FM24 Data Update - Norway (2026 Start).fmf",
+      "sha256": "a00731b5a5f8eff70a859c2a010568aa51decc9a5b47202e219aa3efd949e4a2"
+    },
+    {
+      "bytes": 44961,
+      "name": "sortitoutsi.net FM24 Data Update - Paraguay (2026 Start).fmf",
+      "sha256": "4a39bf71e055dcf2657c034cd599efe180af80cfb9c130c7febb2827f1862dff"
+    },
+    {
+      "bytes": 65117,
+      "name": "sortitoutsi.net FM24 Data Update - Peru (2026 Start).fmf",
+      "sha256": "e91a6da008ae142eecae92c77bf0478de1a37e71d1c38f11791e607a1d7d03d7"
+    },
+    {
+      "bytes": 79559,
+      "name": "sortitoutsi.net FM24 Data Update - Poland (2026 Start).fmf",
+      "sha256": "72fc859a18597dacf27de68f3fb22219a6ddc65c9d457c73d34a650e7ea26765"
+    },
+    {
+      "bytes": 97248,
+      "name": "sortitoutsi.net FM24 Data Update - Portugal (2026 Start).fmf",
+      "sha256": "cee2e23d14cdf436abd0c349eb0b826303b5b7463336fc83bbf4e49095192763"
+    },
+    {
+      "bytes": 59907,
+      "name": "sortitoutsi.net FM24 Data Update - Romania (2026 Start).fmf",
+      "sha256": "581da1ed8aa209e3c395eaab113b4008b475870a2a942ce69ee656e0cca84886"
+    },
+    {
+      "bytes": 43520,
+      "name": "sortitoutsi.net FM24 Data Update - Russia (2026 Start).fmf",
+      "sha256": "9df652857b3a6284e732944c326d9641c4dbbeef650bb1da6398ef167342e62f"
+    },
+    {
+      "bytes": 104647,
+      "name": "sortitoutsi.net FM24 Data Update - Scotland (2026 Start).fmf",
+      "sha256": "19a333b50c5a21acd36f2eb0b8e99c2464f03fed12e9c3d7655f889c61603c68"
+    },
+    {
+      "bytes": 42270,
+      "name": "sortitoutsi.net FM24 Data Update - Serbia (2026 Start).fmf",
+      "sha256": "4b3053c9dc3d1345694b99e5cc2fec9fba0b7a3ccf9e9fb2ee6bc2db0b082f1d"
+    },
+    {
+      "bytes": 36430,
+      "name": "sortitoutsi.net FM24 Data Update - Slovakia (2026 Start).fmf",
+      "sha256": "6fd6fee3f34252a694474034771f15c0eced7ab81ded4290dd0fda436c13f90c"
+    },
+    {
+      "bytes": 36316,
+      "name": "sortitoutsi.net FM24 Data Update - Slovenia (2026 Start).fmf",
+      "sha256": "f82aed54e5a386042c7af2ca4c061363f8d8ab013e0d022e19f48f3c76b40912"
+    },
+    {
+      "bytes": 41326,
+      "name": "sortitoutsi.net FM24 Data Update - South Africa (2026 Start).fmf",
+      "sha256": "cb2b21e358a649dfa07e0c37530a9e6d1123e4fdaeddd748b9eaa130bec4dd11"
+    },
+    {
+      "bytes": 65654,
+      "name": "sortitoutsi.net FM24 Data Update - Spain (2026 Start).fmf",
+      "sha256": "9e1100363a8a388342bee4126b7a0afc40643645fe32ea528631b4eaa74dab08"
+    },
+    {
+      "bytes": 81635,
+      "name": "sortitoutsi.net FM24 Data Update - Sweden (2026 Start).fmf",
+      "sha256": "3a6ece4a7cd15166c100988432f3a17bd50494eb50a5cd23da99de9681bdd882"
+    },
+    {
+      "bytes": 40880,
+      "name": "sortitoutsi.net FM24 Data Update - Switzerland (2026 Start).fmf",
+      "sha256": "2ed21b603af90818fbcc7df5ae779541f9f5edf629120b77f5cb7440b33436c8"
+    },
+    {
+      "bytes": 78058,
+      "name": "sortitoutsi.net FM24 Data Update - Türkiye (2026 Start).fmf",
+      "sha256": "5b4ceea1b34743b98d8f3be264d1b90b8a2b626eaba40b61b6940fb5241bd687"
+    },
+    {
+      "bytes": 46978,
+      "name": "sortitoutsi.net FM24 Data Update - Uruguay (2026 Start).fmf",
+      "sha256": "554a4aef68f4dd0dbdbec797b1cd349c4a0374c7d0fd4ffd5822dbf0e667b2b7"
+    },
+    {
+      "bytes": 50179,
+      "name": "sortitoutsi.net FM24 Data Update - USA (2026 Start).fmf",
+      "sha256": "e4e01038a4136c4b059fddf04bdc70f2990a3327f62741984a337e1ed4de53ba"
+    },
+    {
+      "bytes": 39395,
+      "name": "sortitoutsi.net FM24 Data Update - Venezuela (2026 Start).fmf",
+      "sha256": "3df7040f57bc89f12c7af96fa1b4385a87c191ba301c61c8bdccc338bce4fd4d"
+    },
+    {
+      "bytes": 45504,
+      "name": "sortitoutsi.net FM24 Data Update - European Competitions (2026 Start).fmf",
+      "sha256": "83a7e5cd2f3b131d684584c03a48ebd8d5b2b6b2438966b3e42831495e5d5f6a"
+    },
+    {
+      "bytes": 86242,
+      "name": "sortitoutsi.net FM24 Data Update - Nationalities.fmf",
+      "sha256": "14c05d109fe4d90fe65e0c0bfc1cb8e20cd907fcfb6b3e4b411f14791389cfad"
+    },
+    {
+      "bytes": 12130131,
+      "name": "sortitoutsi.net FM24 Data Update - Contracts (2026 Start).fmf",
+      "sha256": "3247fa157118821f3be13b8481ae1d2811ea22da0e467cbbce0273f40e96a9d8"
+    },
+    {
+      "bytes": 2945378,
+      "name": "sortitoutsi.net FM24 Data Update - New People (2026 Start).fmf",
+      "sha256": "3161c57cddb05e36674ed66435024769ce5a3360cdaa0ed4897f1411b5e3f7f8"
+    }
+  ],
+  "extra_data_retention": {
+    "native_consumption": "PENDING_NEW_GAME_WITNESS",
+    "public_TEAM_UID": 71046777,
+    "source_bytes_only": true
+  },
+  "files": [
+    {
+      "bytes": 24563,
+      "path": "payload/editor data/FM24_2026_27_Albi_Domestici_2024_2025.fmf",
+      "sha256": "ab668f48d7770b682acff1fd0dedb6a40848484e28ff1789fc3a2c9c334ae225"
+    },
+    {
+      "bytes": 15972,
+      "path": "payload/editor data/FM24_2026_27_Coppe_Internazionali_2024_2026.fmf",
+      "sha256": "7d32f4a56b1c0a6b4cf444ff0b0f99074e956383ba0731a3eae0aeaa875b2baf"
+    },
+    {
+      "bytes": 15309,
+      "path": "payload/editor data/FM24_2026_27_Correzioni_Anagrafiche.fmf",
+      "sha256": "e2abb603b2598556455320dfe51ed5b0d75f5903598974494be6b8e19fa70b07"
+    },
+    {
+      "bytes": 15761,
+      "path": "payload/editor data/FM24_2026_27_GoldenBoy_2025.fmf",
+      "sha256": "89c02e8f730d4c8d885a15af9d5b1a38570ea8dbaae6fbab46280f36be104a11"
+    },
+    {
+      "bytes": 116556,
+      "path": "payload/editor data/FM24_2026_27_Italy_SerieD.fmf",
+      "sha256": "8aff43d15c08e552cdd4ab99130a77c344ece066623f89c2b967c5d2733487bf"
+    },
+    {
+      "bytes": 16856,
+      "path": "payload/editor data/FM24_2026_27_Kopa_Yashin_2024_2025.fmf",
+      "sha256": "af0bd6f9e0992a475b76096f56b55492c8e58dd516b4238a8bd6b67e558f9632"
+    },
+    {
+      "bytes": 15537,
+      "path": "payload/editor data/FM24_2026_27_Mondiale_2026.fmf",
+      "sha256": "a3aee1a65d8246c7cc89134c7ec3a5914969ea4ab6ffea09ca68cea1b20027c5"
+    },
+    {
+      "bytes": 17024,
+      "path": "payload/editor data/FM24_2026_27_Pallone_dOro_e_TheBest_2023_2025.fmf",
+      "sha256": "d98746053aa3624426b8f517b0cafb0dede422481c36897ecbd8ebdc42108f1b"
+    },
+    {
+      "bytes": 16457,
+      "path": "payload/editor data/FM24_2026_27_Premi_aggiuntivi.fmf",
+      "sha256": "f926bd9525ba28fb9c5579a230816827c5f3cfee3bf4105e4e301154e98f5ab8"
+    },
+    {
+      "bytes": 15735,
+      "path": "payload/editor data/FM24_2026_27_Scheda_Declan_Rice.fmf",
+      "sha256": "70995490ca87622296ae20aff34be9e60aedebe0d9bf87bcba52d4bbbdf18834"
+    },
+    {
+      "bytes": 1391195,
+      "path": "payload/editor data/FM24_2026_27_Schede_Globali_01.fmf",
+      "sha256": "ffaf367d3e8ebd6155398f1060860dd325d5f84b0cdbf7e531cb0bd197c6a560"
+    },
+    {
+      "bytes": 1442047,
+      "path": "payload/editor data/FM24_2026_27_Schede_Globali_02.fmf",
+      "sha256": "b60ea9b04591b302068cf71722d9cb3de50d123db2e5619ff914656ac4982f92"
+    },
+    {
+      "bytes": 1434332,
+      "path": "payload/editor data/FM24_2026_27_Schede_Globali_03.fmf",
+      "sha256": "c98395702a261e222a1a76d388903eae990938c37e828c6d0e5abe4222d65b81"
+    },
+    {
+      "bytes": 1400140,
+      "path": "payload/editor data/FM24_2026_27_Schede_Globali_04.fmf",
+      "sha256": "195eaa70c419931adb6c96e9133663769e86d3adb23199215f76ee16b950c4ce"
+    },
+    {
+      "bytes": 1400877,
+      "path": "payload/editor data/FM24_2026_27_Schede_Globali_05.fmf",
+      "sha256": "f8365a3229e98e74e2101a0e3bfb6d88ae97bc15425ef1c3316c3bd9cd6c2098"
+    },
+    {
+      "bytes": 1399388,
+      "path": "payload/editor data/FM24_2026_27_Schede_Globali_06.fmf",
+      "sha256": "ca4386ca3a550909af0a8b7692264a85390783235e64e26c5ae354ce549bf536"
+    },
+    {
+      "bytes": 1317239,
+      "path": "payload/editor data/FM24_2026_27_Schede_Globali_07.fmf",
+      "sha256": "926182be76a35f58efa0046e9a5f4eb29dfa64b6eb9e91c9c94d74688ca0583b"
+    },
+    {
+      "bytes": 1258086,
+      "path": "payload/editor data/FM24_2026_27_Schede_Globali_08.fmf",
+      "sha256": "91cf62b81020434234c832cd0b2138b538142d65d24cabc58604a9822760095f"
+    },
+    {
+      "bytes": 264450,
+      "path": "payload/editor data/FM24_2026_27_Schede_Globali_09.fmf",
+      "sha256": "81caad9f1d6ae3c6e263987107ef1ec31b7209ba779cfbb1500b8a47a0381b12"
+    },
+    {
+      "bytes": 325390,
+      "path": "payload/editor data/FM24_2026_27_Schede_Globali_Recuperate_973.fmf",
+      "sha256": "b53533c82cdfef2761192d028ef9d53d6ffce2907f5ee334e0b4a88b890d445f"
+    },
+    {
+      "bytes": 20810,
+      "path": "payload/editor data/FM24_2026_27_Schede_prioritarie_13.fmf",
+      "sha256": "0fb14882230911cbf0262983058d5a401cc4e7dae56a3eae8fdc9ed1026413fd"
+    },
+    {
+      "bytes": 22486,
+      "path": "payload/editor data/FM24_2026_27_Schede_prioritarie_19.fmf",
+      "sha256": "837af76e03b27d9baabb239759acda0da338e9eaa06bb2e69ed25ef5ce88095f"
+    },
+    {
+      "bytes": 24664,
+      "path": "payload/editor data/FM24_2026_27_Storici_2Bundesliga_2025_26.fmf",
+      "sha256": "b13c18d317c2e550e7834357b6772245b50c4aef2b472d404b478409523a4468"
+    },
+    {
+      "bytes": 15601,
+      "path": "payload/editor data/FM24_2026_27_Storici_3_giocatori.fmf",
+      "sha256": "4c31c966ee1d1e949dd8175cf65955eb63e90323308228fb1b3d475d76c3c8bb"
+    },
+    {
+      "bytes": 25479,
+      "path": "payload/editor data/FM24_2026_27_Storici_Bundesliga_2025_26.fmf",
+      "sha256": "4f9092a66e7a4ecb0d3994e77e4da108613e04ffd4b977ba83d9894c4e17f245"
+    },
+    {
+      "bytes": 23740,
+      "path": "payload/editor data/FM24_2026_27_Storici_EPL_191.fmf",
+      "sha256": "28b487ae76ac5b178ec9a87c97db1cd353949898ba9999cfa809f45003d594c5"
+    },
+    {
+      "bytes": 20248,
+      "path": "payload/editor data/FM24_2026_27_Storici_EPL_Integrativi_107.fmf",
+      "sha256": "f9a69b8f40f61938a13e9f402bd85732926536fdc6a734844fad8e60dacc01c3"
+    },
+    {
+      "bytes": 18980,
+      "path": "payload/editor data/FM24_2026_27_Storici_EPL_Integrativi_74.fmf",
+      "sha256": "ed440a0ecaefe3d6545107765afb9ec48405ca53ee5d7b9f9988f255e643b3e0"
+    },
+    {
+      "bytes": 59435,
+      "path": "payload/editor data/FM24_2026_27_Storici_ITA_ENG_1047.fmf",
+      "sha256": "afdbc75515849b935344eb2dda2aa3c6bd9364e5a9ee57651c28b5b7699b352d"
+    },
+    {
+      "bytes": 33631,
+      "path": "payload/editor data/FM24_2026_27_Storici_LaLiga_2025_26.fmf",
+      "sha256": "15ed9a6f0689149516342e062b461f49da7e7b1f6270fdf4d542aeb7f0a1db7e"
+    },
+    {
+      "bytes": 17191,
+      "path": "payload/editor data/FM24_2026_27_Storici_Ligue1_2025_26.fmf",
+      "sha256": "28e29218dc2f0320169627f94e9b219527b8a655e708d4f0f296bcacdfcedd65"
+    },
+    {
+      "bytes": 18611,
+      "path": "payload/editor data/FM24_2026_27_Storici_Ligue1_2025_26_Integrativi_73.fmf",
+      "sha256": "f2e684c4ca236bdd5672ff3ab661899d78e6bb52b3a4d9eb9a7cd36803a90c2e"
+    },
+    {
+      "bytes": 16752,
+      "path": "payload/editor data/FM24_2026_27_Storici_Ligue2_2025_26_Integrativi_24.fmf",
+      "sha256": "8631b406f1ac3b3213c21fac71e0a22a7ed58c7ac7f5c76f5fed429d22c48c84"
+    },
+    {
+      "bytes": 939328,
+      "path": "payload/editor data/FM24_2026_27_Storici_Mondiali_01.fmf",
+      "sha256": "5d1e182715572986809a32759ce23597abe74cdaac60be501b673a068e82ece8"
+    },
+    {
+      "bytes": 909387,
+      "path": "payload/editor data/FM24_2026_27_Storici_Mondiali_02.fmf",
+      "sha256": "82d821db68aff480650ae2455d1a023bcf3c4e33a64f744dd9daa501fbad700b"
+    },
+    {
+      "bytes": 912404,
+      "path": "payload/editor data/FM24_2026_27_Storici_Mondiali_03.fmf",
+      "sha256": "fafe72dfbffc7d9437e037cd25be9663f65addaa5dce2ae63bac8c8fa61e7c4e"
+    },
+    {
+      "bytes": 933501,
+      "path": "payload/editor data/FM24_2026_27_Storici_Mondiali_04.fmf",
+      "sha256": "d834e187a7b5fbd0d585d7f56ecdbc1dd127056d85ac3cfd0f1b39bcb5b6dbaf"
+    },
+    {
+      "bytes": 998225,
+      "path": "payload/editor data/FM24_2026_27_Storici_Mondiali_05.fmf",
+      "sha256": "c96e4a5bf72a19ef366548d6d8863dc881aff55cdda7fca813546858b13f745d"
+    },
+    {
+      "bytes": 989739,
+      "path": "payload/editor data/FM24_2026_27_Storici_Mondiali_06.fmf",
+      "sha256": "2d9e3b043ba68fe951019dd0b49bf127e08e1d5fff7fe1112be9808a0ed3220f"
+    },
+    {
+      "bytes": 80366,
+      "path": "payload/editor data/FM24_2026_27_Storici_Mondiali_07.fmf",
+      "sha256": "3c52b0040919fa606713be65abffe97e56351e24a01d6923dc91d13bbb89b990"
+    },
+    {
+      "bytes": 404680,
+      "path": "payload/editor data/FM24_2026_27_Storici_Mondiali_08.fmf",
+      "sha256": "1cfc6da7e7a0a65c2815295fefc98f6b047abaec21d57a37921bb2605296021e"
+    },
+    {
+      "bytes": 136264,
+      "path": "payload/editor data/FM24_2026_27_Storici_Mondiali_09.fmf",
+      "sha256": "ad7dd411dbdb0efdc62bb541c9e737fe2d2d3299cac87df68092c5b7c753eb43"
+    },
+    {
+      "bytes": 825002,
+      "path": "payload/editor data/FM24_2026_27_Storici_Mondiali_Traiettoria2_01.fmf",
+      "sha256": "fc9339669e27c507cb34cea028864b959e56aa3865c3391d687cfaa0d4f521d6"
+    },
+    {
+      "bytes": 936749,
+      "path": "payload/editor data/FM24_2026_27_Storici_Mondiali_Traiettoria3_01.fmf",
+      "sha256": "d13d57efbfd7a9ca2b9e60953b8dcccf220dc1eb7ce9a252e9d3b5d0e7fb9888"
+    },
+    {
+      "bytes": 942980,
+      "path": "payload/editor data/FM24_2026_27_Storici_Mondiali_Traiettoria3_02.fmf",
+      "sha256": "39452d5de81267f66b92b8ae1f690967c29ecabaefd9444c61a2f08967a6a79f"
+    },
+    {
+      "bytes": 985804,
+      "path": "payload/editor data/FM24_2026_27_Storici_Mondiali_Traiettoria3_03.fmf",
+      "sha256": "60825d464ef8531c51e5902ec66e7ac59efd6d302c7cbaaeaf2721d6b2f08ad7"
+    },
+    {
+      "bytes": 69880,
+      "path": "payload/editor data/FM24_2026_27_Storici_Mondiali_Traiettoria3_04.fmf",
+      "sha256": "39422ece6036a3498d810822978b8ddf74ab13c4abbce37c54a0e41199aa3988"
+    },
+    {
+      "bytes": 32408,
+      "path": "payload/editor data/FM24_2026_27_Storici_Primari_Integrativi.fmf",
+      "sha256": "3d404c64b3abff0de3bff86fc709bf1143108849aa626d8a5dc42972dfa28c4c"
+    },
+    {
+      "bytes": 31673,
+      "path": "payload/editor data/FM24_2026_27_Storici_Segunda_2025_26.fmf",
+      "sha256": "bb8722ff1c95f858caf73fbe91b797181219842f22c2a8141c854f126227a6e8"
+    },
+    {
+      "bytes": 16480,
+      "path": "payload/editor data/FM24_2026_27_TheBest_Portieri_2023_2025.fmf",
+      "sha256": "7693d28a74e14997387acd197a4e31b888ab21d1fc4ec268cd150e2583c6a032"
+    },
+    {
+      "bytes": 5117,
+      "path": "source/upstream_launch.py.txt",
+      "sha256": "1e1e7b6b84611c68f098e21329ed0a8ac80fc8459dea2ffb453c3b1012241347"
+    },
+    {
+      "bytes": 28,
+      "path": "payload/extra_data/FM24_History_Ahron_Retention.ddt",
+      "sha256": "c905f925e6432036beb2e2cc4ab82f8e12292c4a40a916a0351d29d6b965ed76"
+    },
+    {
+      "bytes": 13740,
+      "path": "payload/lnc/Competition_real_names_2026_27.lnc",
+      "sha256": "9664e058267615d043ae0f529f136e440555ceef5be209b1f78f35f2e6f31147"
+    },
+    {
+      "bytes": 15936,
+      "path": "payload/editor data/FM24_2026_27_Albi_Int6.fmf",
+      "sha256": "e42c38ae0d83b1bc7a7c840e42f18aad11d388e3992c15125b6e7abf87f676a9"
+    },
+    {
+      "bytes": 56203,
+      "path": "source/awards_init.c",
+      "sha256": "d2dc74f860a8c9d9bb7ccf48898de4e3d7c2b1f89257ef4d79f143e11304ac20"
+    },
+    {
+      "bytes": 18872,
+      "path": "source/international6_bounded_core.inc",
+      "sha256": "0e207dd4f7176f27483a09199dba7c1380155d5ae0355f82d1d7d2ace3f63135"
+    },
+    {
+      "bytes": 1732,
+      "path": "source/conversion_arm64.S",
+      "sha256": "140d043b5a8f8f2d8663292dbe96ca990000bbeef73479203452c43bca9383ef"
+    },
+    {
+      "bytes": 72576,
+      "path": "engine_fix/libfm24_awards_init_international6_bounded_v2.dylib",
+      "sha256": "a18bbc579afdf76cfb647fe1c9dafb62286edd5711b82f78ecc6a281966b89c2"
+    },
+    {
+      "bytes": 2830,
+      "path": "source/portable_library_derivation.json",
+      "sha256": "3aa56950dd483c0df65f5ba4964ae9edabb788879680e3ed8c529cd04330141e"
+    },
+    {
+      "bytes": 28235,
+      "path": "release_tools.py",
+      "sha256": "430f4db91850bfc0e7c37c61ff6b838f7f9f8c56f88691f96bc3a4992c892be8"
+    },
+    {
+      "bytes": 168,
+      "path": "install.py",
+      "sha256": "2351ed08153e2ec165751073fec5c59f01f9040d826b7826e57fb590ec0743e2"
+    },
+    {
+      "bytes": 167,
+      "path": "launch.py",
+      "sha256": "6c91a5b912b11a5634c6a3404ac1405d6a5487caf0f4f4bf45f723a33b4854e5"
+    },
+    {
+      "bytes": 3566,
+      "path": "README_IT.txt",
+      "sha256": "f6234cbba744ef15cde5b5380c6a26157561a4f29d15b27414946bb7da3a3657"
+    },
+    {
+      "bytes": 984,
+      "path": "ATTRIBUTION.txt",
+      "sha256": "2011c0073d9d463dba1649f7cfded630032acddd940d9ed1270fd5882080b18f"
+    },
+    {
+      "bytes": 528,
+      "path": "LICENSE_TOOLS.txt",
+      "sha256": "f13786f64d410183fb9a2172fb62b645f7fdf8de92362462a5447db64f0de350"
+    },
+    {
+      "bytes": 21830,
+      "path": "dependencies.json",
+      "sha256": "03e7e8a12e391c32bd4066137ec4b8bb2b9a0bcf77345afbbe9d1b8b8174eefc"
+    }
+  ],
+  "game": {
+    "UUID": "d710f6fa-6aca-32bb-99fe-451cee8dfa3d",
+    "architecture": "arm64",
+    "executable_sha256": "f0ba078c384f1095320ed4059a18fe4de4701cae5661a117417b2624d12b16e2",
+    "platform": "Darwin",
+    "version": "24.4.2 (2081827)"
+  },
+  "input_manifest_sha256": "1b0f7ab23659e81bc57110b1d8fe5eb47628659065a853e9a2ee49395a26a67a",
+  "module": {
+    "bounded_exact_six_only": true,
+    "cold_game_test_of_portable_derivation": "NOT_RUN",
+    "international6_mode": "skip-completed",
+    "metadata_only_derivation": true,
+    "original_exact_sha256": "66c023b58b84ba451019b657002f2a8ca873060f59495daae8fe0d15512494c4",
+    "path": "engine_fix/libfm24_awards_init_international6_bounded_v2.dylib",
+    "runtime_winners_injected": false,
+    "sha256": "a18bbc579afdf76cfb647fe1c9dafb62286edd5711b82f78ecc6a281966b89c2",
+    "source_bundle_order": [
+      "C",
+      "include",
+      "assembly"
+    ],
+    "source_bundle_sha256": "7810beb69f4c411619b8d01d9cbe0b40f8261e13797bf127ea7049ad667f16f4"
+  },
+  "ordinary_cold_load": "All injection/module environment variables explicitly empty",
+  "own_fmfs": [
+    {
+      "name": "FM24_2026_27_Albi_Domestici_2024_2025.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Albi_Domestici_2024_2025.fmf",
+      "previous_sha256": [],
+      "sha256": "ab668f48d7770b682acff1fd0dedb6a40848484e28ff1789fc3a2c9c334ae225",
+      "slot": "retained_fm24_2026_27_albi_domestici_2024_2025"
+    },
+    {
+      "name": "FM24_2026_27_Coppe_Internazionali_2024_2026.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Coppe_Internazionali_2024_2026.fmf",
+      "previous_sha256": [],
+      "sha256": "7d32f4a56b1c0a6b4cf444ff0b0f99074e956383ba0731a3eae0aeaa875b2baf",
+      "slot": "retained_fm24_2026_27_coppe_internazionali_2024_2026"
+    },
+    {
+      "name": "FM24_2026_27_Correzioni_Anagrafiche.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Correzioni_Anagrafiche.fmf",
+      "previous_sha256": [
+        "241f74d4d5598540f8f4051edc69e92cca9bf0c1a95bb9ab8940771aeef01e1e"
+      ],
+      "sha256": "e2abb603b2598556455320dfe51ed5b0d75f5903598974494be6b8e19fa70b07",
+      "slot": "dylan_combined4"
+    },
+    {
+      "name": "FM24_2026_27_GoldenBoy_2025.fmf",
+      "payload": "payload/editor data/FM24_2026_27_GoldenBoy_2025.fmf",
+      "previous_sha256": [],
+      "sha256": "89c02e8f730d4c8d885a15af9d5b1a38570ea8dbaae6fbab46280f36be104a11",
+      "slot": "retained_fm24_2026_27_goldenboy_2025"
+    },
+    {
+      "name": "FM24_2026_27_Italy_SerieD.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Italy_SerieD.fmf",
+      "previous_sha256": [],
+      "sha256": "8aff43d15c08e552cdd4ab99130a77c344ece066623f89c2b967c5d2733487bf",
+      "slot": "italy_rules"
+    },
+    {
+      "name": "FM24_2026_27_Kopa_Yashin_2024_2025.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Kopa_Yashin_2024_2025.fmf",
+      "previous_sha256": [],
+      "sha256": "af0bd6f9e0992a475b76096f56b55492c8e58dd516b4238a8bd6b67e558f9632",
+      "slot": "retained_fm24_2026_27_kopa_yashin_2024_2025"
+    },
+    {
+      "name": "FM24_2026_27_Mondiale_2026.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Mondiale_2026.fmf",
+      "previous_sha256": [],
+      "sha256": "a3aee1a65d8246c7cc89134c7ec3a5914969ea4ab6ffea09ca68cea1b20027c5",
+      "slot": "retained_fm24_2026_27_mondiale_2026"
+    },
+    {
+      "name": "FM24_2026_27_Pallone_dOro_e_TheBest_2023_2025.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Pallone_dOro_e_TheBest_2023_2025.fmf",
+      "previous_sha256": [],
+      "sha256": "d98746053aa3624426b8f517b0cafb0dede422481c36897ecbd8ebdc42108f1b",
+      "slot": "retained_fm24_2026_27_pallone_doro_e_thebest_2023_2025"
+    },
+    {
+      "name": "FM24_2026_27_Premi_aggiuntivi.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Premi_aggiuntivi.fmf",
+      "previous_sha256": [],
+      "sha256": "f926bd9525ba28fb9c5579a230816827c5f3cfee3bf4105e4e301154e98f5ab8",
+      "slot": "retained_fm24_2026_27_premi_aggiuntivi"
+    },
+    {
+      "name": "FM24_2026_27_Scheda_Declan_Rice.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Scheda_Declan_Rice.fmf",
+      "previous_sha256": [],
+      "sha256": "70995490ca87622296ae20aff34be9e60aedebe0d9bf87bcba52d4bbbdf18834",
+      "slot": "profile_rice59_native_rca184"
+    },
+    {
+      "name": "FM24_2026_27_Schede_Globali_01.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Schede_Globali_01.fmf",
+      "previous_sha256": [],
+      "sha256": "ffaf367d3e8ebd6155398f1060860dd325d5f84b0cdbf7e531cb0bd197c6a560",
+      "slot": "profile_global_001"
+    },
+    {
+      "name": "FM24_2026_27_Schede_Globali_02.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Schede_Globali_02.fmf",
+      "previous_sha256": [],
+      "sha256": "b60ea9b04591b302068cf71722d9cb3de50d123db2e5619ff914656ac4982f92",
+      "slot": "profile_global_002"
+    },
+    {
+      "name": "FM24_2026_27_Schede_Globali_03.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Schede_Globali_03.fmf",
+      "previous_sha256": [],
+      "sha256": "c98395702a261e222a1a76d388903eae990938c37e828c6d0e5abe4222d65b81",
+      "slot": "profile_global_003"
+    },
+    {
+      "name": "FM24_2026_27_Schede_Globali_04.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Schede_Globali_04.fmf",
+      "previous_sha256": [],
+      "sha256": "195eaa70c419931adb6c96e9133663769e86d3adb23199215f76ee16b950c4ce",
+      "slot": "profile_global_004"
+    },
+    {
+      "name": "FM24_2026_27_Schede_Globali_05.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Schede_Globali_05.fmf",
+      "previous_sha256": [],
+      "sha256": "f8365a3229e98e74e2101a0e3bfb6d88ae97bc15425ef1c3316c3bd9cd6c2098",
+      "slot": "profile_global_005"
+    },
+    {
+      "name": "FM24_2026_27_Schede_Globali_06.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Schede_Globali_06.fmf",
+      "previous_sha256": [],
+      "sha256": "ca4386ca3a550909af0a8b7692264a85390783235e64e26c5ae354ce549bf536",
+      "slot": "profile_global_006"
+    },
+    {
+      "name": "FM24_2026_27_Schede_Globali_07.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Schede_Globali_07.fmf",
+      "previous_sha256": [],
+      "sha256": "926182be76a35f58efa0046e9a5f4eb29dfa64b6eb9e91c9c94d74688ca0583b",
+      "slot": "profile_global_007"
+    },
+    {
+      "name": "FM24_2026_27_Schede_Globali_08.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Schede_Globali_08.fmf",
+      "previous_sha256": [],
+      "sha256": "91cf62b81020434234c832cd0b2138b538142d65d24cabc58604a9822760095f",
+      "slot": "profile_global_008"
+    },
+    {
+      "name": "FM24_2026_27_Schede_Globali_09.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Schede_Globali_09.fmf",
+      "previous_sha256": [],
+      "sha256": "81caad9f1d6ae3c6e263987107ef1ec31b7209ba779cfbb1500b8a47a0381b12",
+      "slot": "profile_global_009"
+    },
+    {
+      "name": "FM24_2026_27_Schede_Globali_Recuperate_973.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Schede_Globali_Recuperate_973.fmf",
+      "previous_sha256": [],
+      "sha256": "b53533c82cdfef2761192d028ef9d53d6ffce2907f5ee334e0b4a88b890d445f",
+      "slot": "profile_global_recovered973_native_ca"
+    },
+    {
+      "name": "FM24_2026_27_Schede_prioritarie_13.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Schede_prioritarie_13.fmf",
+      "previous_sha256": [
+        "c29cca6b105ca5146518a8d053770f65a5daf1eb7426fed80b3dc3bdf16cee80"
+      ],
+      "sha256": "0fb14882230911cbf0262983058d5a401cc4e7dae56a3eae8fdc9ed1026413fd",
+      "slot": "profile13"
+    },
+    {
+      "name": "FM24_2026_27_Schede_prioritarie_19.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Schede_prioritarie_19.fmf",
+      "previous_sha256": [],
+      "sha256": "837af76e03b27d9baabb239759acda0da338e9eaa06bb2e69ed25ef5ce88095f",
+      "slot": "profile_priority19_native_rca_1137"
+    },
+    {
+      "name": "FM24_2026_27_Storici_2Bundesliga_2025_26.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_2Bundesliga_2025_26.fmf",
+      "previous_sha256": [],
+      "sha256": "b13c18d317c2e550e7834357b6772245b50c4aef2b472d404b478409523a4468",
+      "slot": "retained_fm24_2026_27_storici_2bundesliga_2025_26"
+    },
+    {
+      "name": "FM24_2026_27_Storici_3_giocatori.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_3_giocatori.fmf",
+      "previous_sha256": [],
+      "sha256": "4c31c966ee1d1e949dd8175cf65955eb63e90323308228fb1b3d475d76c3c8bb",
+      "slot": "retained_fm24_2026_27_storici_3_giocatori"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Bundesliga_2025_26.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Bundesliga_2025_26.fmf",
+      "previous_sha256": [],
+      "sha256": "4f9092a66e7a4ecb0d3994e77e4da108613e04ffd4b977ba83d9894c4e17f245",
+      "slot": "retained_fm24_2026_27_storici_bundesliga_2025_26"
+    },
+    {
+      "name": "FM24_2026_27_Storici_EPL_191.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_EPL_191.fmf",
+      "previous_sha256": [],
+      "sha256": "28b487ae76ac5b178ec9a87c97db1cd353949898ba9999cfa809f45003d594c5",
+      "slot": "retained_fm24_2026_27_storici_epl_191"
+    },
+    {
+      "name": "FM24_2026_27_Storici_EPL_Integrativi_107.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_EPL_Integrativi_107.fmf",
+      "previous_sha256": [],
+      "sha256": "f9a69b8f40f61938a13e9f402bd85732926536fdc6a734844fad8e60dacc01c3",
+      "slot": "retained_fm24_2026_27_storici_epl_integrativi_107"
+    },
+    {
+      "name": "FM24_2026_27_Storici_EPL_Integrativi_74.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_EPL_Integrativi_74.fmf",
+      "previous_sha256": [],
+      "sha256": "ed440a0ecaefe3d6545107765afb9ec48405ca53ee5d7b9f9988f255e643b3e0",
+      "slot": "history_boyle74"
+    },
+    {
+      "name": "FM24_2026_27_Storici_ITA_ENG_1047.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_ITA_ENG_1047.fmf",
+      "previous_sha256": [],
+      "sha256": "afdbc75515849b935344eb2dda2aa3c6bd9364e5a9ee57651c28b5b7699b352d",
+      "slot": "retained_fm24_2026_27_storici_ita_eng_1047"
+    },
+    {
+      "name": "FM24_2026_27_Storici_LaLiga_2025_26.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_LaLiga_2025_26.fmf",
+      "previous_sha256": [
+        "28df1e99d6a0935d6355f655c4cc487384d22da6ca1f9a1534773191f16ffafd"
+      ],
+      "sha256": "15ed9a6f0689149516342e062b461f49da7e7b1f6270fdf4d542aeb7f0a1db7e",
+      "slot": "spain_laliga"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Ligue1_2025_26.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Ligue1_2025_26.fmf",
+      "previous_sha256": [],
+      "sha256": "28e29218dc2f0320169627f94e9b219527b8a655e708d4f0f296bcacdfcedd65",
+      "slot": "history_meitner_french33"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Ligue1_2025_26_Integrativi_73.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Ligue1_2025_26_Integrativi_73.fmf",
+      "previous_sha256": [],
+      "sha256": "f2e684c4ca236bdd5672ff3ab661899d78e6bb52b3a4d9eb9a7cd36803a90c2e",
+      "slot": "history_meitner_french_repair73"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Ligue2_2025_26_Integrativi_24.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Ligue2_2025_26_Integrativi_24.fmf",
+      "previous_sha256": [],
+      "sha256": "8631b406f1ac3b3213c21fac71e0a22a7ed58c7ac7f5c76f5fed429d22c48c84",
+      "slot": "history_meitner_french_ligue2_24"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Mondiali_01.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Mondiali_01.fmf",
+      "previous_sha256": [],
+      "sha256": "5d1e182715572986809a32759ce23597abe74cdaac60be501b673a068e82ece8",
+      "slot": "retained_fm24_2026_27_storici_mondiali_01"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Mondiali_02.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Mondiali_02.fmf",
+      "previous_sha256": [],
+      "sha256": "82d821db68aff480650ae2455d1a023bcf3c4e33a64f744dd9daa501fbad700b",
+      "slot": "retained_fm24_2026_27_storici_mondiali_02"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Mondiali_03.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Mondiali_03.fmf",
+      "previous_sha256": [],
+      "sha256": "fafe72dfbffc7d9437e037cd25be9663f65addaa5dce2ae63bac8c8fa61e7c4e",
+      "slot": "retained_fm24_2026_27_storici_mondiali_03"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Mondiali_04.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Mondiali_04.fmf",
+      "previous_sha256": [],
+      "sha256": "d834e187a7b5fbd0d585d7f56ecdbc1dd127056d85ac3cfd0f1b39bcb5b6dbaf",
+      "slot": "retained_fm24_2026_27_storici_mondiali_04"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Mondiali_05.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Mondiali_05.fmf",
+      "previous_sha256": [],
+      "sha256": "c96e4a5bf72a19ef366548d6d8863dc881aff55cdda7fca813546858b13f745d",
+      "slot": "retained_fm24_2026_27_storici_mondiali_05"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Mondiali_06.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Mondiali_06.fmf",
+      "previous_sha256": [],
+      "sha256": "2d9e3b043ba68fe951019dd0b49bf127e08e1d5fff7fe1112be9808a0ed3220f",
+      "slot": "retained_fm24_2026_27_storici_mondiali_06"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Mondiali_07.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Mondiali_07.fmf",
+      "previous_sha256": [],
+      "sha256": "3c52b0040919fa606713be65abffe97e56351e24a01d6923dc91d13bbb89b990",
+      "slot": "retained_fm24_2026_27_storici_mondiali_07"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Mondiali_08.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Mondiali_08.fmf",
+      "previous_sha256": [],
+      "sha256": "1cfc6da7e7a0a65c2815295fefc98f6b047abaec21d57a37921bb2605296021e",
+      "slot": "retained_fm24_2026_27_storici_mondiali_08"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Mondiali_09.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Mondiali_09.fmf",
+      "previous_sha256": [],
+      "sha256": "ad7dd411dbdb0efdc62bb541c9e737fe2d2d3299cac87df68092c5b7c753eb43",
+      "slot": "retained_fm24_2026_27_storici_mondiali_09"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Mondiali_Traiettoria2_01.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Mondiali_Traiettoria2_01.fmf",
+      "previous_sha256": [],
+      "sha256": "fc9339669e27c507cb34cea028864b959e56aa3865c3391d687cfaa0d4f521d6",
+      "slot": "retained_fm24_2026_27_storici_mondiali_traiettoria2_01"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Mondiali_Traiettoria3_01.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Mondiali_Traiettoria3_01.fmf",
+      "previous_sha256": [],
+      "sha256": "d13d57efbfd7a9ca2b9e60953b8dcccf220dc1eb7ce9a252e9d3b5d0e7fb9888",
+      "slot": "retained_fm24_2026_27_storici_mondiali_traiettoria3_01"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Mondiali_Traiettoria3_02.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Mondiali_Traiettoria3_02.fmf",
+      "previous_sha256": [],
+      "sha256": "39452d5de81267f66b92b8ae1f690967c29ecabaefd9444c61a2f08967a6a79f",
+      "slot": "retained_fm24_2026_27_storici_mondiali_traiettoria3_02"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Mondiali_Traiettoria3_03.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Mondiali_Traiettoria3_03.fmf",
+      "previous_sha256": [],
+      "sha256": "60825d464ef8531c51e5902ec66e7ac59efd6d302c7cbaaeaf2721d6b2f08ad7",
+      "slot": "retained_fm24_2026_27_storici_mondiali_traiettoria3_03"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Mondiali_Traiettoria3_04.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Mondiali_Traiettoria3_04.fmf",
+      "previous_sha256": [],
+      "sha256": "39422ece6036a3498d810822978b8ddf74ab13c4abbce37c54a0e41199aa3988",
+      "slot": "retained_fm24_2026_27_storici_mondiali_traiettoria3_04"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Primari_Integrativi.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Primari_Integrativi.fmf",
+      "previous_sha256": [],
+      "sha256": "3d404c64b3abff0de3bff86fc709bf1143108849aa626d8a5dc42972dfa28c4c",
+      "slot": "retained_fm24_2026_27_storici_primari_integrativi"
+    },
+    {
+      "name": "FM24_2026_27_Storici_Segunda_2025_26.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Storici_Segunda_2025_26.fmf",
+      "previous_sha256": [
+        "4cfcd0de94e212fdccdc774510dcce798774a6d5f0eb973824d41df46572ed5e"
+      ],
+      "sha256": "bb8722ff1c95f858caf73fbe91b797181219842f22c2a8141c854f126227a6e8",
+      "slot": "spain_segunda"
+    },
+    {
+      "name": "FM24_2026_27_TheBest_Portieri_2023_2025.fmf",
+      "payload": "payload/editor data/FM24_2026_27_TheBest_Portieri_2023_2025.fmf",
+      "previous_sha256": [],
+      "sha256": "7693d28a74e14997387acd197a4e31b888ab21d1fc4ec268cd150e2583c6a032",
+      "slot": "retained_fm24_2026_27_thebest_portieri_2023_2025"
+    },
+    {
+      "name": "FM24_2026_27_Albi_Int6.fmf",
+      "payload": "payload/editor data/FM24_2026_27_Albi_Int6.fmf",
+      "previous_sha256": [],
+      "sha256": "e42c38ae0d83b1bc7a7c840e42f18aad11d388e3992c15125b6e7abf87f676a9",
+      "slot": "international6"
+    }
+  ],
+  "pack_id": "fm24-history-community-mac-arm64",
+  "public_upload_performed": false,
+  "readiness": {
+    "prior_snapshots_are_not_proof": true,
+    "state": "PENDING_EXACT_PACK_CAREER_AND_COLD_TEST"
+  },
+  "release_id": "community104_bounded_apply_v2_canary",
+  "retention_ddt": [
+    {
+      "bytes": 28,
+      "name": "FM24_History_Ahron_Retention.ddt",
+      "payload": "payload/extra_data/FM24_History_Ahron_Retention.ddt",
+      "previous_sha256": [],
+      "sha256": "c905f925e6432036beb2e2cc4ab82f8e12292c4a40a916a0351d29d6b965ed76",
+      "steam_relative": "data/database/db/2430/edt/permanent/FM24_History_Ahron_Retention.ddt"
+    }
+  ],
+  "retire_owned": [
+    {
+      "allowed_sha256": [
+        "c29cca6b105ca5146518a8d053770f65a5daf1eb7426fed80b3dc3bdf16cee80"
+      ],
+      "name": "FM24_2026_27_Schede_prioritarie_13_C332.fmf"
+    }
+  ],
+  "schema": 3,
+  "snapshot": {
+    "Basic_external_FMFs": 53,
+    "official_FM27": false,
+    "own_FMFs": 51,
+    "total_active_FMFs": 104,
+    "world_complete": false
+  },
+  "status": "DRAFT"
+}

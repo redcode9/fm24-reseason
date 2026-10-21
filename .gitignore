@@ -1,0 +1,94 @@
+# ReSeason publication boundary: PRIVATE BY DEFAULT.
+# Keep local research and data here without publishing them.
+# Only the exact reviewed paths below may enter Git.
+/*
+!/.github/
+/.github/**
+!/assets/
+/assets/**
+!/docs/
+/docs/**
+!/scripts/
+/scripts/**
+!/tests/
+/tests/**
+!/toolkit/
+/toolkit/**
+!/.github/ISSUE_TEMPLATE/
+/.github/ISSUE_TEMPLATE/**
+!/.github/workflows/
+/.github/workflows/**
+!/tests/public/
+/tests/public/**
+!/toolkit/engine_fix/
+/toolkit/engine_fix/**
+!/toolkit/payload/
+/toolkit/payload/**
+!/toolkit/source/
+/toolkit/source/**
+!/toolkit/payload/extra_data/
+/toolkit/payload/extra_data/**
+!/.gitattributes
+!/.github/ISSUE_TEMPLATE/bug_report.yml
+!/.github/workflows/public-checks.yml
+!/.gitignore
+!/CHANGELOG.md
+!/CONTRIBUTING.md
+!/Check Setup.command
+!/Continue Career.command
+!/LICENSE
+!/NOTICE
+!/New Career.command
+!/Prepare ReSeason.command
+!/README.md
+!/SECURITY.md
+!/assets/LOGO.md
+!/assets/reseason-logo.png
+!/docs/COVERAGE.md
+!/docs/DEVELOPMENT.md
+!/docs/DOWNLOADS.md
+!/docs/INSTALLATION.md
+!/docs/LICENSING.md
+!/publication.json
+!/scripts/build_module.sh
+!/scripts/build_release.py
+!/scripts/check_publication.py
+!/scripts/reseason.py
+!/tests/public/test_publication.py
+!/tests/public/test_reseason.py
+!/toolkit/REFERENCE.sha256
+!/toolkit/engine_fix/libfm24_awards_init_international6_bounded_v2.dylib
+!/toolkit/install.py
+!/toolkit/launch.py
+!/toolkit/payload/extra_data/FM24_History_Ahron_Retention.ddt
+!/toolkit/reference.json
+!/toolkit/release_tools.py
+!/toolkit/source/awards_init.c
+!/toolkit/source/conversion_arm64.S
+!/toolkit/source/international6_bounded_core.inc
+!/toolkit/source/portable_library_derivation.json
+
+# Defensive exclusions override any future allowlist accident.
+**/.env
+**/.env.*
+**/.DS_Store
+**/__pycache__/**
+**/node_modules/**
+*.fm
+*.fmf
+*.dat
+*.cmt
+*.sqlite
+*.sqlite3
+*.db
+*.rar
+*.torrent
+*.log
+*.pyc
+*.pem
+*.key
+*.p12
+*.mobileprovision
+*.profraw
+*.profdata
+*.dSYM/**

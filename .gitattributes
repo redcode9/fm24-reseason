@@ -1,0 +1,13 @@
+* text=auto
+*.md text eol=lf
+*.txt text eol=lf
+*.py text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.c text eol=lf
+*.inc text eol=lf
+*.S text eol=lf
+*.command text eol=lf
+*.sh text eol=lf
+*.png binary
+*.dylib binary

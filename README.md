@@ -1,0 +1,61 @@
+<p align="center"><img src="assets/reseason-logo.png" width="620" alt="ReSeason — FM24, season 2026/27"></p>
+
+<p align="center"><strong>Bring Football Manager 2024 into the 2026/27 season.</strong></p>
+<p align="center">Independent fan project · Database and data only · Public preview</p>
+
+# ReSeason
+
+ReSeason is a work-in-progress season overhaul for **Football Manager 2024**: a 2026/27 start, player histories, award winners, competition honours, updated profiles, and league rules.
+
+**v0.1.0 publishes the tools and compatibility information. It does not bundle the database files.** Download third-party databases from their authors. The 51 custom FMFs used in the reference installation are not publicly distributed while their redistribution rights are unresolved. This ZIP alone cannot reproduce the complete reference setup.
+
+[Download v0.1.0](https://github.com/redcode9/fm24-reseason/releases/tag/v0.1.0) · [Installation](docs/INSTALLATION.md) · [Official database downloads](docs/DOWNLOADS.md) · [Coverage and limitations](docs/COVERAGE.md)
+
+## What is covered?
+
+| Area | Current state |
+| --- | --- |
+| 2026/27 career start | Supported with the exact compatible, user-supplied database files |
+| Past awards and competition winners | Verified in the reference installation, including first-day save and normal restart |
+| Player histories | 213,592 imported rows in the reference data; coverage is partial |
+| Updated player profiles | 39,830 profiles in the reference data; known differences remain |
+| Italian Serie D | Nine groups / 162 clubs verified in the reference data |
+| Setup checks and manual launcher | Included in this public release |
+| Original database download links | Included; download directly from the authors |
+| Complete public database package | **In progress — redistribution permissions unresolved** |
+| Complete worldwide 2025/26 histories | **In progress** |
+| Full profile review and 2026/27 estimates | **In progress** |
+| All lower leagues and future competition calendars | **In progress** |
+| Delayed retirements | **Not implemented** |
+
+The reference results describe a tested local data selection, not files secretly included in this download. See [the full coverage notes](docs/COVERAGE.md).
+
+## Requirements
+
+- **macOS with Apple Silicon**, Steam **FM24 24.4.2 (2081827)**, database **24.3.0**.
+- **Python 3.10 or later**. No additional Python packages.
+- The exact compatible data selection: **53 external Basic FMFs plus 51 user-supplied custom FMFs**. The latest author download may differ from the pinned reference version.
+- A new career in **Original** mode. Existing careers are not upgraded.
+
+Windows, Intel Macs, other game builds, and Real World mode are not supported by this preview.
+
+## Getting started
+
+1. Download and extract the release. Keep its folders together.
+2. Read [Official database downloads](docs/DOWNLOADS.md) and [Installation](docs/INSTALLATION.md).
+3. Run **Check Setup.command**. Missing or different database files are reported without changing anything.
+4. If the compatible data is already installed, run **Prepare ReSeason.command** once.
+5. Run **New Career.command**. Choose DB 24.3.0, all 104 compatible files, **Original** mode, and the August 2026 start.
+6. Advance one day, save, and quit normally. Use **Continue Career.command** to reopen without the initialization module.
+
+Preparing creates a private local cache from files already on your computer. It does not download, rename, replace, or publish your databases or saves. Initialization uses an exact-build native module in the game process; it does not patch the installed game executable or edit a save from outside FM24.
+
+## Work in progress
+
+The next priorities are a distributable, rights-cleared dataset; complete recent player histories; profile accuracy; and more league/calendar coverage. **This is not an official FM27 database or a complete worldwide update.** End-user installation testing is still pending for this first public preview.
+
+## License
+
+Original project code, documentation, and artwork are **source-available for noncommercial use** under [PolyForm Noncommercial 1.0.0](LICENSE). Commercial use of those original contributions requires separate written permission from [redcode9](https://github.com/redcode9). Third-party and SEGA rights remain separate; see [licensing and attribution](docs/LICENSING.md).
+
+ReSeason is not affiliated with or endorsed by Sports Interactive or SEGA. Football Manager and related marks belong to their respective owners.
