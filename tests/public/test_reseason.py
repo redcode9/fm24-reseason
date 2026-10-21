@@ -347,6 +347,48 @@ class ReSeasonTests(unittest.TestCase):
             self.assertEqual(before, snapshot(self.base))
         self.assertTrue(all(c.args[0] == ["pgrep", "-x", "fm"] for c in self.process.call_args_list))
 
+    def test_real_new_career_prepares_missing_cache_before_launch(self):
+        installed, game = snapshot(self.user / "editor data"), snapshot(self.game)
+        self.assertFalse(self.cache().exists())
+
+        def run(command, **kwargs):
+            if command[0] == "pgrep":
+                return subprocess.CompletedProcess(command, 1)
+            self.assertTrue(self.cache().is_dir())
+            self.assertEqual(command[:2], ["open", "-n"])
+            return subprocess.CompletedProcess(command, 0)
+
+        self.process.side_effect = run
+        result = self.invoke("new")
+        self.assertEqual(result[0], 0, result)
+        self.assertIn("Private cache verified and prepared", result[1])
+        self.assertIn("Launch requested", result[1])
+        self.assertEqual(installed, snapshot(self.user / "editor data"))
+        self.assertEqual(game, snapshot(self.game))
+
+    def test_real_continue_prepares_missing_cache_and_launches_without_module(self):
+        self.assertFalse(self.cache().exists())
+        self.process.side_effect = lambda command, **kwargs: subprocess.CompletedProcess(command, 1 if command[0] == "pgrep" else 0)
+        result = self.invoke("continue")
+        self.assertEqual(result[0], 0, result)
+        command = self.process.call_args.args[0]
+        environment = dict(command[i + 1].split("=", 1) for i, value in enumerate(command[:-1]) if value == "--env")
+        self.assertEqual(environment["DYLD_INSERT_LIBRARIES"], "")
+        self.assertTrue(self.cache().is_dir())
+
+    def test_busy_game_or_process_check_error_cannot_trigger_automatic_preparation(self):
+        before = snapshot(self.base)
+        self.process.side_effect = None
+        for code in (0, 2):
+            self.process.return_value = subprocess.CompletedProcess([], code)
+            for command in ("new", "continue"):
+                with self.subTest(code=code, command=command):
+                    result = self.invoke(command)
+                    self.assertEqual(result[0], 1)
+                    self.assertIn("game-process check refused", result[2])
+                    self.assertEqual(before, snapshot(self.base))
+        self.assertFalse((self.user / "ReSeason").exists())
+
     def test_actual_launch_uses_unique_private_logs_and_preserves_module_policy(self):
         self.prepared()
         installed = snapshot(self.user / "editor data")

@@ -253,6 +253,10 @@ def main(argv=None, *, root=None):
         if args.command == "prepare":
             prepare(ctx, root, user_data, steam_game)
         elif args.command != "doctor":
+            if not args.dry_run:
+                require(subprocess.run(["pgrep", "-x", "fm"], capture_output=True).returncode == 1,
+                        "FM must be closed; game-process check refused launch.")
+                prepare(ctx, root, user_data, steam_game)
             cache = cache_path(root, user_data, key)
             verify_cache(backend, cache, manifest)
             mode = "initialise" if args.command == "new" else "cold"

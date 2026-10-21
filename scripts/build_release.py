@@ -7,7 +7,7 @@ import zipfile
 
 from check_publication import ROOT, check
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 
 
 def main() -> int:

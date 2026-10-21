@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 — 2026-10-21
+
+- New Career and Continue Career now check and prepare the private cache automatically before launching; separate setup commands are optional.
+- Automatic preparation refuses to run while FM24 is open or the process check fails. Dry runs remain read-only and require a prepared cache.
+- Explained the launcher, native module, retention helper, Mac-only support, and one-time save/restart handover.
+- Gameplay module, data compatibility, and the exclusion of all FMFs are unchanged.
+
 ## 0.1.0 — 2026-10-21
 
 First public tooling preview of ReSeason for Football Manager 2024, season 2026/27.

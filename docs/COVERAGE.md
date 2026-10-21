@@ -1,11 +1,12 @@
 # Coverage and work in progress
 
-Two separate things are tracked here: the tools actually published in v0.1.0, and the data selection tested during development. This distinction matters when deciding whether you can reproduce the setup.
+Two separate things are tracked here: the tools actually published in v0.1.1, and the data selection tested during development. This distinction matters when deciding whether you can reproduce the setup.
 
-## Published in v0.1.0
+## Published in v0.1.1
 
 - Original setup checker and private-local-cache preparation tools.
 - Manual initial-career and normal-continuation launchers.
+- Automatic checks and private-cache preparation in both real launch commands.
 - Original native initialization module and its source.
 - A pinned compatibility manifest and official author download links.
 - English instructions, licensing notices, tests, and the original project logo.

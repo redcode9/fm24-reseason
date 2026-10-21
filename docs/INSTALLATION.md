@@ -13,14 +13,14 @@ Use the [official download pages](DOWNLOADS.md). Compatibility is checked by fil
 ## If you already have the compatible data
 
 1. Quit FM24 completely.
-2. Extract `ReSeason-v0.1.0-Mac-toolkit.zip` and keep the complete folder together.
-3. Open **Check Setup.command**. It reads the game and installed data without modifying them.
-4. When all requirements pass, open **Prepare ReSeason.command**. This copies the compatible files into a private cache below your FM24 user-data folder. It does not overwrite existing FMFs or saves.
-5. Open **New Career.command**.
-6. In FM24 choose **Career → Update 24.3.0 → all 104 compatible editor-data files → Original → Advanced Setup**.
-7. For the tested configuration, load Italy down to Serie D and the top divisions of France, Germany, England, Portugal, and Spain. Choose **10 August 2026**. No game-setup preset is distributed.
-8. Pick your club, create the career, advance one day, and save under a new name.
-9. Quit FM24 normally. Reopen with **Continue Career.command** and load that save. This starts without the initialization module.
+2. Extract `ReSeason-v0.1.1-Mac-toolkit.zip` and keep the complete folder together. Check the required retention helper below before launching.
+3. Open **New Career.command**. It checks the exact data and game build, prepares or verifies its private cache, and launches FM24 with the initialization module. Installed FMFs and saves are preserved.
+4. In FM24 choose **Career → Update 24.3.0 → all 104 compatible editor-data files → Original → Advanced Setup**.
+5. For the tested configuration, load Italy down to Serie D and the top divisions of France, Germany, England, Portugal, and Spain. Choose **10 August 2026**. No game-setup preset is distributed.
+6. Pick your club, create the career, advance one day, and save under a new name.
+7. Quit FM24 normally. Reopen with **Continue Career.command** and load that save. This checks and prepares the same installation automatically, then starts without the initialization module.
+
+**Check Setup.command** is an optional read-only diagnostic. **Prepare ReSeason.command** is optional separate cache preparation. You do not need to run either before a real New Career or Continue Career launch.
 
 Do not combine the custom Italy rules with the original Basic Italy rules. They are an explicit replacement, not two layers.
 
@@ -32,17 +32,30 @@ If it is missing, copy `toolkit/payload/extra_data/FM24_History_Ahron_Retention.
 
 The project adds no startup service, scheduled task, browser automation, or automatic downloader.
 
+## Why these files and the first restart exist
+
+- **FMF database files** supply transfers, profiles, histories, and rules. They are loaded when creating the career.
+- **New Career.command** is a convenience launcher for checking the installation, preparing its private cache, and enabling the native initialization module.
+- **The native `.dylib` module** addresses FM24 behavior that prevented the edited past honours and award schedules from being initialized correctly with the shifted start date. The game saves the resulting state itself; there is no separate save-file patching step.
+- **Continue Career.command** launches without that module. It is a convenience tool, not a special save format. The requirement is a normal continuation without the initialization module.
+- **The `.ddt` helper** asks the database loader to retain one specific player referenced by the honours data. It does not implement the season update or award corrections.
+
+The save-and-restart handover is performed **once per new career**, not on every play session. Advancing one day is the checkpoint used in the reference tests; an exact one-day delay has not been established as an engine requirement. Saving is necessary to retain the initialized state, and quitting ends the process containing the module. The documented one-day/save/restart path remains the verified procedure; skipping that handover has not been qualified.
+
+## Windows support
+
+This release supports only the pinned Steam FM24 build on an Apple Silicon Mac. The `.command` launchers, `.dylib` module, arm64 code, and game-build checks are Mac-specific. Renaming the files or copying them to Windows does not provide the same fixes. A Windows implementation needs its own native module, launcher, and game verification; none is included or claimed here.
+
 ## Terminal commands
 
 From the extracted release directory:
 
 ```sh
-python3 scripts/reseason.py doctor
-python3 scripts/reseason.py prepare
-python3 scripts/reseason.py new --dry-run
 python3 scripts/reseason.py new
 python3 scripts/reseason.py continue
 ```
+
+Optional diagnostics are `python3 scripts/reseason.py doctor` and `python3 scripts/reseason.py prepare`. For a launch preview, run `prepare` first, then `new --dry-run` or `continue --dry-run`. A dry run never creates a cache or launches FM24.
 
 Use `--help` for alternate Steam or FM24 user-data locations. Default paths are the standard Steam and FM24 locations under your home folder. A missing or mismatched file stops the operation rather than being replaced with an unverified download.
 
