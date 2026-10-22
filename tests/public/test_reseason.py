@@ -31,6 +31,34 @@ def snapshot(root):
     return result
 
 
+class ReferenceModuleTests(unittest.TestCase):
+    def test_reference_has_six_functional_modules_and_59_active_files(self):
+        data = json.loads((PROJECT / "toolkit/reference.json").read_bytes())
+        modules = (
+            ("01_Competition_Honours", "01 - Competition honours"),
+            ("02_Player_Identities", "02 - Player identities"),
+            ("03_Individual_Awards", "03 - Individual awards"),
+            ("04_Italy_Serie_D", "04 - Italy and Serie D"),
+            ("05_Player_Profiles", "05 - Player profiles"),
+            ("06_Player_Histories", "06 - Player histories"),
+        )
+        expected = {f"FM24_2026_27_{canonical}.fmf": f"ReSeason 2026-27 - {readable}.fmf"
+                    for canonical, readable in modules}
+        self.assertEqual(data["filename_aliases"], expected)
+        self.assertEqual({row["name"] for row in data["own_fmfs"]}, set(expected))
+        self.assertEqual(len(data["own_fmfs"]), 6)
+        self.assertEqual(len(data["external_basic"]), 53)
+        self.assertEqual(data["snapshot"]["own_FMFs"], 6)
+        self.assertEqual(data["snapshot"]["Basic_external_FMFs"], 53)
+        self.assertEqual(data["snapshot"]["total_active_FMFs"], 59)
+        self.assertFalse(data.get("filename_updates"), "New native modules must not inherit old archive patches")
+        self.assertFalse(data["snapshot"]["world_complete"])
+        self.assertFalse(data["snapshot"]["official_FM27"])
+        replacement, = data["basic_replacements"]
+        self.assertEqual(replacement["replacement_name"], "FM24_2026_27_04_Italy_Serie_D.fmf")
+        self.assertNotIn(replacement["dependency_name"], {row["name"] for row in data["external_basic"]})
+
+
 class ReSeasonTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory(prefix="reseason-synthetic-")
@@ -45,6 +73,9 @@ class ReSeasonTests(unittest.TestCase):
         self.binary.parent.mkdir(parents=True)
         self.binary.write_bytes(b"synthetic executable; never executed\n")
         self.data = copy.deepcopy(json.loads((PROJECT / "toolkit/reference.json").read_bytes()))
+        self.custom_count = len(self.data["own_fmfs"])
+        self.basic_count = len(self.data["external_basic"])
+        self.active_count = self.custom_count + self.basic_count
         # Legacy tests exercise physical names with their own synthetic pins.
         self.data.pop("filename_updates", None)
         self.data["game"]["executable_sha256"] = cli.sha(self.binary.read_bytes())
@@ -479,9 +510,9 @@ class ReSeasonTests(unittest.TestCase):
     def test_filename_alias_reference_is_complete_and_numbered_by_canonical_name(self):
         aliases = self.data["filename_aliases"]
         names = {row["name"] for row in self.data["own_fmfs"]}
-        self.assertEqual(len(aliases), 51)
+        self.assertEqual(len(aliases), self.custom_count)
         self.assertEqual(set(aliases), names)
-        self.assertEqual(len({alias.casefold() for alias in aliases.values()}), 51)
+        self.assertEqual(len({alias.casefold() for alias in aliases.values()}), self.custom_count)
         for number, name in enumerate(sorted(names), 1):
             self.assertRegex(aliases[name], rf"^ReSeason 2026-27 - {number:02d} - [A-Za-z0-9].+\.fmf$")
         for row in self.data["own_fmfs"]:
@@ -501,6 +532,29 @@ class ReSeasonTests(unittest.TestCase):
             self.assertEqual(result[0], 0, result)
         self.assertEqual(before, snapshot(self.base))
         self.process.assert_not_called()
+
+    def test_native_modules_support_readable_names_without_metadata_patches(self):
+        self.assertNotIn("filename_updates", self.data)
+        archive_bytes = {row["name"]: self.owned(index).read_bytes()
+                         for index, row in enumerate(self.data["own_fmfs"])}
+        self.assertEqual(self.invoke("doctor")[0], 0)
+        self.process.side_effect = None
+        self.process.return_value = subprocess.CompletedProcess([], 1)
+        result = self.invoke("organize")
+        self.assertEqual(result[0], 0, result)
+        self.assertIn(f"Organized {self.custom_count}", result[1])
+        cache = self.prepared()
+        for index, row in enumerate(self.data["own_fmfs"]):
+            self.assertFalse(self.owned(index).exists())
+            self.assertEqual(self.alias(index).read_bytes(), archive_bytes[row["name"]])
+            self.assertEqual((cache / row["payload"]).read_bytes(), archive_bytes[row["name"]])
+        before = snapshot(self.base)
+        for command in (("doctor",), ("organize",), ("new", "--dry-run"), ("continue", "--dry-run")):
+            result = self.invoke(*command)
+            self.assertEqual(result[0], 0, result)
+        self.assertEqual(before, snapshot(self.base))
+        self.assertTrue(all(call.args[0] == ["pgrep", "-x", "fm"]
+                            for call in self.process.call_args_list))
 
     def test_filename_alias_policy_rejects_invalid_or_incomplete_mappings(self):
         aliases = self.data["filename_aliases"]
@@ -550,8 +604,8 @@ class ReSeasonTests(unittest.TestCase):
         before, game = snapshot(self.user), snapshot(self.game)
         result = self.invoke("doctor")
         self.assertEqual(result[0], 0, result)
-        self.assertIn("51/51 exact", result[1])
-        self.assertIn("53/53 exact", result[1])
+        self.assertIn(f"{self.custom_count}/{self.custom_count} exact", result[1])
+        self.assertIn(f"{self.basic_count}/{self.basic_count} exact", result[1])
         self.assertIn("Extra editor FMFs: 0.", result[1])
         cache = self.prepared()
         package = json.loads((cache / "release.json").read_bytes())
@@ -637,7 +691,7 @@ class ReSeasonTests(unittest.TestCase):
         with mock.patch.object(cli.os, "link", wraps=os.link) as link:
             result = self.invoke("organize")
             self.assertEqual(result[0], 0, result)
-            self.assertEqual(link.call_count, 51)
+            self.assertEqual(link.call_count, self.custom_count)
             expected = dict(user)
             for index, row in enumerate(self.data["own_fmfs"]):
                 self.assertFalse(self.owned(index).exists())
@@ -675,9 +729,9 @@ class ReSeasonTests(unittest.TestCase):
         self.process.return_value = subprocess.CompletedProcess([], 1)
         result = self.invoke("organize")
         self.assertEqual(result[0], 0, result)
-        self.assertIn("Organized 50", result[1])
+        self.assertIn(f"Organized {self.custom_count - 1}", result[1])
         self.assertEqual(self.alias().stat().st_ino, first)
-        self.assertTrue(all(self.alias(index).is_file() and not self.owned(index).exists() for index in range(51)))
+        self.assertTrue(all(self.alias(index).is_file() and not self.owned(index).exists() for index in range(self.custom_count)))
         self.assertFalse((self.user / "FM24-History-Community/owned_state.json").exists())
         self.assertEqual(self.invoke("doctor")[0], 0)
 
@@ -724,7 +778,7 @@ class ReSeasonTests(unittest.TestCase):
                 original = getattr(cli.os, operation)
                 calls = 0
                 user, project, game = snapshot(self.user), snapshot(self.root), snapshot(self.game)
-                inodes = [self.owned(index).stat().st_ino for index in range(51)]
+                inodes = [self.owned(index).stat().st_ino for index in range(self.custom_count)]
 
                 def fail_third(source, *args, **kwargs):
                     nonlocal calls
@@ -745,7 +799,7 @@ class ReSeasonTests(unittest.TestCase):
                 self.assertEqual(user, actual)
                 self.assertEqual(project, snapshot(self.root))
                 self.assertEqual(game, snapshot(self.game))
-                self.assertEqual(inodes, [self.owned(index).stat().st_ino for index in range(51)])
+                self.assertEqual(inodes, [self.owned(index).stat().st_ino for index in range(self.custom_count)])
                 receipts = list(self.cache().parent.glob("renamed-files-*/receipt.json"))
                 self.assertTrue(receipts)
                 self.assertTrue(all(json.loads(record.read_bytes())["status"] == "ROLLED_BACK" for record in receipts))
@@ -773,8 +827,8 @@ class ReSeasonTests(unittest.TestCase):
         before = snapshot(self.base)
         result = self.invoke("doctor")
         self.assertEqual(result[0], 0, result)
-        self.assertIn("Custom FMFs: 51/51 exact; 0 missing; 0 mismatched", result[1])
-        self.assertIn("Basic FMFs: 53/53 exact", result[1])
+        self.assertIn(f"Custom FMFs: {self.custom_count}/{self.custom_count} exact; 0 missing; 0 mismatched", result[1])
+        self.assertIn(f"Basic FMFs: {self.basic_count}/{self.basic_count} exact", result[1])
         self.assertIn("Reference SHA and public toolkit: verified", result[1])
         self.assertEqual(before, snapshot(self.base))
         self.process.assert_not_called()
@@ -790,10 +844,33 @@ class ReSeasonTests(unittest.TestCase):
                     result = self.invoke(*command)
                     self.assertEqual(result[0], 1, result)
                     self.assertIn(f"Extra editor FMFs: {count}.", result[1])
-                    self.assertIn("51/51 exact", result[1])
-                    self.assertIn("53/53 exact", result[1])
-                    self.assertIn("conflict with the exact 104-file selection", result[2])
+                    self.assertIn(f"{self.custom_count}/{self.custom_count} exact", result[1])
+                    self.assertIn(f"{self.basic_count}/{self.basic_count} exact", result[1])
+                    self.assertIn(f"conflict with the exact {self.active_count}-file selection", result[2])
                     self.assertEqual(before, snapshot(self.base))
+        self.process.assert_not_called()
+
+    def test_former_split_modules_cannot_coexist_with_consolidated_modules(self):
+        former_names = (
+            "FM24_2026_27_Storici_Mondiali_01.fmf",
+            "ReSeason 2026-27 - 35 - Player histories - Global - Part 01.fmf",
+            "FM24_2026_27_Schede_Globali_01.fmf",
+            "FM24_2026_27_GoldenBoy_2025.fmf",
+        )
+        self.use_aliases()
+        self.prepared()
+        for name in former_names:
+            with self.subTest(former_module=name):
+                previous = self.user / "editor data" / name
+                previous.write_bytes(b"synthetic superseded shard; preserve for manual recovery")
+                before = snapshot(self.base)
+                for command in (("doctor",), ("prepare",), ("new",), ("continue",)):
+                    result = self.invoke(*command)
+                    self.assertEqual(result[0], 1, result)
+                    self.assertIn("Extra editor FMFs: 1.", result[1])
+                    self.assertIn(f"exact {self.active_count}-file selection", result[2])
+                    self.assertEqual(before, snapshot(self.base))
+                previous.unlink()
         self.process.assert_not_called()
 
     def test_first_use_missing_and_mismatched_are_distinct_and_no_basic_only_claim(self):
@@ -804,20 +881,20 @@ class ReSeasonTests(unittest.TestCase):
         before = snapshot(self.base)
         result = self.invoke("prepare")
         self.assertEqual(result[0], 1)
-        self.assertIn("49/51 exact; 1 missing; 1 mismatched", result[1])
-        self.assertIn("52/53 exact; 1 missing; 0 mismatched", result[1])
-        self.assertIn("does not provide the 51 custom FMF files", result[2])
+        self.assertIn(f"{self.custom_count - 2}/{self.custom_count} exact; 1 missing; 1 mismatched", result[1])
+        self.assertIn(f"{self.basic_count - 1}/{self.basic_count} exact; 1 missing; 0 mismatched", result[1])
+        self.assertIn(f"does not provide the {self.custom_count} custom FMF files", result[2])
         self.assertIn("Basic alone is NOT enough", result[2])
         self.assertEqual(before, snapshot(self.base))
 
-    def test_basic_alone_cannot_prepare_the_51_unavailable_custom_files(self):
+    def test_basic_alone_cannot_prepare_the_unavailable_custom_modules(self):
         for row in self.data["own_fmfs"]:
             (self.user / "editor data" / row["name"]).unlink()
         result = self.invoke("prepare")
         self.assertEqual(result[0], 1)
-        self.assertIn("0/51 exact; 51 missing", result[1])
-        self.assertIn("53/53 exact", result[1])
-        self.assertIn("public ZIP does not provide the 51 custom FMF files", result[2])
+        self.assertIn(f"0/{self.custom_count} exact; {self.custom_count} missing", result[1])
+        self.assertIn(f"{self.basic_count}/{self.basic_count} exact", result[1])
+        self.assertIn(f"public ZIP does not provide the {self.custom_count} custom FMF files", result[2])
         self.assertFalse(self.cache().parent.exists())
 
     def test_reference_tamper_is_refused_without_writes(self):
@@ -898,7 +975,7 @@ class ReSeasonTests(unittest.TestCase):
         self.assertEqual(stat.S_IMODE(cache.stat().st_mode), 0o700)
         self.assertEqual(stat.S_IMODE(cache.parent.stat().st_mode), 0o700)
         package = json.loads((cache / "release.json").read_bytes())
-        self.assertEqual(package["snapshot"]["total_active_FMFs"], 104)
+        self.assertEqual(package["snapshot"]["total_active_FMFs"], self.active_count)
         self.assertEqual(package["status"], self.data["status"])
         self.assertEqual(package["module"], self.data["module"])
         self.assertEqual(package["own_fmfs"], self.data["own_fmfs"])

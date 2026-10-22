@@ -290,7 +290,7 @@ def installation_plan(root, user_data, expected_sha=None, steam_game=None):
             if journal.get('status') not in {'COMMITTED','ROLLED_BACK'}:unfinished.append(path.parent.name)
     return {'status':'DRY_RUN_NO_WRITES', 'pack_id':PACK_ID, 'release_id':data['release_id'],
             'manifest_sha256':seal, 'actions':actions, 'Basic54':dependency,
-            'external_Basic_source_count':54,'external_Basic_active_count':len(data['external_basic']),
+            'external_Basic_source_count':len(data['basic_catalogue']),'external_Basic_active_count':len(data['external_basic']),
             'Italy_replacement_no_overlay':bool(data.get('basic_replacements')),
             'unfinished_transactions':unfinished, 'ready':dependency['complete'] and not unfinished,
             'prior_state':state, 'after_owned':{n:r['sha256'] for n,r in new.items()},
@@ -364,7 +364,7 @@ def apply_install(root, user_data, expected_sha=None, fault_after=None, steam_ga
     require(platform.system()=='Darwin' and platform.machine()=='arm64','Only macOS arm64 is supported')
     steam_game = Path(steam_game or default_steam_game()).absolute()
     plan = installation_plan(root, user_data, expected_sha,steam_game)
-    require(plan['ready'], 'Basic54 source dependencies mismatch/missing or unfinished transaction; no FMFs changed')
+    require(plan['ready'], 'Basic dependencies mismatch/missing or unfinished transaction; no FMFs changed')
     data,_ = package(root,expected_sha)
     require(not data.get('filename_aliases'),
             'The legacy write installer does not support filename aliases; use the public manual placement and organize command')
@@ -439,7 +439,7 @@ def launch_plan(root, steam_game, user_data, mode, expected_sha=None):
         retitled = sum(action['name'] in updates and action['before_sha256'] == updates[action['name']]['after_sha256']
                        for action in installed['actions'])
         require(retitled in {0, len(updates)}, 'Finish organizing the complete internal-title set before launch')
-    require(data['module'].get('international6_mode') == 'skip-completed', 'This104 V2 canary requires the exact bounded skip-completed module')
+    require(data['module'].get('international6_mode') == 'skip-completed', 'The exact bounded skip-completed module is required')
     env = {name:'' for name in ENV_NAMES}
     stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S')
     logs = confined(user_data, STATE_DIR + '/logs')

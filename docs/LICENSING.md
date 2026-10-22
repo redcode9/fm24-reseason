@@ -22,7 +22,7 @@ Sortitoutsi, FMScout, M.C, FusionDB/Cizzu, and other mod authors retain their re
 
 ## Why the dataset is not bundled
 
-The development selection contains SI-demo-derived profile/history data and Italy rules derived from external mods. Redistribution/relicensing permission is not established for the complete set. All 51 custom FMFs and the optional competition-name file are therefore excluded from Git and release assets, along with original game/demo files and third-party downloads.
+The development selection contains SI-demo-derived profile/history data and Italy rules derived from external mods. Redistribution/relicensing permission is not established for the complete set. All six custom FMF modules and the optional competition-name file are therefore excluded from Git and release assets, along with original game/demo files and third-party downloads. Consolidating the former 51 custom files does not change their provenance or grant redistribution permission.
 
 The compatibility manifest contains filenames, hashes, counts, and technical identifiers only. Its legacy `own_fmfs` field means installer-managed entries, not a claim to copyright in their contents. The legacy list of package paths is a reference template, not a declaration that those files are included in this release.
 

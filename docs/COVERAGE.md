@@ -1,8 +1,8 @@
 # Coverage and work in progress
 
-Two separate things are tracked here: the tools actually published in v0.1.4, and the data selection tested during development. This distinction matters when deciding whether you can reproduce the setup.
+Two separate things are tracked here: the tools published in v0.2.0, and the data selection tested during development. This distinction matters when deciding whether you can reproduce the setup.
 
-## Published in v0.1.4
+## Published in v0.2.0
 
 - Original setup checker and private-local-cache preparation tools.
 - Manual initial-career and normal-continuation launchers.
@@ -13,13 +13,15 @@ Two separate things are tracked here: the tools actually published in v0.1.4, an
 
 The public archive includes **zero FMFs**. The original game, database dumps, research extracts, third-party mods, saves, and private development material are excluded.
 
-The 0.1.4 filename organizer passed actual startup and the new-career editor-data selection screen, showing readable titles and 104 enabled files out of 104. Its archive-directory patches preserve all 153 stored member payloads. A new career using the relabeled archives has not yet been qualified; the gameplay evidence below predates this naming change.
+The six-module layout replaces the former 51 custom FMFs. It combines four honours files, five award files, 13 profile files, and 27 player-history files; identities and Italy rules remain one module each. The 53 external Basic files remain separate because a safe merger of their country rules has not been established.
+
+The six-module selection was checked in an actual new career on 22 October 2026, at the 10 August 2026 start, after one day, and after a normal restart without the initialization module. Native Editor exports preserve all 3,199,722 source operations, including Italy's advanced rules. The measured coverage below remains partial; consolidation does not fill missing data.
 
 ## Reference data tested locally
 
 | Feature | Measured coverage | Remaining work |
 | --- | --- | --- |
-| Data selection | 104 files: 53 external Basic + 51 custom | Public redistribution/rebuild permissions and version availability |
+| Data selection | 59 files: 53 external Basic + six custom modules; new career and restart checked | Public redistribution/rebuild permissions and version availability |
 | Past individual awards | 18 editions / 48 places | Other worldwide awards |
 | Competition honours | 113 added editions + 11 protected controls | Worldwide competition coverage and full old-season tables/results |
 | Additional international honours | Six corrected editions; 49 prior rows preserved | Other competitions and known future hosts/calendars |
@@ -36,19 +38,19 @@ The six additional corrected editions are Club World Cup 2023/2025, Gold Cup 202
 
 A row means one player's stint at one club in one season, not a whole player career. The 2025/26 season remains incomplete. In Serie A, the added 2025/26 selection contains 131 rows for 129 people across 15 clubs; it does not complete every squad.
 
-The cold-restart reader resolves 90,900 added target rows. Another 122,692 cannot be associated with a loaded identity by the current reader, so their runtime presence is unverified. This is not evidence that they were deleted. Among resolved people, 649,081 pre-existing rows remained unchanged. Later retention remains unverified for 23 player IDs / 36 target rows.
+The cold-restart reader resolves 90,902 added target rows. Another 122,690 cannot be associated with a loaded identity by the current reader, so their runtime presence is unverified. This is not evidence that they were deleted. Among resolved people, 649,184 past rows remained unchanged, without lost rows or extra copies. Later retention remains unverified for 21 player IDs / 34 target rows. All 213,592 source rows and their 1,297,431 operations are present in saved change data in all three checkpoints.
 
 Full past match reports, minutes, assists, ratings, and league tables are not reconstructed by this history patch.
 
 ## Profile limitations
 
-All 1,892,488 expected profile-change targets are present in the saved change data. Actual game values still have 361 differences at creation and 352 after the first day and restart. These include five differing current-ability values initially; four remain readable and different, while one case becomes unverified by the current reader. The cause is unresolved.
+All 1,892,488 expected profile-change targets are present in the saved change data. The global and recovered cohorts have 365 runtime field differences at creation and 364 after the first day and restart. These include four differing current-ability values. In the separately reviewed 33-player cohort, one bravery value is 17 instead of 18 in all three checkpoints; the other known-field checks pass. Including that case gives 366 differences initially and 365 after the first day and restart. The causes remain unresolved.
 
-The 33 closely reviewed editorial profiles pass their known-field checks in each stage. Potential ability matches in exposed cases and is not below current ability. No arbitrary attribute or potential-ability increases were used to hide differences. This is not a verified full-profile equivalence claim or an official FM27 prediction.
+Potential ability matches in exposed cases and is not below current ability. No arbitrary attribute or potential-ability increases were used to hide differences. The preceding split-file career had different runtime mismatches despite identical applied source targets; the new counts are reported separately, without attributing the change to a proven cause. This is not a verified full-profile equivalence claim or an official FM27 prediction.
 
 ## League and long-term limitations
 
-The same 162 Serie D club IDs appear in all three checkpoints. Full-season samples were checked for Asti in the preceding data selection and Fiorenzuola in the current one: 34 fixtures, 17 opponents, home and away. This is not a census of all 2,754 fixtures. Some historical club lineages and nominal date/time differences remain unresolved.
+In the preceding split-file selection, the same 162 Serie D club IDs appeared in all three checkpoints. Full-season samples for Asti and Fiorenzuola had 34 fixtures, 17 opponents, home and away. The consolidated Italy module preserves the complete native rules and loads Serie D in the new career; a new full fixture census was not performed. Some historical club lineages and nominal date/time differences remain unresolved.
 
 Previous base-module simulations exercised future awards and tournaments over longer periods. They are separate evidence, not a new multi-season simulation of this public tooling package. Some future hosts/calendars remain incorrect.
 

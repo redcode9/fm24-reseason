@@ -19,9 +19,19 @@ import uuid
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).absolute().parents[1]
 FIRST_USE = ("FIRST USE: YOU CANNOT GET ALL DATA FROM THIS ZIP. The public ZIP does "
-             "not provide the 51 custom FMF files. Basic alone is NOT enough. You "
-             "must already have legitimate, exact copies of all 51 custom FMFs "
-             "and the 53 active Basic dependencies in your editor data folder.")
+             "not provide the custom FMF files. Basic alone is NOT enough. You "
+             "must already have legitimate, exact copies of every custom FMF "
+             "and active Basic dependency listed in toolkit/reference.json "
+             "in your editor data folder.")
+
+
+def first_use(data):
+    """Describe the exact selection only after its sealed manifest is validated."""
+    custom, basic = len(data["own_fmfs"]), len(data["external_basic"])
+    return ("FIRST USE: YOU CANNOT GET ALL DATA FROM THIS ZIP. The public ZIP does "
+            f"not provide the {custom} custom FMF files. Basic alone is NOT enough. You "
+            f"must already have legitimate, exact copies of all {custom} custom FMFs "
+            f"and the {basic} active Basic dependencies in your editor data folder.")
 
 
 class Refusal(ValueError):
@@ -151,7 +161,8 @@ def installed_status(data, user_data, steam_game, *, allow_mixed=False):
     extra = sum(p.suffix.casefold() == ".fmf" and p.name not in expected_names
                 for p in editor.iterdir()) if editor.is_dir() else 0
     print(f"Extra editor FMFs: {extra}.")
-    require(not extra, "Extra editor FMFs conflict with the exact 104-file selection; existing files preserved.")
+    count = len(data["own_fmfs"]) + len(data["external_basic"])
+    require(not extra, f"Extra editor FMFs conflict with the exact {count}-file selection; existing files preserved.")
     return complete and game_ok
 
 
@@ -382,7 +393,7 @@ def organize_filenames(ctx, root, user_data, steam_game):
             require(not destination.exists(), "Readable filename is occupied; existing files preserved.")
             actions.append((source, destination, declared[row["payload"]]))
     if not actions:
-        print("All 51 custom FMFs already use readable names; no files changed.")
+        print(f"All {len(data['own_fmfs'])} custom FMFs already use readable names; no files changed.")
         return
     parent = cache_path(root, user_data, key).parent
     directory(parent, private=True)
@@ -445,7 +456,7 @@ def organize_archive_names(ctx, root, user_data, steam_game):
             require(source == destination or not destination.exists(), "Readable filename is occupied.")
             actions.append((name, source, destination, before, after))
     if not actions:
-        print("All 51 custom archives already use readable filenames and internal titles; no files changed.")
+        print(f"All {len(data['own_fmfs'])} custom archives already use readable filenames and internal titles; no files changed.")
         return
     parent = cache_path(root, user_data, key).parent
     directory(parent, private=True)
@@ -560,12 +571,13 @@ def main(argv=None, *, root=None):
         require(not args.dry_run or args.command in {"new", "continue", "cold"}, "--dry-run applies to launch commands only.")
         root = guarded(root or ROOT)
         user_data, steam_game = guarded(args.user_data.expanduser()), guarded(args.steam_game.expanduser())
-        print(FIRST_USE)
         ctx = context(root)
         backend, data, _, manifest, key = ctx
+        notice = first_use(data)
+        print(notice)
         print("Reference SHA and public toolkit: verified.")
         ready = installed_status(data, user_data, steam_game, allow_mixed=args.command == "organize")
-        require(ready, "Required installed data is missing or mismatched. " + FIRST_USE)
+        require(ready, "Required installed data is missing or mismatched. " + notice)
         legacy_present = guarded(user_data / "ReSeason").exists()
         print("Legacy private cache inside FM24 user data: " + ("present." if legacy_present else "absent."))
         require(not legacy_present or (args.command != "doctor" and not args.dry_run),

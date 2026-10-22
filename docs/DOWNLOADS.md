@@ -18,9 +18,9 @@ Expected filenames, sizes, and SHA-256 hashes are recorded in `toolkit/reference
 
 ## Custom project files
 
-The 51 custom files in the reference setup include project-generated history/award/profile changes and derived league rules. They are distinct from the original site downloads above. Their redistribution rights have not all been established, so they remain outside Git and the public release.
+The six custom modules in the reference setup contain history, award, profile, identity, and honours changes, plus derived Italy/Serie D rules. They consolidate the former 51 custom files and are distinct from the original site downloads above. Their redistribution rights have not all been established, so they remain outside Git and the public release.
 
-There is currently **no public URL for the complete 51-file custom selection**. Existing authorized users may supply their own exact local copies. Other users must wait for a distributable dataset or documented compatible rebuild; downloading the external Basic files is not sufficient.
+There is currently **no public URL for the complete six-module custom selection**. Existing authorized users may supply their own exact local copies. Other users must wait for a distributable dataset or documented compatible rebuild; downloading the 53 external Basic files is not sufficient. The public filename organizer does not build consolidated modules from the old files.
 
 Renaming a file does not change its provenance, terms, or compatibility hash. Author attribution is retained.
 

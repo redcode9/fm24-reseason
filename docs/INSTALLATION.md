@@ -8,23 +8,31 @@ This release is a **database tooling preview**, not a self-contained mod pack.
 The public archive contains no FMFs, no original game database, and no game saves.
 You need Steam FM24 **24.4.2 (2081827)** on an Apple Silicon Mac and Python **3.10+**.
 
-The reference integration uses a specific 2026-start Sortitoutsi Basic snapshot plus 51 custom files. Those custom files are not available from the public release. A fresh user without them can use the documentation and setup checker, but cannot reproduce the full tested setup yet. **Downloading Basic alone does not supply the 51 custom files.**
+The reference integration uses a specific 2026-start Sortitoutsi Basic snapshot plus six custom FMF modules, for 59 active files. Those custom modules are not available from the public release. A fresh user without them can use the documentation and setup checker, but cannot reproduce the full reference setup yet. **Downloading Basic alone does not supply the six custom modules.**
 
 Use the [official download pages](DOWNLOADS.md). Compatibility is checked by file contents, not just filenames. A newer daily update, a renamed unrelated FMF, or the FMScout alternative will not silently pass these checks. Do not replace your working data just to bypass a failure.
 
 ## If you already have the compatible data
 
 1. Quit FM24 completely.
-2. Extract `ReSeason-v0.1.4-Mac-toolkit.zip` and keep the complete folder together. Check the required retention helper below before launching.
+2. Extract `ReSeason-v0.2.0-Mac-toolkit.zip` and keep the complete folder together. Check the required retention helper below before launching.
 3. Open **New Career.command**. It checks the exact data and game build, prepares or verifies its private cache, and launches FM24 with the initialization module. Installed FMFs and saves are preserved.
-4. In FM24 choose **Career → Update 24.3.0 → all 104 compatible editor-data files → Original → Advanced Setup**.
+4. In FM24 choose **Career → Update 24.3.0 → all 59 compatible editor-data files → Original → Advanced Setup**.
 5. For the tested configuration, load Italy down to Serie D and the top divisions of France, Germany, England, Portugal, and Spain. Choose **10 August 2026**. No game-setup preset is distributed.
 6. Pick your club, create the career, advance one day, and save under a new name.
 7. Quit FM24 normally. Reopen with **Continue Career.command** and load that save. This checks and prepares the same installation automatically, then starts without the initialization module.
 
 **Check Setup.command** is an optional read-only diagnostic. **Prepare ReSeason.command** is optional separate cache preparation. You do not need to run either before a real New Career or Continue Career launch.
 
-For clearer editor-data names, close FM24 and run **Organize Editor Data.command** once. It verifies and updates the 51 custom FMF filenames and internal archive titles. Database-member bytes and the 53 Basic files remain unchanged; whole-archive hashes change. Original archives are backed up outside FM24. The old and new complete naming conventions both work. Keep every required part selected. A mixture of conventions blocks launch until the organizer finishes the set, preserving the previous alphabetical order. See [Editor-data filenames](FILE-NAMES.md) for the full mapping and recovery details.
+The six custom modules cover honours, identities, awards, Italy/Serie D, profiles, and player histories. The 53 external Basic files keep their original names and attribution. Combining their country rules safely has not been established. See [Editor-data filenames](FILE-NAMES.md) for the module list.
+
+**Organize Editor Data.command** optionally applies readable filenames to exact modules supplied under canonical names. It does not merge the old 51-file selection. A mixture of canonical and readable filenames blocks launch until the organizer finishes the set.
+
+### Upgrading from the 51-file custom selection
+
+The six modules replace all 51 former custom files. With FM24 closed, preserve the old custom FMFs outside the entire FM24 user-data folder, then install the exact six-module selection. Keep the 53 compatible Basic files. Do not leave old history, award, or profile parts active beside their replacement modules. Renaming an old part cannot turn it into a consolidated module; the setup checker verifies contents.
+
+Existing saves retain the data used when they were created. Use a new career to load the consolidated modules.
 
 ### Upgrading from 0.1.0–0.1.2
 

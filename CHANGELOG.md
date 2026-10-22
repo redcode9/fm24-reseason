@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.0 — 2026-10-22
+
+- Consolidated the local reference dataset from 51 custom FMFs into six functional modules: competition honours, player identities, individual awards, Italy/Serie D, player profiles, and player histories. All 27 history parts become one file; all 13 profile parts become another.
+- The compatible selection is now 59 files: six custom modules plus 53 unchanged external Basic dependencies. Safe consolidation of the external country rules has not been established.
+- Rebuilt the modules through the native FM24 Editor with complete source/export comparisons. Preserved operation order and values; assigned unique change-record tracking IDs within merged modules. Retained Italy's advanced rules through native Load/Save As.
+- Removed the old archive-directory rename patches from the new selection. Native archives already contain readable names. Added explicit retirement metadata for the previous split modules.
+- Made setup and launcher counts derive from the manifest, and added regression checks for native modules, readable aliases, and rejection of leftover split files.
+- Updated the module catalogue and upgrade instructions. Data coverage gaps remain documented separately from consolidation checks.
+- Passed 99 automated tests and an actual career with all 59 files enabled. Rechecked creation, one day, and normal restart without the initialization module: all source history/profile operations remain applied; 18 award editions and 179 competition-history/control rows are retained. Runtime profile differences remain disclosed in the coverage notes.
+
+The public toolkit still contains **zero FMFs**. Consolidation does not change redistribution rights or complete missing worldwide data.
+
 ## 0.1.4 — 2026-10-21
 
 - Added readable English names for the 51 custom FMFs, labeled by purpose and numbered to preserve their previous alphabetical order. Sortitoutsi filenames retain their original names.

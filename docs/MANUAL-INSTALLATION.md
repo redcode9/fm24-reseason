@@ -1,6 +1,6 @@
 # Manual database installation
 
-**The public ZIP contains no FMFs. The 51 custom FMFs are not publicly distributed. Basic alone is not enough.** You must already have legitimate copies of the exact 51 custom files and 53 active Basic files. Original download links are in [Downloads](DOWNLOADS.md); those downloads do not supply the complete custom selection.
+**The public ZIP contains no FMFs. The six custom FMF modules are not publicly distributed. Basic alone is not enough.** You must already have legitimate copies of the exact six custom modules and 53 active Basic files. Original download links are in [Downloads](DOWNLOADS.md); those downloads do not supply the complete custom selection.
 
 Manual placement of the data files is possible. **Copying files alone does not replace the runtime initialization needed for the reference awards and honours fixes.** The complete supported workflow requires Steam FM24 **24.4.2 (2081827)**, database **24.3.0**, and an Apple Silicon Mac.
 
@@ -20,16 +20,18 @@ The **Steam game folder** contains the installed game. On macOS its default is `
 | File | Destination or role |
 | --- | --- |
 | 53 Basic `.fmf` files | `<FM user-data>/editor data/`, with their exact names and contents. |
-| 51 custom `.fmf` files | The same `<FM user-data>/editor data/` folder. These are supplied privately by the user, not by the public ZIP. |
+| Six custom `.fmf` modules | The same `<FM user-data>/editor data/` folder. These are supplied privately by the user, not by the public ZIP. See the [module catalogue](FILE-NAMES.md). |
 | `FM24_History_Ahron_Retention.ddt` | `<Steam game>/data/database/db/2430/edt/permanent/FM24_History_Ahron_Retention.ddt`. This is the separate one-line retention helper. |
 | `libfm24_awards_init_international6_bounded_v2.dylib` | Keep it in `toolkit/engine_fix/` inside the extracted package. The launcher uses a verified copy in its private cache and loads it into the Mac game process in memory during initialization. It does not belong in `editor data` and does not replace the game executable. |
 | `.command` and `.py` files | Launcher and checker scaffolding. Keep them in their package locations, with the accompanying folders. They are not database files to copy into `editor data`. |
 
-The canonical FMF identities and SHA-256 hashes are in [`toolkit/reference.json`](../toolkit/reference.json): `own_fmfs` lists the 51 custom files, `filename_aliases` maps them to readable installed names, `filename_updates` pins the matching archive-directory updates, and `external_basic` lists the 53 active Basic files. `files` records the custom payload sizes. Matching names alone are insufficient. The [filename catalogue](FILE-NAMES.md) lists both conventions. Either complete convention is supported; do not keep two copies of one file or launch with a partly renamed set.
+The canonical FMF identities and SHA-256 hashes are in [`toolkit/reference.json`](../toolkit/reference.json): `own_fmfs` lists the six custom modules, `filename_aliases` maps them to readable installed names, and `external_basic` lists the 53 active Basic files. `files` records the custom payload sizes. Matching names alone are insufficient. The [filename catalogue](FILE-NAMES.md) lists both conventions. Either complete convention is supported; do not keep two copies of one module or launch with a partly renamed set.
 
 Keep backup FMFs and toolkit caches outside the entire FM24 user-data folder. FM24 was observed reading private copies in a nested `ReSeason` folder and old installer transaction backups during startup. Since 0.1.3, the launcher uses the sibling `<parent of FM user-data>/ReSeason FM24 cache/` and relocates only verified legacy caches and completed, hash-bound project transactions there with the game closed. Unknown or unfinished contents are preserved in place and cause refusal.
 
-The reference catalogue also records the original 54-file Basic set. Its original Italy file, `sortitoutsi.net FM24 Data Update - Italy (2026 Start).fmf`, is replaced by the custom Italy/Serie D file (`FM24_2026_27_Italy_SerieD.fmf`, or its readable alias in the catalogue). **Do not keep both in the active editor-data selection.** The supported selection is exactly 104 FMFs; extra FMFs, including original Basic Italy, cause the public checker to refuse it.
+The reference catalogue also records the original 54-file Basic set. Its original Italy file, `sortitoutsi.net FM24 Data Update - Italy (2026 Start).fmf`, is replaced by `FM24_2026_27_04_Italy_Serie_D.fmf`, or its readable alias in the catalogue. **Do not keep both in the active editor-data selection.** The supported selection is exactly 59 FMFs; extra FMFs, including original Basic Italy or former custom parts, cause the public checker to refuse it.
+
+The six custom modules replace the former 51 custom files. Preserve those old files outside the entire FM24 user-data folder before placing the replacements. Do not combine old split files with their consolidated modules. The 53 external Basic files remain separate because a safe merger of their country rules has not been established.
 
 ## Place the data with FM24 closed
 
@@ -57,7 +59,7 @@ FM24 itself also has core resource archives ending in `.fmf`, such as `data/shar
 
 ## Initialization and platform limits
 
-For a new career on the supported Mac, **New Career.command** uses the runtime initialization module. Choose database 24.3.0, all 104 compatible files, and **Original** mode as described in [Installation](INSTALLATION.md). The documented handover is to advance one day, save under a new name, quit, and reopen with **Continue Career.command**, which launches without the module. Existing careers are not upgraded by copying FMFs.
+For a new career on the supported Mac, **New Career.command** uses the runtime initialization module. Choose database 24.3.0, all 59 compatible files, and **Original** mode as described in [Installation](INSTALLATION.md). The documented handover is to advance one day, save under a new name, quit, and reopen with **Continue Career.command**, which launches without the module. Existing careers are not upgraded by copying FMFs.
 
 You can also run `python3 scripts/reseason.py new` from the extracted package folder instead of opening the `.command` file. This runs the same checks and initialization; it does not bypass them. For missing-language or XML errors, use the [startup recovery instructions](INSTALLATION.md#if-fm24-reports-missing-language-data-or-an-xml-parsing-error).
 
