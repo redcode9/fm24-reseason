@@ -28,7 +28,8 @@ The six-module selection was checked in an actual new career on 22 October 2026,
 | Player career histories | 213,592 imported season/club rows | Complete recent and worldwide coverage |
 | Updated player profiles | 39,830 reference targets | Full 2025/26 performance review and remaining runtime differences |
 | Italian Serie D | Nine groups / 162 clubs | Coppa Italia Serie D, Scudetto poule, and broader league coverage |
-| Retirement changes | None | A tested approach for individual players |
+| Real-life player retirements | Sample checked at creation and after restart: 15 people have no player component; two retain one | Worldwide audit and further checks on Hummels and Mertens |
+| Delaying future retirements | Not implemented | A separate, tested approach for individual players |
 
 Past awards and honours passed career creation, one day of play, and a normal restart without the initialization module. All 179 checked competition-history/control rows remained identical. This does not mean every competition in the world was checked.
 
@@ -48,6 +49,24 @@ All 1,892,488 expected profile-change targets are present in the saved change da
 
 Potential ability matches in exposed cases and is not below current ability. No arbitrary attribute or potential-ability increases were used to hide differences. The preceding split-file career had different runtime mismatches despite identical applied source targets; the new counts are reported separately, without attributing the change to a proven cause. This is not a verified full-profile equivalence claim or an official FM27 prediction.
 
+## Player retirements
+
+Some real-life retirements are already reflected in the installed database. Updating player attributes does not by itself check or correct retirement status. There is no completed worldwide audit.
+
+On 22 October 2026, a sample of 17 former players was checked in the actual 59-file career, both at the 10 August 2026 start and after saving and reopening on 11 August. The observations matched at both stages:
+
+| Result | Players |
+| --- | --- |
+| Non-player records, without a player component | Iniesta, Busquets, Jordi Alba, Thiago Alcântara, Pepe, Bonucci, Varane, Jesús Navas, Pepe Reina, Rakitić, Jonny Evans, Vertonghen and Joe Hart |
+| Converted to type 5, without a player component | Toni Kroos and Marcelo |
+| Still have a player/non-player record and player attributes; need further review | Mats Hummels and Dries Mertens |
+
+Hummels had already ended his career in 2025, as documented by [Borussia Dortmund](https://www.bvb.de/de/de/aktuelles/news/news.html/2025/8/10/Das-Schoenste-das-mir-passieren-konnte-Mats-Hummels-ein-letztes-Mal-in-Schwarzgelb.html). Mertens' retirement announcement is covered by [Sky Sport](https://sport.sky.it/calcio/giocatori-ritirati-2025). Their records need an in-game check of playing eligibility and retirement state before either case can be called correct or confirmed as still playable. A player component alone does not settle that question.
+
+Four controls—Ronaldo, Messi, Szczęsny and Griezmann—retain player records. These controls check the database state; they are not a worldwide verification of current contracts or retirement announcements.
+
+This is a selected sample, not a global retirement audit. A former player remaining visible in histories or available as staff is expected. International retirement must also be kept separate from retirement from club football. Any corrections must respect the chosen career start date and later returns from retirement.
+
 ## League and long-term limitations
 
 In the preceding split-file selection, the same 162 Serie D club IDs appeared in all three checkpoints. Full-season samples for Asti and Fiorenzuola had 34 fixtures, 17 opponents, home and away. The consolidated Italy module preserves the complete native rules and loads Serie D in the new career; a new full fixture census was not performed. Some historical club lineages and nominal date/time differences remain unresolved.
@@ -58,6 +77,6 @@ Previous base-module simulations exercised future awards and tournaments over lo
 
 1. Establish permissions or rebuild a publicly distributable dataset from usable sources.
 2. Complete 2025/26 histories and missing earlier seasons, with source links.
-3. Review profiles against recent performances and investigate runtime differences.
+3. Audit real-life retirements worldwide, resolve the two sample cases, and review squads and profiles against recent performances.
 4. Complete league rules, historical competitions, and future calendars.
 5. Test the public installation path with end users and expand platform support only after testing.
