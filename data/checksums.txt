@@ -1,0 +1,59 @@
+efac085430e1640688657d5368f317c7a87b268c45abccd6bee35bb7a655cf20  ReSeason 2026-27 - 01 - Competition honours.fmf
+6b40421bb3b058d65aa1ab9ed4115f233f4bc52023dd155437c9a422b4df69ba  ReSeason 2026-27 - 02 - Player identities.fmf
+04ebc77d4b83b0204e5d6f01dc58db00130fe29e6156c4abc78c2fe463e37da7  ReSeason 2026-27 - 03 - Individual awards.fmf
+46b2f6682711301eeeb137046dca58df1e249d7142c0cea81eeeaf3756204a21  ReSeason 2026-27 - 04 - Italy and Serie D.fmf
+df5c0c12100ee48d0a246cbb7e5a904f89d141a244ca6211532e005e15cc72fa  ReSeason 2026-27 - 05 - Player profiles.fmf
+ec7397ad3d50794a982b66157d5e2ed992981cf3096da99a5e1020b1f36e9a1f  ReSeason 2026-27 - 06 - Player histories.fmf
+2a0d31610add00332e9f9a39e4524cfac21afb2a33837aad777795834b19a0ca  sortitoutsi.net FM24 Data Update - Argentina (2026 Start).fmf
+295fa32a2994f0322a5d839ec8571dc071cd04675e0c10226ac73749c53fd33e  sortitoutsi.net FM24 Data Update - Austria (2026 Start).fmf
+21f45239be46f934c832b597070a0b1e60411d39d4bb66416895fc5f9896b497  sortitoutsi.net FM24 Data Update - Belarus (2026 Start).fmf
+c39518d6c18f6d431a4d8a63c1a98b6f4cd38705589dd46d3f830ad4ddcfa37d  sortitoutsi.net FM24 Data Update - Belgium (2026 Start).fmf
+4373f46a379c7d59f0a16806775b447197bd5e58928808343bdd75a111c7cd00  sortitoutsi.net FM24 Data Update - Bolivia (2026 Start).fmf
+5048ab8149b209dd223e7e3913ec01cf0def848c9d68bf0e5da7189bea03202a  sortitoutsi.net FM24 Data Update - Brazil (2026 Start).fmf
+8d1c96d0100dacf68229b6e9fb81b37385c5fd7e5f1eeb57d88adf646795aa9b  sortitoutsi.net FM24 Data Update - Bulgaria (2026 Start).fmf
+5b02a7a694a6cb0b9244255cd649d1fe17f892412ce1a8740d780eea95a2199c  sortitoutsi.net FM24 Data Update - Canada (2026 Start).fmf
+42ed6b424f97e1b837690caf21e688a74d00a7058eeabc9eba703f3d45ffec11  sortitoutsi.net FM24 Data Update - Chile (2026 Start).fmf
+230f082eabde1b9f06e6b77472b63e6c7016ffd96e2286aaca236ed42a46d3df  sortitoutsi.net FM24 Data Update - Colombia (2026 Start).fmf
+3247fa157118821f3be13b8481ae1d2811ea22da0e467cbbce0273f40e96a9d8  sortitoutsi.net FM24 Data Update - Contracts (2026 Start).fmf
+220e984051afcce91ca8776398e24fa36994b60e3d7f71a58897a1f25ce20eab  sortitoutsi.net FM24 Data Update - Croatia (2026 Start).fmf
+8eb329dc029bb1479197866ca27d90359ba70ea329edf026ce0a3d6eba1f2344  sortitoutsi.net FM24 Data Update - Czechia (2026 Start).fmf
+58e4c7595e64ffa0392fda31d843605dd9003c3f8edc5fac7b8dfdc92f1f52a7  sortitoutsi.net FM24 Data Update - Deceased Persons.fmf
+60528fb488d34eb3efe8d044a9bf5a2a1ec9258bff16d3b8d37c9bc6cf83d2d3  sortitoutsi.net FM24 Data Update - Denmark (2026 Start).fmf
+11bacd05b3a51a168e185eb1d7f08637f62d6d0545d6efbcd68bbb2e777e8fb2  sortitoutsi.net FM24 Data Update - Ecuador (2026 Start).fmf
+43468110c3a1f8ff24873e70e599997f6b2b696e942f5bb7bae5e7282a81c456  sortitoutsi.net FM24 Data Update - England (2026 Start).fmf
+83a7e5cd2f3b131d684584c03a48ebd8d5b2b6b2438966b3e42831495e5d5f6a  sortitoutsi.net FM24 Data Update - European Competitions (2026 Start).fmf
+451b273c89dcd7243fdd110b710d6b08ac29e2c62d2b063f6b2afa211c541c7f  sortitoutsi.net FM24 Data Update - Finland (2026 Start).fmf
+f8f2494dd46d9d0c9fa2fe8a3ddfe8b66e63a1a085ac40315d4788099d6a7a08  sortitoutsi.net FM24 Data Update - France (2026 Start).fmf
+329ee1788940b335477d2ff06c1c817d3cf5e81d57da1b63c60ba39de17d9146  sortitoutsi.net FM24 Data Update - Germany (2026 Start).fmf
+448411a54c560423d59c1feef9c5f1ef72f9cd7605e45e43fe11235e267c9e88  sortitoutsi.net FM24 Data Update - Gibraltar (2026 Start).fmf
+0c7f66ef0e6e35df70b1a6278b5abce065e12d4735e2be4ae918980ab62bb725  sortitoutsi.net FM24 Data Update - Greece (2026 Start).fmf
+0a10eb372ecb99a7e079b747966dcfa1f7f2bfa369a8a9d36f5957a5deddc23d  sortitoutsi.net FM24 Data Update - Hungary (2026 Start).fmf
+e49f5da6b79d6f67741f71b85345f47cda448bec74b654941b94a1527a953df8  sortitoutsi.net FM24 Data Update - Iceland (2026 Start).fmf
+761f1b415eeedaec66ed0fa947365e9ccfe2cb9d00bebf44ebc7a0b62d5150aa  sortitoutsi.net FM24 Data Update - Ireland (2026 Start).fmf
+4e059673aa113aa4ba0064993c32d633d8edc8b8d400bc09bcbab1b762e13371  sortitoutsi.net FM24 Data Update - Israel (2026 Start).fmf
+3ae20858fe92e5c25fccfc366dc1a330cd01aa1eda94f87d5dded238b67b0dd1  sortitoutsi.net FM24 Data Update - Latvia (2026 Start).fmf
+599568440160b8b87030b502925665edf89f6ac33f802391a401b386436c1bd4  sortitoutsi.net FM24 Data Update - Mexico (2026 Start).fmf
+14c05d109fe4d90fe65e0c0bfc1cb8e20cd907fcfb6b3e4b411f14791389cfad  sortitoutsi.net FM24 Data Update - Nationalities.fmf
+244e022c966a9a65e2e17ce30493ea0cf44d8962ee3962ab920b9514af633634  sortitoutsi.net FM24 Data Update - Netherlands (2026 Start).fmf
+3161c57cddb05e36674ed66435024769ce5a3360cdaa0ed4897f1411b5e3f7f8  sortitoutsi.net FM24 Data Update - New People (2026 Start).fmf
+f7aeacdc6a0ef1258928a699552dbf5f690059dc73be5bf1d737713316d0e820  sortitoutsi.net FM24 Data Update - Northern Ireland (2026 Start).fmf
+a00731b5a5f8eff70a859c2a010568aa51decc9a5b47202e219aa3efd949e4a2  sortitoutsi.net FM24 Data Update - Norway (2026 Start).fmf
+4a39bf71e055dcf2657c034cd599efe180af80cfb9c130c7febb2827f1862dff  sortitoutsi.net FM24 Data Update - Paraguay (2026 Start).fmf
+e91a6da008ae142eecae92c77bf0478de1a37e71d1c38f11791e607a1d7d03d7  sortitoutsi.net FM24 Data Update - Peru (2026 Start).fmf
+72fc859a18597dacf27de68f3fb22219a6ddc65c9d457c73d34a650e7ea26765  sortitoutsi.net FM24 Data Update - Poland (2026 Start).fmf
+cee2e23d14cdf436abd0c349eb0b826303b5b7463336fc83bbf4e49095192763  sortitoutsi.net FM24 Data Update - Portugal (2026 Start).fmf
+ca17ff5a42436b4dd714166c78449e6c632229ff2983d3ee1f90dd967b8e8cdb  sortitoutsi.net FM24 Data Update - Remove Media Predictions.fmf
+581da1ed8aa209e3c395eaab113b4008b475870a2a942ce69ee656e0cca84886  sortitoutsi.net FM24 Data Update - Romania (2026 Start).fmf
+9df652857b3a6284e732944c326d9641c4dbbeef650bb1da6398ef167342e62f  sortitoutsi.net FM24 Data Update - Russia (2026 Start).fmf
+19a333b50c5a21acd36f2eb0b8e99c2464f03fed12e9c3d7655f889c61603c68  sortitoutsi.net FM24 Data Update - Scotland (2026 Start).fmf
+4b3053c9dc3d1345694b99e5cc2fec9fba0b7a3ccf9e9fb2ee6bc2db0b082f1d  sortitoutsi.net FM24 Data Update - Serbia (2026 Start).fmf
+6fd6fee3f34252a694474034771f15c0eced7ab81ded4290dd0fda436c13f90c  sortitoutsi.net FM24 Data Update - Slovakia (2026 Start).fmf
+f82aed54e5a386042c7af2ca4c061363f8d8ab013e0d022e19f48f3c76b40912  sortitoutsi.net FM24 Data Update - Slovenia (2026 Start).fmf
+cb2b21e358a649dfa07e0c37530a9e6d1123e4fdaeddd748b9eaa130bec4dd11  sortitoutsi.net FM24 Data Update - South Africa (2026 Start).fmf
+9e1100363a8a388342bee4126b7a0afc40643645fe32ea528631b4eaa74dab08  sortitoutsi.net FM24 Data Update - Spain (2026 Start).fmf
+3a6ece4a7cd15166c100988432f3a17bd50494eb50a5cd23da99de9681bdd882  sortitoutsi.net FM24 Data Update - Sweden (2026 Start).fmf
+2ed21b603af90818fbcc7df5ae779541f9f5edf629120b77f5cb7440b33436c8  sortitoutsi.net FM24 Data Update - Switzerland (2026 Start).fmf
+5b4ceea1b34743b98d8f3be264d1b90b8a2b626eaba40b61b6940fb5241bd687  sortitoutsi.net FM24 Data Update - Türkiye (2026 Start).fmf
+e4e01038a4136c4b059fddf04bdc70f2990a3327f62741984a337e1ed4de53ba  sortitoutsi.net FM24 Data Update - USA (2026 Start).fmf
+554a4aef68f4dd0dbdbec797b1cd349c4a0374c7d0fd4ffd5822dbf0e667b2b7  sortitoutsi.net FM24 Data Update - Uruguay (2026 Start).fmf
+3df7040f57bc89f12c7af96fa1b4385a87c191ba301c61c8bdccc338bce4fd4d  sortitoutsi.net FM24 Data Update - Venezuela (2026 Start).fmf
