@@ -2,7 +2,7 @@ efac085430e1640688657d5368f317c7a87b268c45abccd6bee35bb7a655cf20  ReSeason 2026-
 6b40421bb3b058d65aa1ab9ed4115f233f4bc52023dd155437c9a422b4df69ba  ReSeason 2026-27 - 02 - Player identities.fmf
 04ebc77d4b83b0204e5d6f01dc58db00130fe29e6156c4abc78c2fe463e37da7  ReSeason 2026-27 - 03 - Individual awards.fmf
 46b2f6682711301eeeb137046dca58df1e249d7142c0cea81eeeaf3756204a21  ReSeason 2026-27 - 04 - Italy and Serie D.fmf
-df5c0c12100ee48d0a246cbb7e5a904f89d141a244ca6211532e005e15cc72fa  ReSeason 2026-27 - 05 - Player profiles.fmf
+5507a60d1696552834ab55f86435ca3ca5e418b999155f81206be607a1392ec6  ReSeason 2026-27 - 05 - Player profiles.fmf
 ec7397ad3d50794a982b66157d5e2ed992981cf3096da99a5e1020b1f36e9a1f  ReSeason 2026-27 - 06 - Player histories.fmf
 2a0d31610add00332e9f9a39e4524cfac21afb2a33837aad777795834b19a0ca  sortitoutsi.net FM24 Data Update - Argentina (2026 Start).fmf
 295fa32a2994f0322a5d839ec8571dc071cd04675e0c10226ac73749c53fd33e  sortitoutsi.net FM24 Data Update - Austria (2026 Start).fmf
