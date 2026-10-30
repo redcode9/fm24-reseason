@@ -13,7 +13,7 @@ It's the season FM27 would cover, on the FM24 you already own.
 - **A career that starts in August 2026**, built on the free sortitoutsi 2026 start update (squads, transfers, contracts, new players).
 - **Recent honours**: 113 competition editions from 2024 to 2026 added to club and national team histories, including the 2026 World Cup.
 - **Real award winners**: Ballon d'Or, Kopa and Yashin trophies (2024, 2025), FIFA The Best and Best Goalkeeper (2023 to 2025), Golden Boy (2023 to 2025) and UEFA Player of the Season (2024 to 2026), each with its podium.
-- **Player careers**: over 200,000 season-by-season club entries, so history pages show where players actually played.
+- **Player careers**: about 850,000 club seasons added for over 300,000 players, 2024/25 and 2025/26 included, so history pages show where players actually played.
 - **Profiles moved on to 2026/27** for about 40,000 players: current ability and attributes developed by one season, based on each player's age, minutes, league level and form in 2025/26. Breakout seasons show (Nico Paz, Pau Cubarsí, Nico O'Reilly), so does a season on the bench, and veterans decline.
 - **Serie D**: all nine groups and 162 clubs, fully playable.
 
@@ -54,7 +54,7 @@ Old saves aren't affected. ReSeason needs a new career.
 
 ## Known gaps
 
-- Player careers for 2025/26 are still incomplete, Serie A included.
+- Player careers for 2025/26 are less complete than earlier seasons.
 - Honours are updated for the main competitions, not every competition in the world.
 - Coppa Italia Serie D and the Serie D title playoff aren't set up yet.
 - The 2026/27 development is modelled from public match data, not scouted. Hidden attributes and personality aren't changed, and players outside the big data feeds only age.
