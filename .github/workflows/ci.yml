@@ -1,0 +1,47 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the engine module from source
+        run: sh mac/build.sh
+      - name: Check script syntax
+        run: zsh -n Install.command "New Career.command" mac/common.zsh
+      - name: Install into a fake FM24
+        run: |
+          fm="$RUNNER_TEMP/fm"; game="$RUNNER_TEMP/game"
+          italy="sortitoutsi.net FM24 Data Update - Italy (2026 Start).fmf"
+          mkdir -p "$fm/editor data" "$game/data/database/db/2430/edt/permanent"
+          touch "$fm/editor data/$italy" "$fm/editor data/Other mod.fmf"
+          echo test > "data/ReSeason 2026-27 - 01 - Test.fmf"
+          FM_USER_DATA="$fm" FM_GAME="$game" ./Install.command | tee out.txt
+          test -f "$fm/editor data/ReSeason 2026-27 - 01 - Test.fmf"
+          test -f "$fm/editor data/$italy.disabled"
+          test ! -f "$fm/editor data/$italy"
+          cmp data/FM24_History_Ahron_Retention.ddt "$game/data/database/db/2430/edt/permanent/FM24_History_Ahron_Retention.ddt"
+          grep -q "59 of 59 files are missing" out.txt
+          grep -q "  Other mod.fmf" out.txt
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install into a fake FM24
+        shell: powershell
+        run: |
+          $fm = "$env:RUNNER_TEMP\fm"; $game = "$env:RUNNER_TEMP\game"
+          $italy = 'sortitoutsi.net FM24 Data Update - Italy (2026 Start).fmf'
+          New-Item -ItemType Directory -Force "$fm\editor data", "$game\data\database\db\2430\edt\permanent" | Out-Null
+          New-Item -ItemType File "$fm\editor data\$italy", "$fm\editor data\Other mod.fmf" | Out-Null
+          Set-Content 'data\ReSeason 2026-27 - 01 - Test.fmf' 'test'
+          $out = (cmd /c "echo.| Install.bat -UserData $fm -Game $game") -join "`n"
+          $out
+          if (-not (Test-Path "$fm\editor data\ReSeason 2026-27 - 01 - Test.fmf")) { throw 'module not copied' }
+          if (-not (Test-Path "$fm\editor data\$italy.disabled")) { throw 'Italy file not disabled' }
+          if (Test-Path "$fm\editor data\$italy") { throw 'Italy file still active' }
+          if (-not (Test-Path "$game\data\database\db\2430\edt\permanent\FM24_History_Ahron_Retention.ddt")) { throw 'helper not copied' }
+          if ($out -notmatch '59 of 59 files are missing') { throw 'checksum report missing' }
+          if ($out -notmatch '  Other mod.fmf') { throw 'extra file not reported' }
