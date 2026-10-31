@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2 — 2026-10-31
+
+- Manual install steps in the README, with the folders for Mac and Windows. The data files are the same as 1.0.1.
+
 ## 1.0.1 — 2026-10-31
 
 - Fixed the 2026/27 player development: attributes left blank in FM24 were read as zero, so young players gained too much and some declining veterans gained attributes instead of losing them. Current and potential ability are unchanged.
