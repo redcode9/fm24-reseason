@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.3 — 2026-10-31
+
+- New 2026/27 player profiles. Current ability and attributes are recalculated player by player from age, potential, minutes, league level and market value over the last seasons, so breakout seasons, seasons on the bench and veterans' decline are closer to what really happened. Potential only rises when current ability passes it. Hidden attributes and personality are unchanged.
+- Players outside the big data feeds now develop from their age and ability instead of only ageing.
+- Start a new career to get the new profiles: careers started with an earlier version keep the old values.
+
 ## 1.0.2 — 2026-10-31
 
 - Manual install steps in the README, with the folders for Mac and Windows. The data files are the same as 1.0.1.
