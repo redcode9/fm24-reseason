@@ -8,6 +8,24 @@ For a lot of us FM24 is still the best Football Manager: a match engine we trust
 
 It's the season FM27 would cover, on the FM24 you already own.
 
+## Before and after
+
+Grey is FM24 as it ships, orange is a ReSeason career.
+
+**Kevin De Bruyne** is at Napoli, with his 2025/26 season in the career history.
+
+![Kevin De Bruyne at Man City in FM24 and at Napoli in ReSeason](assets/de-bruyne.jpg)
+
+**Pio Esposito** is back at Inter after two seasons at Spezia, with his profile moved on to 2026/27.
+
+![Pio Esposito at Spezia's under-20s in FM24 and at Inter in ReSeason](assets/pio-esposito.jpg)
+
+**The Ballon d'Or** has its 2024 and 2025 winners, podiums included.
+
+![Ballon d'Or podium in FM24 and in ReSeason](assets/ballon-dor.jpg)
+
+<sub>Screenshots from an Italian game with the author's skin, faces and logos. Those aren't part of ReSeason.</sub>
+
 ## What you get
 
 - **A career that starts in August 2026**, built on the free sortitoutsi 2026 start update (squads, transfers, contracts, new players).
