@@ -32,7 +32,7 @@ Grey is FM24 as it ships, orange is a ReSeason career.
 - **Recent honours**: 113 competition editions from 2024 to 2026 added to club and national team histories, including the 2026 World Cup.
 - **Real award winners**: Ballon d'Or, Kopa and Yashin trophies (2024, 2025), FIFA The Best and Best Goalkeeper (2023 to 2025), Golden Boy (2023 to 2025) and UEFA Player of the Season (2024 to 2026), each with its podium.
 - **Player careers**: about 850,000 club seasons added for over 300,000 players, 2024/25 and 2025/26 included, so history pages show where players actually played.
-- **Profiles moved on to 2026/27** for about 40,000 players: current ability and attributes developed by one season, based on each player's age, minutes, league level and form in 2025/26. Breakout seasons show (Nico Paz, Pau Cubarsí, Nico O'Reilly), so does a season on the bench, and veterans decline.
+- **Profiles moved on to 2026/27** for about 40,000 players: current ability and attributes developed by one season, based on each player's age, potential, minutes, league level and market value over the last seasons. Breakout seasons show (Nico Paz, Pau Cubarsí, Nico O'Reilly), so does a season on the bench, and veterans decline.
 - **Serie D**: all nine groups and 162 clubs, fully playable.
 
 On Mac, a small engine module also fixes what FM24 gets wrong when a career starts years after its original database: without it the game throws away the recent award winners, leaves awards like the Ballon d'Or on their old 2023/24 calendar, and doesn't know that tournaments like the 2026 World Cup are already over.
@@ -93,7 +93,7 @@ Old saves aren't affected. ReSeason needs a new career.
 - Player careers for 2025/26 are less complete than earlier seasons.
 - Honours are updated for the main competitions, not every competition in the world.
 - Coppa Italia Serie D and the Serie D title playoff aren't set up yet.
-- The 2026/27 development is modelled from public match data, not scouted. Hidden attributes and personality aren't changed, and players outside the big data feeds only age.
+- The 2026/27 development is modelled from public match data, not scouted. Hidden attributes and personality aren't changed, and players outside the big data feeds develop from their age and ability alone.
 - No faces, kits or logos. Keep using your usual graphics packs.
 
 Spotted a wrong winner or a missing season? [Open an issue](https://github.com/redcode9/fm24-reseason/issues) with the player or competition and the season.
