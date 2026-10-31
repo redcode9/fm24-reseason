@@ -61,6 +61,24 @@ On Mac, a small engine module also fixes what FM24 gets wrong when a career star
 
 The installer copies the six ReSeason files into your editor data folder, switches off the sortitoutsi Italy file (ReSeason replaces it) and checks that every file is the right one. You can run it again at any time.
 
+### Manual install
+
+If the installer doesn't work on your computer, you can do the same three steps by hand. All the files are in the `data` folder of the unzipped download.
+
+1. **Copy the six `ReSeason 2026-27 - …` files** into your editor data folder. Create the `editor data` folder if it isn't there.
+   - Mac: `~/Library/Application Support/Sports Interactive/Football Manager 2024/editor data`
+   - Windows: `Documents\Sports Interactive\Football Manager 2024\editor data` (`OneDrive\Documents\…` if your Documents folder is on OneDrive)
+2. **Switch off the sortitoutsi Italy file.** In the same folder, move `sortitoutsi.net FM24 Data Update - Italy (2026 Start).fmf` somewhere else, your desktop for example. ReSeason replaces it, and with both loaded the Italian leagues break.
+3. **Copy `FM24_History_Ahron_Retention.ddt`** into the `data/database/db/2430/edt/permanent` folder of the game:
+   - Mac: `~/Library/Application Support/Steam/steamapps/common/Football Manager 2024/data/database/db/2430/edt/permanent`
+   - Windows: `C:\Program Files (x86)\Steam\steamapps\common\Football Manager 2024\data\database\db\2430\edt\permanent`
+
+   If FM24 is in a different Steam library, right-click Football Manager 2024 in Steam and choose Manage > Browse local files to open the game folder.
+
+On Mac the Library folder is hidden: in Finder press Cmd+Shift+G and paste the path. On Windows, paste the path into the File Explorer address bar.
+
+Then start your career as below. On Mac you still need **New Career.command** for the engine module.
+
 ## Start your career
 
 1. **Mac:** open **New Career.command**. **Windows:** start FM24 from Steam.
