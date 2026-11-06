@@ -82,11 +82,26 @@ Then start your career as below. On Mac you still need **New Career.command** fo
 ## Start your career
 
 1. **Mac:** open **New Career.command**. **Windows:** start FM24 from Steam.
-2. Create a new career and make sure every ReSeason and sortitoutsi file is ticked in the editor data list.
+2. Create a new career and make sure every ReSeason and sortitoutsi file is ticked in the editor data list. If you have other sortitoutsi files, check the [overlaps](#overlap-with-the-sortitoutsi-update) first.
 3. Go to Advanced Setup and pick the August 2026 start. To play in Serie D, load Italy down to Serie D.
 4. **Mac only:** play one day, save and quit. That's it: from now on start FM24 from Steam as usual and load that save.
 
 Old saves aren't affected. ReSeason needs a new career.
+
+## Overlap with the sortitoutsi update
+
+Some ReSeason files cover the same ground as sortitoutsi files that already exist or are on the way. Don't load two files that do the same job: when you create the career, untick the one you don't want in the editor data list.
+
+- **01 Competition honours.** The sortitoutsi country files already have recent winners for the domestic competitions of playable nations, and their continental and international histories are coming. If a competition's history shows the same season twice, untick 01. You lose the editions sortitoutsi doesn't have yet, like the 2026 World Cup.
+- **02 Player identities.** Four corrections to players' personal details. No overlap.
+- **03 Individual awards.** No sortitoutsi awards file yet. If one comes out, load only one of the two.
+- **04 Italy and Serie D.** Built on M.C's 2026/27 Italy rules with Serie D added, and it replaces the sortitoutsi Italy file. The installer switches theirs off. Never load both, or the Italian leagues break.
+- **05 Player profiles.** The sortitoutsi Player Attributes file changes the same things: current and potential ability and attributes. If you have it, load only one of the two.
+- **06 Player histories.** No sortitoutsi equivalent yet, but one is planned. When it comes out, load only one of the two.
+
+When sortitoutsi releases its own version of one of these, the next ReSeason update drops ours or keeps only what theirs doesn't cover.
+
+The installer also lists any editor data file it doesn't know. Untick those, unless it's a sortitoutsi file from the list above that you've picked over the ReSeason one.
 
 ## Known gaps
 
