@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4 — 2026-11-06
+
+- New README section on the overlap with the sortitoutsi update: which ReSeason files cover the same ground as sortitoutsi files, and which one to load. The data files are the same as 1.0.3.
+
 ## 1.0.3 — 2026-10-31
 
 - New 2026/27 player profiles. Current ability and attributes are recalculated player by player from age, potential, minutes, league level and market value over the last seasons, so breakout seasons, seasons on the bench and veterans' decline are closer to what really happened. Potential only rises when current ability passes it. Hidden attributes and personality are unchanged.
